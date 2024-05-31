@@ -1,4 +1,4 @@
-## Issue(s) 
+## Issue(s)
 
 <!-- Link the issues being closed by or related to this PR. For example, you can use Closes #594 if this PR closes issue number 594 -->
 
@@ -20,7 +20,6 @@
 -->
 
 <!-- END CHANGELOG -->
-
 
 ## Further comments
 
