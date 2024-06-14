@@ -7,13 +7,9 @@ import {
 import { UIKitViewSubmitInteractionContext } from '@rocket.chat/apps-engine/definition/uikit';
 import { ModalsEnum } from '../enum/modal';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-// import { sendMessage } from "../lib/sendMessage";
-// import { deleteAI, GetAI } from "../persistance/askai";
-// import { getInteractionRoomData } from "../persistance/roomInteraction";
-// import { QuickApp } from "../../Quick";
-// import { createReply } from "./persistance/StoreReply";
-// import { EditReplyHandler } from "./persistance/EditReply";
-// import { ListModal } from "../modal/ListModal";
+import { ReplyStorage } from '../storage/ReplyStorage';
+import { sendNotification } from '../helper/message';
+
 export class ExecuteViewSubmitHandler {
 	constructor(
 		private readonly app: QuickRepliesApp,
@@ -24,7 +20,7 @@ export class ExecuteViewSubmitHandler {
 	) {}
 
 	public async run(context: UIKitViewSubmitInteractionContext) {
-		const { user, view } = context.getInteractionData();
+		const { user, view, room } = context.getInteractionData();
 
 		try {
 			switch (view.id) {
@@ -36,8 +32,34 @@ export class ExecuteViewSubmitHandler {
 						ModalsEnum.REPLY_BODY_INPUT_ACTION
 					] as string;
 
-					console.log(name, body, user);
-					
+					const replyStorage = new ReplyStorage(
+						this.persistence,
+						this.read.getPersistenceReader(),
+					);
+
+					const result = await replyStorage.createReply(
+						user,
+						name,
+						body,
+					);
+					if (result.success) {
+						console.log('Reply created successfully');
+					} else {
+						console.log('Failed to create reply:', result.error);
+						console.log(room);
+						if (room) {
+							sendNotification(
+								this.read,
+								this.modify,
+								user,
+								room,
+								{
+									message: `Failed to create reply: ${result.error}`,
+								},
+							);
+						}
+					}
+
 					break;
 				}
 				default:

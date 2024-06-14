@@ -2,11 +2,11 @@ import {
 	RocketChatAssociationModel,
 	RocketChatAssociationRecord,
 } from '@rocket.chat/apps-engine/definition/metadata';
-import { IRoomInteractionStorage } from '../definition/lib/IRoomInteraction';
 import {
 	IPersistence,
 	IPersistenceRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
+import { IRoomInteractionStorage } from '../definition/lib/IRoomInteraction';
 
 export class RoomInteractionStorage implements IRoomInteractionStorage {
 	private userId: string;

@@ -39,21 +39,6 @@ export async function CreateReplyModal({
 		slashcommandcontext?.getSender() ||
 		uikitcontext?.getInteractionData().user;
 
-	// if (user?.id) {
-	//     let roomId;
-
-	//     if (room?.id) {
-	//         roomId = room.id;
-	//         await storeInteractionRoomData(persistence, user.id, roomId);
-	//     } else {
-	//         roomId = (
-	//             await getInteractionRoomData(
-	//                 read.getPersistenceReader(),
-	//                 user.id
-	//             )
-	//         ).roomId;
-	//     }
-
 	block.addInputBlock({
 		blockId: ModalsEnum.REPLY_NAME_INPUT,
 		label: {
@@ -87,7 +72,6 @@ export async function CreateReplyModal({
 		}),
 	});
 	// }
-
 
 	return {
 		id: viewId,
