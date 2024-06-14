@@ -10,6 +10,7 @@ import {
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
+import { CreateReplyModal } from '../modal/createReplyModal';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -42,7 +43,21 @@ export class Handler implements IHandler {
 	}
 
 	public async Create(): Promise<void> {
-		console.log('Create');
+		const triggerId = this.triggerId;
+		if (triggerId) {
+			const modal = await CreateReplyModal({
+				modify: this.modify,
+				read: this.read,
+				persistence: this.persis,
+				http: this.http,
+				// slashcommandcontext: this.context,
+			});
+			await this.modify
+				.getUiController()
+				.openModalView(modal, { triggerId }, this.sender);
+		} else {
+			console.log('invalid Trigger ID !');
+		}
 	}
 	public async List(): Promise<void> {
 		console.log('List');

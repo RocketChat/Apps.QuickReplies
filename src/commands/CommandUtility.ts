@@ -68,7 +68,7 @@ export class CommandUtility implements ICommandUtility {
 				break;
 			}
 			case 2: {
-				await this.handleDualParam(handler);
+				// await this.handleDualParam(handler);
 				break;
 			}
 			default: {
@@ -105,30 +105,30 @@ export class CommandUtility implements ICommandUtility {
 		}
 	}
 
-	private async handleDualParam(handler: Handler): Promise<void> {
-		const [param, subparam] = this.params;
-		switch (param.toLowerCase()) {
-			case CommandParam.DELETE: {
-				await handler.Delete();
-				break;
-			}
-			case CommandParam.EDIT: {
-				await handler.Edit();
-				break;
-			}
-			case CommandParam.SEND: {
-				await handler.Send();
-				break;
-			}
-			default: {
-				await sendHelperNotification(
-					this.read,
-					this.modify,
-					this.sender,
-					this.room,
-				);
-				break;
-			}
-		}
-	}
+	// private async handleDualParam(handler: Handler): Promise<void> {
+	// 	const [param, subparam] = this.params;
+	// 	switch (param.toLowerCase()) {
+	// 		case CommandParam.DELETE: {
+	// 			await handler.Delete();
+	// 			break;
+	// 		}
+	// 		case CommandParam.EDIT: {
+	// 			await handler.Edit();
+	// 			break;
+	// 		}
+	// 		case CommandParam.SEND: {
+	// 			await handler.Send();
+	// 			break;
+	// 		}
+	// 		default: {
+	// 			await sendHelperNotification(
+	// 				this.read,
+	// 				this.modify,
+	// 				this.sender,
+	// 				this.room,
+	// 			);
+	// 			break;
+	// 		}
+	// 	}
+	// }
 }
