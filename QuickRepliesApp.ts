@@ -50,9 +50,11 @@ export class QuickRepliesApp extends App {
 			this,
 			read,
 			http,
-			modify,
 			persistence,
+			modify,
+			context,
 		);
-		return await handler.run(context);
+
+		return await handler.handleActions();
 	}
 }

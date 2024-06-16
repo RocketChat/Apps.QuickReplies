@@ -1,108 +1,91 @@
 import {
+	IUIKitResponse,
+	IUIKitSurface,
+	UIKitViewSubmitInteractionContext,
+} from '@rocket.chat/apps-engine/definition/uikit';
+import { QuickRepliesApp } from '../../QuickRepliesApp';
+import {
 	IHttp,
 	IModify,
 	IPersistence,
 	IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { UIKitViewSubmitInteractionContext } from '@rocket.chat/apps-engine/definition/uikit';
-// import { ModalsEnum } from '../enum/modal';
-import { QuickRepliesApp } from '../../QuickRepliesApp';
-// import { ReplyStorage } from '../storage/ReplyStorage';
-// import { sendNotification } from '../helper/message';
-// import { RoomInteractionStorage } from '../storage/RoomInteraction';
-// import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
-import { Create } from '../enum/Create';
+
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
-import { sendNotification } from '../helper/message';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
+import { sendNotification } from '../helper/message';
+import { Create } from '../enum/Create';
 import { ReplyStorage } from '../storage/ReplyStorage';
+import { IUser } from '@rocket.chat/apps-engine/definition/users';
 
 export class ExecuteViewSubmitHandler {
+	private context: UIKitViewSubmitInteractionContext;
 	constructor(
-		private readonly app: QuickRepliesApp,
-		private readonly read: IRead,
-		private readonly http: IHttp,
-		private readonly modify: IModify,
-		private readonly persistence: IPersistence,
-	) {}
+		protected readonly app: QuickRepliesApp,
+		protected readonly read: IRead,
+		protected readonly http: IHttp,
+		protected readonly persistence: IPersistence,
+		protected readonly modify: IModify,
+		context: UIKitViewSubmitInteractionContext,
+	) {
+		this.context = context;
+	}
 
-	public async run(context: UIKitViewSubmitInteractionContext) {
-		const { user, view } = context.getInteractionData();
+	public async handleActions(): Promise<IUIKitResponse> {
+		const { view, user } = this.context.getInteractionData();
+		const persistenceRead = this.read.getPersistenceReader();
+		const roomInteractionStorage = new RoomInteractionStorage(
+			this.persistence,
+			persistenceRead,
+			user.id,
+		);
+		const roomId = await roomInteractionStorage.getInteractionRoomId();
+		const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
 
-		try {
-			switch (view.id) {
-				case Create.VIEW_ID: {
-					const name =
-						view.state?.[Create.REPLY_NAME_BLOCK_ID]?.[
-							Create.REPLY_NAME_ACTION_ID
-						];
-
-					const body =
-						view.state?.[Create.REPLY_BODY_BLOCK_ID]?.[
-							Create.REPLY_BODY_ACTION_ID
-						];
-
-					console.log(name, body);
-
-					// const name = view.state?.[ModalsEnum.REPLY_NAME_INPUT]?.[
-					// 	ModalsEnum.REPLY_NAME_INPUT_ACTION
-					// ] as string;
-					// const body = view.state?.[ModalsEnum.REPLY_BODY_INPUT]?.[
-					// 	ModalsEnum.REPLY_BODY_INPUT_ACTION
-					// ] as string;
-
-					const replyStorage = new ReplyStorage(
-						this.persistence,
-						this.read.getPersistenceReader(),
-					);
-
-					const result = await replyStorage.createReply(
-						user,
-						name,
-						body,
-					);
-
-					if (result.success) {
-						console.log('Reply created successfully');
-					} else {
-						console.log('Failed to create reply:', result.error);
-
-						const roomInteractionStorage =
-							new RoomInteractionStorage(
-								this.persistence,
-								this.read.getPersistenceReader(),
-								user.id,
-							);
-						const roomId =
-							await roomInteractionStorage.getInteractionRoomId();
-						const room = (await this.read
-							.getRoomReader()
-							.getById(roomId)) as IRoom;
-						console.log(room);
-						if (room) {
-							sendNotification(
-								this.read,
-								this.modify,
-								user,
-								room,
-								{
-									message: `Hey ${user.name} \n Failed to create reply for you: ${result.error}`,
-								},
-							);
-						}
-					}
-
-					break;
-				}
-				default:
-					break;
+		switch (view.id) {
+			case Create.VIEW_ID: {
+				return this.handleCreationOfDatabase(room, user, view);
 			}
-		} catch (error) {
-			console.log('error : ', error);
 		}
 
-		return {
-			success: true,
-		};
+		return this.context.getInteractionResponder().successResponse();
+	}
+
+	public async handleCreationOfDatabase(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+	): Promise<IUIKitResponse> {
+		const name =
+			view.state?.[Create.REPLY_NAME_BLOCK_ID]?.[
+				Create.REPLY_NAME_ACTION_ID
+			];
+
+		const body =
+			view.state?.[Create.REPLY_BODY_BLOCK_ID]?.[
+				Create.REPLY_BODY_ACTION_ID
+			];
+
+		const replyStorage = new ReplyStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+		);
+
+		const result = await replyStorage.createReply(user, name, body);
+
+		if (result.success) {
+			console.log('Reply created successfully');
+			sendNotification(this.read, this.modify, user, room, {
+				message: `Hey ${user.name} \n Reply with Name ${name} created successfully`,
+			});
+		} else {
+			console.log('Failed to create reply:', result.error);
+			sendNotification(this.read, this.modify, user, room, {
+				message: `Hey ${user.name} \n Failed to create reply for you: ${result.error}`,
+			});
+			return this.context.getInteractionResponder().errorResponse();
+		}
+
+		return this.context.getInteractionResponder().successResponse();
 	}
 }

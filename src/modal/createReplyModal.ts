@@ -15,7 +15,6 @@ import {
 	UIKitSurfaceType,
 } from '@rocket.chat/apps-engine/definition/uikit';
 import { Create } from '../enum/Create';
-import { ModalInteractionStorage } from '../storage/ModalInteraction';
 
 export async function CreateReplyModal(
 	app: QuickRepliesApp,
@@ -24,7 +23,6 @@ export async function CreateReplyModal(
 	persistence: IPersistence,
 	modify: IModify,
 	room: IRoom,
-	_modalInteraction: ModalInteractionStorage,
 ): Promise<IUIKitSurfaceViewParam | Error> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
@@ -64,7 +62,6 @@ export async function CreateReplyModal(
 	);
 
 	blocks.push(inputReplyName);
-
 	blocks.push(inputReplyBody);
 
 	const submit = elementBuilder.addButton(
