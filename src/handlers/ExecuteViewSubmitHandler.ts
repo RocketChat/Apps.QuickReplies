@@ -9,6 +9,8 @@ import { ModalsEnum } from '../enum/modal';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { sendNotification } from '../helper/message';
+import { RoomInteractionStorage } from '../storage/RoomInteraction';
+import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 
 export class ExecuteViewSubmitHandler {
 	constructor(
@@ -20,7 +22,7 @@ export class ExecuteViewSubmitHandler {
 	) {}
 
 	public async run(context: UIKitViewSubmitInteractionContext) {
-		const { user, view, room } = context.getInteractionData();
+		const { user, view } = context.getInteractionData();
 
 		try {
 			switch (view.id) {
@@ -42,10 +44,23 @@ export class ExecuteViewSubmitHandler {
 						name,
 						body,
 					);
+
 					if (result.success) {
 						console.log('Reply created successfully');
 					} else {
 						console.log('Failed to create reply:', result.error);
+
+						const roomInteractionStorage =
+							new RoomInteractionStorage(
+								this.persistence,
+								this.read.getPersistenceReader(),
+								user.id,
+							);
+						const roomId =
+							await roomInteractionStorage.getInteractionRoomId();
+						const room = (await this.read
+							.getRoomReader()
+							.getById(roomId)) as IRoom;
 						console.log(room);
 						if (room) {
 							sendNotification(

@@ -43,6 +43,8 @@ export class Handler implements IHandler {
 	}
 
 	public async Create(): Promise<void> {
+		const roomId = this.room.id;
+		this.roomInteractionStorage.storeInteractionRoomId(roomId);
 		const triggerId = this.triggerId;
 		if (triggerId) {
 			const modal = await CreateReplyModal({
