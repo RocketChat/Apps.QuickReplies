@@ -5,12 +5,17 @@ import {
 	IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { UIKitViewSubmitInteractionContext } from '@rocket.chat/apps-engine/definition/uikit';
-import { ModalsEnum } from '../enum/modal';
+// import { ModalsEnum } from '../enum/modal';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-import { ReplyStorage } from '../storage/ReplyStorage';
-import { sendNotification } from '../helper/message';
+// import { ReplyStorage } from '../storage/ReplyStorage';
+// import { sendNotification } from '../helper/message';
+// import { RoomInteractionStorage } from '../storage/RoomInteraction';
+// import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
+import { Create } from '../enum/Create';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
+import { sendNotification } from '../helper/message';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
+import { ReplyStorage } from '../storage/ReplyStorage';
 
 export class ExecuteViewSubmitHandler {
 	constructor(
@@ -26,13 +31,25 @@ export class ExecuteViewSubmitHandler {
 
 		try {
 			switch (view.id) {
-				case ModalsEnum.CREATE_REPLY_VIEW: {
-					const name = view.state?.[ModalsEnum.REPLY_NAME_INPUT]?.[
-						ModalsEnum.REPLY_NAME_INPUT_ACTION
-					] as string;
-					const body = view.state?.[ModalsEnum.REPLY_BODY_INPUT]?.[
-						ModalsEnum.REPLY_BODY_INPUT_ACTION
-					] as string;
+				case Create.VIEW_ID: {
+					const name =
+						view.state?.[Create.REPLY_NAME_BLOCK_ID]?.[
+							Create.REPLY_NAME_ACTION_ID
+						];
+
+					const body =
+						view.state?.[Create.REPLY_BODY_BLOCK_ID]?.[
+							Create.REPLY_BODY_ACTION_ID
+						];
+
+					console.log(name, body);
+
+					// const name = view.state?.[ModalsEnum.REPLY_NAME_INPUT]?.[
+					// 	ModalsEnum.REPLY_NAME_INPUT_ACTION
+					// ] as string;
+					// const body = view.state?.[ModalsEnum.REPLY_BODY_INPUT]?.[
+					// 	ModalsEnum.REPLY_BODY_INPUT_ACTION
+					// ] as string;
 
 					const replyStorage = new ReplyStorage(
 						this.persistence,
@@ -69,7 +86,7 @@ export class ExecuteViewSubmitHandler {
 								user,
 								room,
 								{
-									message: `Failed to create reply: ${result.error}`,
+									message: `Hey ${user.name} \n Failed to create reply for you: ${result.error}`,
 								},
 							);
 						}

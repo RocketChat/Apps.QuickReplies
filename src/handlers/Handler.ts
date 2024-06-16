@@ -11,6 +11,8 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { CreateReplyModal } from '../modal/createReplyModal';
+import { ModalInteractionStorage } from '../storage/ModalInteraction';
+import { Create } from '../enum/Create';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -44,22 +46,65 @@ export class Handler implements IHandler {
 
 	public async Create(): Promise<void> {
 		const roomId = this.room.id;
-		this.roomInteractionStorage.storeInteractionRoomId(roomId);
+		const userId = this.sender.id;
+
+		const persistenceRead = this.read.getPersistenceReader();
+		const modalInteraction = new ModalInteractionStorage(
+			this.persis,
+			persistenceRead,
+			userId,
+			Create.VIEW_ID,
+		);
+
+		await Promise.all([
+			this.roomInteractionStorage.storeInteractionRoomId(roomId),
+			// clear name and body later on
+			// modalInteraction.clearInputElementState(
+			//     SearchPageAndDatabase.ACTION_ID
+			// ),
+			modalInteraction.clearAllInteractionActionId(),
+		]);
+
+		const modal = await CreateReplyModal(
+			this.app,
+			this.sender,
+			this.read,
+			this.persis,
+			this.modify,
+			this.room,
+			modalInteraction,
+		);
+
+		if (modal instanceof Error) {
+			// Something went Wrong Probably SearchPageComponent Couldn't Fetch the Pages
+			this.app.getLogger().error(modal.message);
+			return;
+		}
+
 		const triggerId = this.triggerId;
+
 		if (triggerId) {
-			const modal = await CreateReplyModal({
-				modify: this.modify,
-				read: this.read,
-				persistence: this.persis,
-				http: this.http,
-				// slashcommandcontext: this.context,
-			});
 			await this.modify
 				.getUiController()
-				.openModalView(modal, { triggerId }, this.sender);
-		} else {
-			console.log('invalid Trigger ID !');
+				.openSurfaceView(modal, { triggerId }, this.sender);
 		}
+
+		return;
+
+		// if (triggerId) {
+		// 	const modal = await CreateReplyModal({
+		// 		modify: this.modify,
+		// 		read: this.read,
+		// 		persistence: this.persis,
+		// 		http: this.http,
+		// 		// slashcommandcontext: this.context,
+		// 	});
+		// 	await this.modify
+		// 		.getUiController()
+		// 		.openModalView(modal, { triggerId }, this.sender);
+		// } else {
+		// 	console.log('invalid Trigger ID !');
+		// }
 	}
 	public async List(): Promise<void> {
 		console.log('List');
