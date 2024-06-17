@@ -14,7 +14,7 @@ import {
 	ButtonStyle,
 	UIKitSurfaceType,
 } from '@rocket.chat/apps-engine/definition/uikit';
-import { Create } from '../enum/Create';
+import { CreateModal } from '../enum/modals/CreateModal';
 
 export async function CreateReplyModal(
 	app: QuickRepliesApp,
@@ -28,8 +28,8 @@ export async function CreateReplyModal(
 
 	const blocks: Block[] = [];
 
-	const labelReplyName = Create.REPLY_NAME_LABEL.toString();
-	const placeholderReplyName = Create.REPLY_NAME_PLACEHOLDER.toString();
+	const labelReplyName = CreateModal.REPLY_NAME_LABEL.toString();
+	const placeholderReplyName = CreateModal.REPLY_NAME_PLACEHOLDER.toString();
 
 	const inputReplyName = inputElementComponent(
 		{
@@ -39,13 +39,13 @@ export async function CreateReplyModal(
 			optional: false,
 		},
 		{
-			blockId: Create.REPLY_NAME_BLOCK_ID,
-			actionId: Create.REPLY_NAME_ACTION_ID,
+			blockId: CreateModal.REPLY_NAME_BLOCK_ID,
+			actionId: CreateModal.REPLY_NAME_ACTION_ID,
 		},
 	);
 
-	const labelReplyBody = Create.REPLY_BODY_LABEL.toString();
-	const placeholderReplyBody = Create.REPLY_BODY_PLACEHOLDER.toString();
+	const labelReplyBody = CreateModal.REPLY_BODY_LABEL.toString();
+	const placeholderReplyBody = CreateModal.REPLY_BODY_PLACEHOLDER.toString();
 
 	const inputReplyBody = inputElementComponent(
 		{
@@ -56,8 +56,8 @@ export async function CreateReplyModal(
 			multiline: true,
 		},
 		{
-			blockId: Create.REPLY_BODY_BLOCK_ID,
-			actionId: Create.REPLY_BODY_ACTION_ID,
+			blockId: CreateModal.REPLY_BODY_BLOCK_ID,
+			actionId: CreateModal.REPLY_BODY_ACTION_ID,
 		},
 	);
 
@@ -65,26 +65,26 @@ export async function CreateReplyModal(
 	blocks.push(inputReplyBody);
 
 	const submit = elementBuilder.addButton(
-		{ text: Create.CREATE, style: ButtonStyle.PRIMARY },
+		{ text: CreateModal.CREATE, style: ButtonStyle.PRIMARY },
 		{
-			actionId: Create.SUBMIT_ACTION_ID,
-			blockId: Create.SUBMIT_BLOCK_ID,
+			actionId: CreateModal.SUBMIT_ACTION_ID,
+			blockId: CreateModal.SUBMIT_BLOCK_ID,
 		},
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: Create.CLOSE, style: ButtonStyle.DANGER },
+		{ text: CreateModal.CLOSE, style: ButtonStyle.DANGER },
 		{
-			actionId: Create.CLOSE_ACTION_ID,
-			blockId: Create.CLOSE_BLOCK_ID,
+			actionId: CreateModal.CLOSE_ACTION_ID,
+			blockId: CreateModal.CLOSE_BLOCK_ID,
 		},
 	);
 	return {
-		id: Create.VIEW_ID,
+		id: CreateModal.VIEW_ID,
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: Create.TITLE,
+			text: CreateModal.TITLE,
 		},
 		blocks,
 		close,

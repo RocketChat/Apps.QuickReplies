@@ -14,7 +14,7 @@ import {
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { sendNotification } from '../helper/message';
-import { Create } from '../enum/Create';
+import { CreateModal } from '../enum/modals/CreateModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 
@@ -43,7 +43,7 @@ export class ExecuteViewSubmitHandler {
 		const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
 
 		switch (view.id) {
-			case Create.VIEW_ID: {
+			case CreateModal.VIEW_ID: {
 				return this.handleCreate(room, user, view);
 			}
 		}
@@ -57,13 +57,13 @@ export class ExecuteViewSubmitHandler {
 		view: IUIKitSurface,
 	): Promise<IUIKitResponse> {
 		const name =
-			view.state?.[Create.REPLY_NAME_BLOCK_ID]?.[
-				Create.REPLY_NAME_ACTION_ID
+			view.state?.[CreateModal.REPLY_NAME_BLOCK_ID]?.[
+				CreateModal.REPLY_NAME_ACTION_ID
 			];
 
 		const body =
-			view.state?.[Create.REPLY_BODY_BLOCK_ID]?.[
-				Create.REPLY_BODY_ACTION_ID
+			view.state?.[CreateModal.REPLY_BODY_BLOCK_ID]?.[
+				CreateModal.REPLY_BODY_ACTION_ID
 			];
 
 		const replyStorage = new ReplyStorage(

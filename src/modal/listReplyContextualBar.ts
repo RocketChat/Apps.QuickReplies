@@ -5,15 +5,16 @@ import {
 	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { Block, TextObjectType } from '@rocket.chat/ui-kit';
-// import { CommentPage } from '../../enum/modals/CommentPage';
-import { UIKitSurfaceType } from '@rocket.chat/apps-engine/definition/uikit';
+import {
+	ButtonStyle,
+	UIKitSurfaceType,
+} from '@rocket.chat/apps-engine/definition/uikit';
 
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IReply } from '../definition/reply/IReply';
-// import { ReplyStorage } from '../storage/ReplyStorage';
-// import { IReply } from '../definition/reply/IReply';
+import { ListContextualBar } from '../enum/modals/ListContextualBar';
 
 export async function listReply(
 	app: QuickRepliesApp,
@@ -25,81 +26,78 @@ export async function listReply(
 	userReplies: IReply[],
 ): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
-
 	const blocks: Block[] = [];
-
-	// let commentText: object | undefined;
-
 	const divider = blockBuilder.createDividerBlock();
-	blocks.push(divider);
-
-	console.log(userReplies);
-
-	// const replyStorage = new ReplyStorage(
-	// 	this.persistence,
-	// 	this.read.getPersistenceReader(),
-	// );
-
-	// const result: IReply[] = await replyStorage.getReplyForUser(user);
-
-	// let comments: ICommentInfo[] = [];
-
-	// console.log('result', result);
 
 	userReplies.forEach((reply) => {
-		const replyName = blockBuilder.createContextBlock({
-			contextElements: [reply.name],
+		const accessoryElement = elementBuilder.createOverflow(
+			{
+				options: [
+					{
+						text: {
+							type: 'plain_text',
+							text: ListContextualBar.SEND,
+							emoji: true,
+						},
+						value: `send : ${reply.id}`,
+					},
+					{
+						text: {
+							type: 'plain_text',
+							text: ListContextualBar.EDIT,
+							emoji: true,
+						},
+						value: `edit : ${reply.id}`,
+					},
+					{
+						text: {
+							type: 'plain_text',
+							text: ListContextualBar.DELETE,
+							emoji: true,
+						},
+						value: `delete : ${reply.id}`,
+					},
+				],
+			},
+			{
+				blockId: ListContextualBar.REPLY_OVERFLOW_BLOCKID,
+				actionId: ListContextualBar.REPLY_OVERFLOW_ACTIONID,
+			},
+		);
+
+		const replySection = blockBuilder.createSectionBlock({
+			text: reply.name,
+			accessory: accessoryElement,
 		});
 
-		const replyBody = blockBuilder.createSectionBlock({
-			text: reply.body,
+		const replyBody = blockBuilder.createContextBlock({
+			contextElements: [reply.body],
 		});
 
-		blocks.push(replyName, replyBody, divider);
+		blocks.push(replySection, replyBody, divider);
 	});
 
-	// result.forEach((reply) => {
-	// const avatarElement = elementBuilder.addImage({
-	// 	imageUrl:
-	// 		commentInfo.user.avatar_url ||
-	// 		`https://open.rocket.chat/avatar/${commentInfo.user.name}}`,
-	// 	altText: '',
-	// });
-	// const userName = `**${commentInfo.user.name}** ${commentInfo.created_time}`;
-
-	// const NameWithCreatedTime = blockBuilder.createContextBlock({
-	// 	contextElements: [avatarElement, userName],
-	// });
-
-	// const commentSection: SectionBlock = blockBuilder.createSectionBlock({
-	// 	text: commentInfo.comment,
-	// });
-
-	// 	const ReplyName = blockBuilder.createContextBlock({
-	// 		contextElements: [reply.name],
-	// 	});
-
-	// 	blocks.push(ReplyName, divider);
-	// });
-
-	// const close = elementBuilder.addButton(
-	// 	{ text: CommentPage.CLOSE_BUTTON_TEXT, style: ButtonStyle.DANGER },
-	// 	{
-	// 		actionId: CommentPage.COMMENT_ON_PAGE_CLOSE_ACTION,
-	// 		blockId: CommentPage.COMMENT_ON_PAGE_CLOSE_BLOCK,
-	// 	},
-	// );
+	const close = elementBuilder.addButton(
+		{
+			text: ListContextualBar.CLOESE_BUTTON_TEXT,
+			style: ButtonStyle.DANGER,
+		},
+		{
+			actionId: ListContextualBar.LIST_REPLY_CLOSE_ACTION_ID,
+			blockId: ListContextualBar.LIST_REPLY_CLOSE_BLOCK_ID,
+		},
+	);
 
 	return {
-		id: 'list-view',
-		// id: CommentPage.VIEW_ID,
+		id: ListContextualBar.VIEW_ID,
+		// id: ListContextualBar.VIEW_ID,
 		type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,
-			// text: CommentPage.TITLE,
-			text: 'List of replies',
+			// text: ListContextualBar.TITLE,
+			text: ListContextualBar.TITLE,
 		},
 		blocks,
-		// close,
+		close,
 	};
 }

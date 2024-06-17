@@ -75,7 +75,6 @@ export class Handler implements IHandler {
 		return;
 	}
 	public async List(): Promise<void> {
-		console.log('list');
 		const roomId = this.room.id;
 		await Promise.all([
 			this.roomInteractionStorage.storeInteractionRoomId(roomId),
@@ -100,8 +99,11 @@ export class Handler implements IHandler {
 			userReplies,
 		);
 
+		if (contextualBar instanceof Error) {
+			this.app.getLogger().error(contextualBar.message);
+			return;
+		}
 		const triggerId = this.triggerId;
-		console.log(triggerId);
 		if (triggerId) {
 			await this.modify.getUiController().openSurfaceView(
 				contextualBar,
