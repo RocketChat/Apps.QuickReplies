@@ -59,35 +59,50 @@ export class ExecuteViewSubmitHandler {
 		const nameStateValue =
 			view.state?.[CreateModal.REPLY_NAME_BLOCK_ID]?.[
 				CreateModal.REPLY_NAME_ACTION_ID
-			].toString();
+			];
 
 		const bodyStateValue =
 			view.state?.[CreateModal.REPLY_BODY_BLOCK_ID]?.[
 				CreateModal.REPLY_BODY_ACTION_ID
-			].toString();
+			];
+
+		if (!nameStateValue || !bodyStateValue) {
+			const missingFields: string[] = [];
+			if (!nameStateValue) missingFields.push('name');
+			if (!bodyStateValue) missingFields.push('body');
+
+			const errorMessage = `Hey ${
+				user.name
+			}, \n please provide a **${missingFields.join(
+				'** and a **',
+			)}** for the reply. ❌`;
+			await sendNotification(this.read, this.modify, user, room, {
+				message: errorMessage,
+			});
+			return this.context.getInteractionResponder().errorResponse();
+		}
+		const name = nameStateValue.trim();
+		const body = bodyStateValue.trim();
 
 		const replyStorage = new ReplyStorage(
 			this.persistence,
 			this.read.getPersistenceReader(),
 		);
 
-		const name = nameStateValue.trim();
-		const body = bodyStateValue.trim();
-
 		const result = await replyStorage.createReply(user, name, body);
+
 		if (result.success) {
-			const message = ` Hey ${user.name}  \n\nReply **${name}** created successfully! ✅`;
+			const successMessage = `Hey ${user.name}, reply **${name}** created successfully! ✅`;
 			await sendNotification(this.read, this.modify, user, room, {
-				message,
+				message: successMessage,
 			});
+			return this.context.getInteractionResponder().successResponse();
 		} else {
-			const message = `Hey ${user.name} \n\nFailed to create reply for you. ❌ \n\nError: ${result.error}`;
+			const errorMessage = `Hey ${user.name}, failed to create reply. ❌\n\nError: ${result.error}`;
 			await sendNotification(this.read, this.modify, user, room, {
-				message,
+				message: errorMessage,
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
-
-		return this.context.getInteractionResponder().successResponse();
 	}
 }

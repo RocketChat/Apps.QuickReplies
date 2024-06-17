@@ -65,13 +65,15 @@ export async function listReply(
 			},
 		);
 
+		const name = reply.name.slice(0, 30);
+		const body = reply.body.slice(0, 60);
 		const replySection = blockBuilder.createSectionBlock({
-			text: reply.name,
+			text: name,
 			accessory: accessoryElement,
 		});
 
 		const replyBody = blockBuilder.createContextBlock({
-			contextElements: [reply.body],
+			contextElements: [body],
 		});
 
 		blocks.push(replySection, replyBody, divider);

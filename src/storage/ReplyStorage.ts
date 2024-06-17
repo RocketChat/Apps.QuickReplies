@@ -8,7 +8,6 @@ import {
 } from '@rocket.chat/apps-engine/definition/metadata';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IReply } from '../definition/reply/IReply';
-import { ReplyError } from '../helper/Error';
 
 export class ReplyStorage {
 	constructor(
@@ -34,13 +33,13 @@ export class ReplyStorage {
 			body.length <= 1000;
 
 		if (!isNameValid) {
-			throw new ReplyError(
+			throw new Error(
 				'Invalid name: Name must be a non-empty string with a maximum length of 100 characters.',
 			);
 		}
 
 		if (!isBodyValid) {
-			throw new ReplyError(
+			throw new Error(
 				'Invalid body: Body must be a non-empty string with a maximum length of 1000 characters.',
 			);
 		}
@@ -82,7 +81,7 @@ export class ReplyStorage {
 			);
 			return { success: true };
 		} catch (error) {
-			if (error instanceof ReplyError) {
+			if (error instanceof Error) {
 				return { success: false, error: error.message };
 			}
 			console.warn('Create Reply Error: ', error);
