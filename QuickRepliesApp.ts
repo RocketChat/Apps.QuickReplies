@@ -11,11 +11,18 @@ import {
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 import { QuickCommand } from './src/commands/QuickCommand';
-import { UIKitViewSubmitInteractionContext } from '@rocket.chat/apps-engine/definition/uikit';
+import {
+	IUIKitResponse,
+	UIKitBlockInteractionContext,
+	UIKitViewCloseInteractionContext,
+	UIKitViewSubmitInteractionContext,
+} from '@rocket.chat/apps-engine/definition/uikit';
 import { ExecuteViewSubmitHandler } from './src/handlers/ExecuteViewSubmitHandler';
 import { IAppUtils } from './src/definition/lib/IAppUtils';
 import { ElementBuilder } from './src/lib/ElementBuilder';
 import { BlockBuilder } from './src/lib/BlockBuilder';
+import { ExecuteViewClosedHandler } from './src/handlers/ExecuteViewClosedHandler';
+import { ExecuteBlockActionHandler } from './src/handlers/ExecuteBlockActionHandler';
 
 export class QuickRepliesApp extends App {
 	private elementBuilder: ElementBuilder;
@@ -47,6 +54,43 @@ export class QuickRepliesApp extends App {
 		modify: IModify,
 	) {
 		const handler = new ExecuteViewSubmitHandler(
+			this,
+			read,
+			http,
+			persistence,
+			modify,
+			context,
+		);
+
+		return await handler.handleActions();
+	}
+	public async executeViewClosedHandler(
+		context: UIKitViewCloseInteractionContext,
+		read: IRead,
+		http: IHttp,
+		persistence: IPersistence,
+		modify: IModify,
+	): Promise<IUIKitResponse> {
+		const handler = new ExecuteViewClosedHandler(
+			this,
+			read,
+			http,
+			persistence,
+			modify,
+			context,
+		);
+
+		return await handler.handleActions();
+	}
+
+	public async executeBlockActionHandler(
+		context: UIKitBlockInteractionContext,
+		read: IRead,
+		http: IHttp,
+		persistence: IPersistence,
+		modify: IModify,
+	): Promise<IUIKitResponse> {
+		const handler = new ExecuteBlockActionHandler(
 			this,
 			read,
 			http,
