@@ -1,5 +1,5 @@
 export enum Messages {
-	HELPER_COMMANDS = `• use \`/quick create\` to create a new quick message
+	HELPER_COMMANDS = `• use \`/quick add\` to create a new quick message
             • use \`/quick list\` to list all quick messages
             `,
 	HELPER_TEXT = `Need some help with \`/quick\`?`,

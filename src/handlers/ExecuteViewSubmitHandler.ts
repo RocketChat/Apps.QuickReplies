@@ -56,32 +56,32 @@ export class ExecuteViewSubmitHandler {
 		user: IUser,
 		view: IUIKitSurface,
 	): Promise<IUIKitResponse> {
-		const name =
+		const nameStateValue =
 			view.state?.[CreateModal.REPLY_NAME_BLOCK_ID]?.[
 				CreateModal.REPLY_NAME_ACTION_ID
-			];
+			].toString();
 
-		const body =
+		const bodyStateValue =
 			view.state?.[CreateModal.REPLY_BODY_BLOCK_ID]?.[
 				CreateModal.REPLY_BODY_ACTION_ID
-			];
+			].toString();
 
 		const replyStorage = new ReplyStorage(
 			this.persistence,
 			this.read.getPersistenceReader(),
 		);
 
-		const result = await replyStorage.createReply(user, name, body);
+		const name = nameStateValue.trim();
+		const body = bodyStateValue.trim();
 
+		const result = await replyStorage.createReply(user, name, body);
 		if (result.success) {
-			console.log('Reply created successfully');
-			const message = `Hey ${user.name} \n Reply created successfully`;
+			const message = ` Hey ${user.name}  \n\nReply **${name}** created successfully! ✅`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message,
 			});
 		} else {
-			console.log('Failed to create reply:', result.error);
-			const message = `Hey ${user.name} \n Failed to create reply for you \n ${result.error}`;
+			const message = `Hey ${user.name} \n\nFailed to create reply for you. ❌ \n\nError: ${result.error}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message,
 			});
