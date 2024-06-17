@@ -39,7 +39,7 @@ export async function listReply(
 							text: ListContextualBar.SEND,
 							emoji: true,
 						},
-						value: `send : ${reply.id}`,
+						value: `${ListContextualBar.SEND} : ${reply.id}`,
 					},
 					{
 						text: {
@@ -47,7 +47,7 @@ export async function listReply(
 							text: ListContextualBar.EDIT,
 							emoji: true,
 						},
-						value: `edit : ${reply.id}`,
+						value: `${ListContextualBar.EDIT} : ${reply.id}`,
 					},
 					{
 						text: {
@@ -55,7 +55,7 @@ export async function listReply(
 							text: ListContextualBar.DELETE,
 							emoji: true,
 						},
-						value: `delete : ${reply.id}`,
+						value: `${ListContextualBar.DELETE} : ${reply.id}`,
 					},
 				],
 			},
@@ -90,11 +90,9 @@ export async function listReply(
 
 	return {
 		id: ListContextualBar.VIEW_ID,
-		// id: ListContextualBar.VIEW_ID,
 		type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,
-			// text: ListContextualBar.TITLE,
 			text: ListContextualBar.TITLE,
 		},
 		blocks,

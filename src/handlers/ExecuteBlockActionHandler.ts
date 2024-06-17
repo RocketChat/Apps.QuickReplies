@@ -38,8 +38,23 @@ export class ExecuteBlockActionHandler {
 
 		switch (actionId) {
 			case ListContextualBar.REPLY_OVERFLOW_ACTIONID: {
-				// this.handleConnectToWorkspace(user, room);
 				console.log(value);
+				if (value) {
+					const command = value.split(' : ')[0].trim();
+					const replyId = value.split(' : ')[1].trim();
+					switch (command) {
+						case ListContextualBar.SEND:
+							console.log('send', replyId);
+							break;
+						case ListContextualBar.EDIT:
+							console.log('edit', replyId);
+							break;
+						case 'Delete':
+							console.log('Delete', replyId);
+							break;
+						default:
+					}
+				}
 				break;
 			}
 		}
