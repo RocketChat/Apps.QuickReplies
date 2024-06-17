@@ -11,6 +11,9 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { CreateReplyModal } from '../modal/createReplyModal';
+import { listReply } from '../modal/listReplyContextualBar';
+import { ReplyStorage } from '../storage/ReplyStorage';
+import { IReply } from '../definition/reply/IReply';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -72,7 +75,42 @@ export class Handler implements IHandler {
 		return;
 	}
 	public async List(): Promise<void> {
-		console.log('List');
+		console.log('list');
+		const roomId = this.room.id;
+		await Promise.all([
+			this.roomInteractionStorage.storeInteractionRoomId(roomId),
+		]);
+
+		const replyStorage = new ReplyStorage(
+			this.persis,
+			this.read.getPersistenceReader(),
+		);
+
+		const userReplies: IReply[] = await replyStorage.getReplyForUser(
+			this.sender,
+		);
+
+		const contextualBar = await listReply(
+			this.app,
+			this.sender,
+			this.read,
+			this.persis,
+			this.modify,
+			this.room,
+			userReplies,
+		);
+
+		const triggerId = this.triggerId;
+		console.log(triggerId);
+		if (triggerId) {
+			await this.modify.getUiController().openSurfaceView(
+				contextualBar,
+				{
+					triggerId,
+				},
+				this.sender,
+			);
+		}
 	}
 	public async Help(): Promise<void> {
 		console.log('Help');

@@ -44,14 +44,14 @@ export class ExecuteViewSubmitHandler {
 
 		switch (view.id) {
 			case Create.VIEW_ID: {
-				return this.handleCreationOfDatabase(room, user, view);
+				return this.handleCreate(room, user, view);
 			}
 		}
 
 		return this.context.getInteractionResponder().successResponse();
 	}
 
-	public async handleCreationOfDatabase(
+	public async handleCreate(
 		room: IRoom,
 		user: IUser,
 		view: IUIKitSurface,
@@ -75,13 +75,15 @@ export class ExecuteViewSubmitHandler {
 
 		if (result.success) {
 			console.log('Reply created successfully');
-			sendNotification(this.read, this.modify, user, room, {
-				message: `Hey ${user.name} \n Reply with Name ${name} created successfully`,
+			const message = `Hey ${user.name} \n Reply created successfully`;
+			await sendNotification(this.read, this.modify, user, room, {
+				message,
 			});
 		} else {
 			console.log('Failed to create reply:', result.error);
-			sendNotification(this.read, this.modify, user, room, {
-				message: `Hey ${user.name} \n Failed to create reply for you: ${result.error}`,
+			const message = `Hey ${user.name} \n Failed to create reply for you \n ${result.error}`;
+			await sendNotification(this.read, this.modify, user, room, {
+				message,
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
