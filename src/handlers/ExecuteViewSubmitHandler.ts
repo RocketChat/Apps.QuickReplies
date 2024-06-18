@@ -19,6 +19,7 @@ import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { SendModalEnum } from '../enum/modals/SendModal';
 import { sendMessage } from '../helper/message';
+import { CacheReplyStorage } from '../storage/ReplyCache';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -115,18 +116,36 @@ export class ExecuteViewSubmitHandler {
 		user: IUser,
 		view: IUIKitSurface,
 	): Promise<IUIKitResponse> {
-		const bodyStateValue =
-			view.state?.[SendModalEnum.REPLY_BODY_BLOCK_ID]?.[
-				SendModalEnum.REPLY_BODY_ACTION_ID
-			];
+		try {
+			let body = '';
 
-		console.log(bodyStateValue);
-		if (!bodyStateValue) {
+			const replyCacheStorage = new CacheReplyStorage(
+				this.persistence,
+				this.read.getPersistenceReader(),
+			);
+
+			const cachedReply = await replyCacheStorage.getCacheReply(user);
+
+			const bodyStateValue = view.state?.[
+				SendModalEnum.REPLY_BODY_BLOCK_ID
+			]?.[SendModalEnum.REPLY_BODY_ACTION_ID] as string;
+
+			console.log(bodyStateValue);
+
+			body = bodyStateValue ? bodyStateValue : cachedReply.body;
+
+			const message = body.trim();
+			if (!message) {
+				return this.context.getInteractionResponder().errorResponse();
+			}
+
+			// Send the message
+			await sendMessage(this.modify, user, room, body);
+			await replyCacheStorage.removeCacheReply(user);
+			return this.context.getInteractionResponder().successResponse();
+		} catch (error) {
+			console.error('Error handling send:', error);
 			return this.context.getInteractionResponder().errorResponse();
 		}
-
-		const body = bodyStateValue.trim();
-		await sendMessage(this.modify, user, room, body);
-		return this.context.getInteractionResponder().successResponse();
 	}
 }

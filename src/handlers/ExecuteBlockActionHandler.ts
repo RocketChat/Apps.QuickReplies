@@ -16,6 +16,7 @@ import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { SendReplyModal } from '../modal/sendReplyModal';
 import { listReplyContextualBar } from '../modal/listReplyContextualBar';
 import { IReply } from '../definition/reply/IReply';
+import { CacheReplyStorage } from '../storage/ReplyCache';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -66,7 +67,11 @@ export class ExecuteBlockActionHandler {
 					if (reply && room) {
 						switch (command) {
 							case ListContextualBarEnum.SEND:
-								console.log('send handler', replyId);
+								const replyCache = new CacheReplyStorage(
+									this.persistence,
+									this.read.getPersistenceReader(),
+								);
+								await replyCache.setCacheReply(user, reply);
 
 								const sendModal = await SendReplyModal(
 									this.app,
