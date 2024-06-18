@@ -12,6 +12,8 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { CreateModalEnum } from '../enum/modals/CreateModal';
+import { CacheReplyStorage } from '../storage/ReplyCache';
+import { SendModalEnum } from '../enum/modals/SendModal';
 
 export class ExecuteViewClosedHandler {
 	private context: UIKitViewCloseInteractionContext;
@@ -39,6 +41,15 @@ export class ExecuteViewClosedHandler {
 				break;
 			}
 			case CreateModalEnum.VIEW_ID: {
+				RoomInteraction.clearInteractionRoomId();
+				break;
+			}
+			case SendModalEnum.VIEW_ID: {
+				const replyCache = new CacheReplyStorage(
+					this.persistence,
+					this.read.getPersistenceReader(),
+				);
+				replyCache.removeCacheReply(user);
 				RoomInteraction.clearInteractionRoomId();
 			}
 		}

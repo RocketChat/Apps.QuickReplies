@@ -44,11 +44,8 @@ export class ExecuteBlockActionHandler {
 		const roomId = await roomInteractionStorage.getInteractionRoomId();
 		const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
 
-		// const room = roomInteractionStorage.getInteractionRoomId();
-
 		switch (actionId) {
 			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
-				// console.log(value);
 				if (value) {
 					const command = value.split(' : ')[0].trim();
 					const replyId = value.split(' : ')[1].trim();
@@ -63,7 +60,6 @@ export class ExecuteBlockActionHandler {
 						replyId,
 					);
 
-					// console.log(reply);
 					if (reply && room) {
 						switch (command) {
 							case ListContextualBarEnum.SEND:
