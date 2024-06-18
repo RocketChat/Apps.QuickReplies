@@ -9,9 +9,9 @@ import {
 	IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-import { ListContextualBar } from '../enum/modals/ListContextualBar';
+import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
-import { CreateModal } from '../enum/modals/CreateModal';
+import { CreateModalEnum } from '../enum/modals/CreateModal';
 
 export class ExecuteViewClosedHandler {
 	private context: UIKitViewCloseInteractionContext;
@@ -34,11 +34,11 @@ export class ExecuteViewClosedHandler {
 			user.id,
 		);
 		switch (view.id) {
-			case ListContextualBar.VIEW_ID: {
+			case ListContextualBarEnum.VIEW_ID: {
 				RoomInteraction.clearInteractionRoomId();
 				break;
 			}
-			case CreateModal.VIEW_ID: {
+			case CreateModalEnum.VIEW_ID: {
 				RoomInteraction.clearInteractionRoomId();
 			}
 		}

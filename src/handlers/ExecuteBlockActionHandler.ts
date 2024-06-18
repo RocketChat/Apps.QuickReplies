@@ -10,10 +10,12 @@ import {
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-import { ListContextualBar } from '../enum/modals/ListContextualBar';
+import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { SendReplyModal } from '../modal/sendReplyModal';
+import { listReplyContextualBar } from '../modal/listReplyContextualBar';
+import { IReply } from '../definition/reply/IReply';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -44,7 +46,7 @@ export class ExecuteBlockActionHandler {
 		// const room = roomInteractionStorage.getInteractionRoomId();
 
 		switch (actionId) {
-			case ListContextualBar.REPLY_OVERFLOW_ACTIONID: {
+			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
 				// console.log(value);
 				if (value) {
 					const command = value.split(' : ')[0].trim();
@@ -63,7 +65,7 @@ export class ExecuteBlockActionHandler {
 					// console.log(reply);
 					if (reply && room) {
 						switch (command) {
-							case ListContextualBar.SEND:
+							case ListContextualBarEnum.SEND:
 								console.log('send handler', replyId);
 
 								const sendModal = await SendReplyModal(
@@ -81,11 +83,32 @@ export class ExecuteBlockActionHandler {
 									.openModalViewResponse(sendModal);
 
 								break;
-							case ListContextualBar.EDIT:
+							case ListContextualBarEnum.EDIT:
 								console.log('edit', replyId);
 								break;
 							case 'Delete':
 								console.log('Delete', replyId);
+
+								await replyStorage.deleteReplyById(
+									user,
+									replyId,
+								);
+								const userReplies: IReply[] =
+									await replyStorage.getReplyForUser(user);
+
+								const UpdatedListBar =
+									await listReplyContextualBar(
+										this.app,
+										user,
+										this.read,
+										this.persistence,
+										this.modify,
+										room,
+										userReplies,
+									);
+								return this.context
+									.getInteractionResponder()
+									.updateModalViewResponse(UpdatedListBar);
 								break;
 							default:
 						}

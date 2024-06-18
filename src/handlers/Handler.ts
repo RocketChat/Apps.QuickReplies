@@ -11,7 +11,7 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { CreateReplyModal } from '../modal/createReplyModal';
-import { listReply } from '../modal/listReplyContextualBar';
+import { listReplyContextualBar } from '../modal/listReplyContextualBar';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IReply } from '../definition/reply/IReply';
 import { sendHelperNotification } from '../helper/notification';
@@ -95,7 +95,7 @@ export class Handler implements IHandler {
 			this.sender,
 		);
 
-		const contextualBar = await listReply(
+		const contextualBar = await listReplyContextualBar(
 			this.app,
 			this.sender,
 			this.read,

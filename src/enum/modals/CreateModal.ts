@@ -1,4 +1,4 @@
-export enum CreateModal {
+export enum CreateModalEnum {
 	VIEW_ID = 'create-reply-view-id',
 	TITLE = 'Create a New Reply',
 	CLOSE = 'Close',

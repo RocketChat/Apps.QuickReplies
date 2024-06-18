@@ -14,10 +14,10 @@ import {
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { sendNotification } from '../helper/notification';
-import { CreateModal } from '../enum/modals/CreateModal';
+import { CreateModalEnum } from '../enum/modals/CreateModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
-import { SendModal } from '../enum/modals/SendModal';
+import { SendModalEnum } from '../enum/modals/SendModal';
 import { sendMessage } from '../helper/message';
 
 export class ExecuteViewSubmitHandler {
@@ -45,10 +45,10 @@ export class ExecuteViewSubmitHandler {
 		const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
 
 		switch (view.id) {
-			case CreateModal.VIEW_ID: {
+			case CreateModalEnum.VIEW_ID: {
 				return this.handleCreate(room, user, view);
 			}
-			case SendModal.VIEW_ID: {
+			case SendModalEnum.VIEW_ID: {
 				return this.handleSend(room, user, view);
 			}
 		}
@@ -62,13 +62,13 @@ export class ExecuteViewSubmitHandler {
 		view: IUIKitSurface,
 	): Promise<IUIKitResponse> {
 		const nameStateValue =
-			view.state?.[CreateModal.REPLY_NAME_BLOCK_ID]?.[
-				CreateModal.REPLY_NAME_ACTION_ID
+			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
+				CreateModalEnum.REPLY_NAME_ACTION_ID
 			];
 
 		const bodyStateValue =
-			view.state?.[CreateModal.REPLY_BODY_BLOCK_ID]?.[
-				CreateModal.REPLY_BODY_ACTION_ID
+			view.state?.[CreateModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				CreateModalEnum.REPLY_BODY_ACTION_ID
 			];
 
 		if (!nameStateValue || !bodyStateValue) {
@@ -116,10 +116,11 @@ export class ExecuteViewSubmitHandler {
 		view: IUIKitSurface,
 	): Promise<IUIKitResponse> {
 		const bodyStateValue =
-			view.state?.[SendModal.REPLY_BODY_BLOCK_ID]?.[
-				SendModal.REPLY_BODY_ACTION_ID
+			view.state?.[SendModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				SendModalEnum.REPLY_BODY_ACTION_ID
 			];
 
+		console.log(bodyStateValue);
 		if (!bodyStateValue) {
 			return this.context.getInteractionResponder().errorResponse();
 		}
