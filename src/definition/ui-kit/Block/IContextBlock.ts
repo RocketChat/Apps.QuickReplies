@@ -1,7 +1,6 @@
-import { ImageParam } from "../Element/IImageElement";
-import { ImageElement } from "@rocket.chat/ui-kit";
+import { ImageElement } from '@rocket.chat/ui-kit';
 
 export type ContextBlockParam = {
-    contextElements: Array<string | ImageElement>;
-    blockId?: string;
+	contextElements: Array<string | ImageElement>;
+	blockId?: string;
 };

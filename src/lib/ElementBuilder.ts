@@ -1,30 +1,17 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 import { ButtonParam } from '../definition/ui-kit/Element/IButtonElement';
-import { DatePickerElementParam } from '../definition/ui-kit/Element/IDatePickerElement';
 import {
 	IElementBuilder,
 	ElementInteractionParam,
 } from '../definition/ui-kit/Element/IElementBuilder';
-import { ImageParam } from '../definition/ui-kit/Element/IImageElement';
-import { MultiStaticSelectElementParam } from '../definition/ui-kit/Element/IMultiStaticSelectElement';
 import { OverflowElementParam } from '../definition/ui-kit/Element/IOverflowElement';
-import { PlainTextInputParam } from '../definition/ui-kit/Element/IPlainTextInputElement';
-import {
-	StaticSelectElementParam,
-	StaticSelectOptionsParam,
-} from '../definition/ui-kit/Element/IStaticSelectElement';
 import {
 	ButtonElement,
 	BlockElementType,
 	TextObjectType,
-	ImageElement,
-	StaticSelectElement,
-	PlainTextInputElement,
 	OverflowElement,
-	Option,
-	DatePickerElement,
-	MultiStaticSelectElement,
+	PlainTextInputElement,
 } from '@rocket.chat/ui-kit';
+import { PlainTextInputParam } from '../definition/ui-kit/Element/IPlainTextInputElement';
 
 export class ElementBuilder implements IElementBuilder {
 	constructor(private readonly appId: string) {}
@@ -49,74 +36,6 @@ export class ElementBuilder implements IElementBuilder {
 		};
 		return button;
 	}
-
-	public addImage(param: ImageParam): ImageElement {
-		const { imageUrl, altText } = param;
-		const image: ImageElement = {
-			type: BlockElementType.IMAGE,
-			imageUrl,
-			altText,
-		};
-		return image;
-	}
-
-	public addDropDown(
-		param: StaticSelectElementParam,
-		interaction: ElementInteractionParam,
-	): StaticSelectElement {
-		const {
-			placeholder,
-			options,
-			optionGroups,
-			initialOption,
-			initialValue,
-			dispatchActionConfig,
-		} = param;
-		const { blockId, actionId } = interaction;
-		const dropDown: StaticSelectElement = {
-			type: BlockElementType.STATIC_SELECT,
-			placeholder: {
-				type: TextObjectType.PLAIN_TEXT,
-				text: placeholder,
-			},
-			options,
-			optionGroups,
-			initialOption,
-			initialValue,
-			appId: this.appId,
-			blockId,
-			actionId,
-			dispatchActionConfig,
-		};
-		return dropDown;
-	}
-
-	public createDropDownOptions(
-		param: StaticSelectOptionsParam,
-	): Array<Option> {
-		const options: Array<Option> = param.map((option) => {
-			const { text, value, description, url } = option;
-			const optionObject: Option = {
-				text: {
-					type: TextObjectType.PLAIN_TEXT,
-					text,
-				},
-				value,
-				...(description
-					? {
-							description: {
-								type: TextObjectType.PLAIN_TEXT,
-								text: description,
-							},
-					  }
-					: undefined),
-				url,
-			};
-			return optionObject;
-		});
-		return options;
-	}
-
 	public createPlainTextInput(
 		param: PlainTextInputParam,
 		interaction: ElementInteractionParam,
@@ -163,69 +82,5 @@ export class ElementBuilder implements IElementBuilder {
 			actionId,
 		};
 		return overflow;
-	}
-
-	public createDatePicker(
-		param: DatePickerElementParam,
-		interaction: ElementInteractionParam,
-	): DatePickerElement {
-		const { initialDate, text, dispatchActionConfig } = param;
-		const { blockId, actionId } = interaction;
-
-		const datePicker: DatePickerElement = {
-			type: BlockElementType.DATEPICKER,
-			...(text
-				? {
-						placeholder: {
-							type: TextObjectType.PLAIN_TEXT,
-							text,
-						},
-				  }
-				: undefined),
-			initialDate,
-			appId: this.appId,
-			blockId,
-			actionId,
-			dispatchActionConfig,
-		};
-
-		return datePicker;
-	}
-
-	public createMultiStaticSelect(
-		param: MultiStaticSelectElementParam,
-		interaction: ElementInteractionParam,
-	): MultiStaticSelectElement {
-		const {
-			text,
-			options,
-			optionGroups,
-			maxSelectItems,
-			initialOption,
-			initialValue,
-			dispatchActionConfig,
-			confirm,
-		} = param;
-		const { blockId, actionId } = interaction;
-
-		const multiStaticSelect: MultiStaticSelectElement = {
-			type: BlockElementType.MULTI_STATIC_SELECT,
-			placeholder: {
-				type: TextObjectType.PLAIN_TEXT,
-				text,
-			},
-			options,
-			optionGroups,
-			maxSelectItems,
-			initialOption,
-			initialValue,
-			appId: this.appId,
-			blockId,
-			actionId,
-			dispatchActionConfig,
-			confirm,
-		};
-
-		return multiStaticSelect;
 	}
 }
