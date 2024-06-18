@@ -1,54 +1,30 @@
-import { IRead, IModify } from '@rocket.chat/apps-engine/definition/accessors';
-import { IMessageAttachment } from '@rocket.chat/apps-engine/definition/messages';
+import { IModify } from '@rocket.chat/apps-engine/definition/accessors';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
-import { Messages } from '../enum/messages';
-import { Block } from '@rocket.chat/ui-kit';
 
-export async function sendHelperNotification(
-	read: IRead,
+export async function sendMessage(
 	modify: IModify,
 	user: IUser,
 	room: IRoom,
+	message: string,
+	threadId?: string,
 ): Promise<void> {
-	const appUser = (await read.getUserReader().getAppUser()) as IUser;
-	const attachment: IMessageAttachment = {
-		color: '#000000',
-		text: Messages.HELPER_COMMANDS,
-	};
-
-	const helperMessage = modify
-		.getCreator()
-		.startMessage()
-		.setRoom(room)
-		.setSender(appUser)
-		.setText(Messages.HELPER_TEXT)
-		.setAttachments([attachment])
-		.setGroupable(false);
-
-	return read.getNotifier().notifyUser(user, helperMessage.getMessage());
-}
-
-export async function sendNotification(
-	read: IRead,
-	modify: IModify,
-	user: IUser,
-	room: IRoom,
-	content: { message?: string; blocks?: Array<Block> },
-): Promise<void> {
-	const appUser = (await read.getUserReader().getAppUser()) as IUser;
-	const { message, blocks } = content;
 	const messageBuilder = modify
 		.getCreator()
 		.startMessage()
-		.setSender(appUser)
+		.setSender(user)
 		.setRoom(room)
-		.setGroupable(false);
+		.setGroupable(false)
+		.setParseUrls(true);
 
 	if (message) {
 		messageBuilder.setText(message);
-	} else if (blocks) {
-		messageBuilder.setBlocks(blocks);
 	}
-	return read.getNotifier().notifyUser(user, messageBuilder.getMessage());
+
+	if (threadId) {
+		messageBuilder.setThreadId(threadId);
+	}
+
+	await modify.getCreator().finish(messageBuilder);
+	return;
 }

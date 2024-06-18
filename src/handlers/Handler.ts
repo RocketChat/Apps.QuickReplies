@@ -1,11 +1,11 @@
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
-
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import {
 	IHttp,
 	IModify,
 	IPersistence,
 	IRead,
+	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
@@ -14,6 +14,7 @@ import { CreateReplyModal } from '../modal/createReplyModal';
 import { listReply } from '../modal/listReplyContextualBar';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IReply } from '../definition/reply/IReply';
+import { sendHelperNotification } from '../helper/notification';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -45,11 +46,24 @@ export class Handler implements IHandler {
 		);
 	}
 
+	private async storeRoomInteractionId(roomId: string): Promise<void> {
+		await this.roomInteractionStorage.storeInteractionRoomId(roomId);
+	}
+
+	private async openSurfaceView(
+		view: IUIKitSurfaceViewParam,
+		triggerId?: string,
+	): Promise<void> {
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(view, { triggerId }, this.sender);
+		}
+	}
+
 	public async Create(): Promise<void> {
 		const roomId = this.room.id;
-		await Promise.all([
-			this.roomInteractionStorage.storeInteractionRoomId(roomId),
-		]);
+		await this.storeRoomInteractionId(roomId);
 
 		const modal = await CreateReplyModal(
 			this.app,
@@ -65,20 +79,12 @@ export class Handler implements IHandler {
 			return;
 		}
 
-		const triggerId = this.triggerId;
-
-		if (triggerId) {
-			await this.modify
-				.getUiController()
-				.openSurfaceView(modal, { triggerId }, this.sender);
-		}
-		return;
+		await this.openSurfaceView(modal, this.triggerId);
 	}
+
 	public async List(): Promise<void> {
 		const roomId = this.room.id;
-		await Promise.all([
-			this.roomInteractionStorage.storeInteractionRoomId(roomId),
-		]);
+		await this.storeRoomInteractionId(roomId);
 
 		const replyStorage = new ReplyStorage(
 			this.persis,
@@ -103,26 +109,27 @@ export class Handler implements IHandler {
 			this.app.getLogger().error(contextualBar.message);
 			return;
 		}
-		const triggerId = this.triggerId;
-		if (triggerId) {
-			await this.modify.getUiController().openSurfaceView(
-				contextualBar,
-				{
-					triggerId,
-				},
-				this.sender,
-			);
-		}
+
+		await this.openSurfaceView(contextualBar, this.triggerId);
 	}
+
 	public async Help(): Promise<void> {
-		console.log('Help');
+		await sendHelperNotification(
+			this.read,
+			this.modify,
+			this.sender,
+			this.room,
+		);
 	}
+
 	public async Delete(): Promise<void> {
 		console.log('Delete');
 	}
+
 	public async Edit(): Promise<void> {
 		console.log('Edit');
 	}
+
 	public async Send(): Promise<void> {
 		console.log('Send');
 	}

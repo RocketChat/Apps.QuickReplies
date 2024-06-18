@@ -13,10 +13,12 @@ import {
 
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
-import { sendNotification } from '../helper/message';
+import { sendNotification } from '../helper/notification';
 import { CreateModal } from '../enum/modals/CreateModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
+import { SendModal } from '../enum/modals/SendModal';
+import { sendMessage } from '../helper/message';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -45,6 +47,9 @@ export class ExecuteViewSubmitHandler {
 		switch (view.id) {
 			case CreateModal.VIEW_ID: {
 				return this.handleCreate(room, user, view);
+			}
+			case SendModal.VIEW_ID: {
+				return this.handleSend(room, user, view);
 			}
 		}
 
@@ -104,5 +109,23 @@ export class ExecuteViewSubmitHandler {
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
+	}
+	public async handleSend(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+	): Promise<IUIKitResponse> {
+		const bodyStateValue =
+			view.state?.[SendModal.REPLY_BODY_BLOCK_ID]?.[
+				SendModal.REPLY_BODY_ACTION_ID
+			];
+
+		if (!bodyStateValue) {
+			return this.context.getInteractionResponder().errorResponse();
+		}
+
+		const body = bodyStateValue.trim();
+		await sendMessage(this.modify, user, room, body);
+		return this.context.getInteractionResponder().successResponse();
 	}
 }

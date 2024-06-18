@@ -1,6 +1,6 @@
 export enum ListContextualBar {
 	VIEW_ID = 'list-reply-view-id',
-	TITLE = 'List of all replies',
+	TITLE = 'Manage Your Replies',
 	CLOSE = 'Close',
 	SEND = 'Send',
 	EDIT = 'Edit',

@@ -10,7 +10,7 @@ import {
 
 import { CommandParam } from '../enum/CommandParam';
 import { Handler } from '../handlers/Handler';
-import { sendHelperNotification } from '../helper/message';
+import { sendHelperNotification } from '../helper/notification';
 import {
 	ICommandUtility,
 	ICommandUtilityParams,
@@ -88,7 +88,10 @@ export class CommandUtility implements ICommandUtility {
 				await handler.List();
 				break;
 			}
-			case CommandParam.HELP:
+			case CommandParam.HELP: {
+				await handler.Help();
+				break;
+			}
 			default: {
 				await sendHelperNotification(
 					this.read,
