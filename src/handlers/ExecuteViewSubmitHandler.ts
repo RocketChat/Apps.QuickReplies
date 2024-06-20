@@ -13,7 +13,7 @@ import {
 
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
-import { sendNotification } from '../helper/message';
+import { sendNotification } from '../helper/notification';
 import { CreateModal } from '../enum/modals/CreateModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';

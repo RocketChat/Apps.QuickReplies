@@ -1,5 +1,5 @@
 export enum CommandParam {
-	ADD = 'add',
+	CREATE = 'create',
 	LIST = 'list',
 	HELP = 'help',
 	DELETE = 'delete',

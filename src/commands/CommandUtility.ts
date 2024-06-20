@@ -10,11 +10,11 @@ import {
 
 import { CommandParam } from '../enum/CommandParam';
 import { Handler } from '../handlers/Handler';
-import { sendHelperNotification } from '../helper/message';
 import {
 	ICommandUtility,
 	ICommandUtilityParams,
 } from '../definition/command/ICommandUtility';
+import { RoomInteractionStorage } from '../storage/RoomInteraction';
 
 export class CommandUtility implements ICommandUtility {
 	public app: QuickRepliesApp;
@@ -53,14 +53,16 @@ export class CommandUtility implements ICommandUtility {
 			triggerId: this.triggerId,
 			threadId: this.threadId,
 		});
+
+		const roomInteractionStorage = new RoomInteractionStorage(
+			this.persis,
+			this.read.getPersistenceReader(),
+			this.sender.id,
+		);
+		roomInteractionStorage.storeInteractionRoomId(this.room.id);
 		switch (this.params.length) {
 			case 0: {
-				await sendHelperNotification(
-					this.read,
-					this.modify,
-					this.sender,
-					this.room,
-				);
+				await handler.sendDefault();
 				break;
 			}
 			case 1: {
@@ -68,19 +70,14 @@ export class CommandUtility implements ICommandUtility {
 				break;
 			}
 			default: {
-				await sendHelperNotification(
-					this.read,
-					this.modify,
-					this.sender,
-					this.room,
-				);
+				await handler.sendDefault();
 			}
 		}
 	}
 
 	private async handleSingleParam(handler: Handler): Promise<void> {
 		switch (this.params[0].toLowerCase()) {
-			case CommandParam.ADD: {
+			case CommandParam.CREATE: {
 				await handler.Create();
 				break;
 			}
@@ -89,13 +86,10 @@ export class CommandUtility implements ICommandUtility {
 				break;
 			}
 			case CommandParam.HELP:
+				await handler.Help();
+				break;
 			default: {
-				await sendHelperNotification(
-					this.read,
-					this.modify,
-					this.sender,
-					this.room,
-				);
+				await handler.sendDefault();
 				break;
 			}
 		}

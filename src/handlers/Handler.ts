@@ -14,6 +14,10 @@ import { CreateReplyModal } from '../modal/createReplyModal';
 import { listReply } from '../modal/listReplyContextualBar';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IReply } from '../definition/reply/IReply';
+import {
+	sendDefaultNotification,
+	sendHelperNotification,
+} from '../helper/notification';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -115,7 +119,22 @@ export class Handler implements IHandler {
 		}
 	}
 	public async Help(): Promise<void> {
-		console.log('Help');
+		await sendHelperNotification(
+			this.read,
+			this.modify,
+			this.sender,
+			this.room,
+		);
+	}
+	public async sendDefault(): Promise<void> {
+		console.log('Default');
+		await sendDefaultNotification(
+			this.app,
+			this.read,
+			this.modify,
+			this.sender,
+			this.room,
+		);
 	}
 	public async Delete(): Promise<void> {
 		console.log('Delete');
