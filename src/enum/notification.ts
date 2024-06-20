@@ -1,7 +1,7 @@
 export enum Messages {
-	HELPER_COMMANDS = `- use \`/quick create\` to create a new quick reply \n
-				- use \`/quick list\` to list all quick messages `,
-
+	HELPER_COMMANDS = `Use \`/quick create\` to create a new quick reply   \n
+ Use \`/quick list\` to list all quick messages  
+`,
 	HELPER_TEXT = ` I'm Quick Bot 👋 Here are some quick tips to get you started!`,
 	DEFAULT_MESSAGE = `I'm Quick Bot 👋 I can help you create quick Reply for yourself. How can I help you?`,
 }
