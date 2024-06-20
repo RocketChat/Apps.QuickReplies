@@ -6,7 +6,9 @@ import {
 	ContextBlock,
 	InputBlock,
 	DividerBlock,
+	ActionsBlock,
 } from '@rocket.chat/ui-kit';
+import { ActionBlockParam } from '../definition/ui-kit/Block/IActionBlock';
 import { IBlockBuilder } from '../definition/ui-kit/Block/IBlockBuilder';
 import { ContextBlockParam } from '../definition/ui-kit/Block/IContextBlock';
 import { InputBlockParam } from '../definition/ui-kit/Block/IInputBlock';
@@ -89,5 +91,14 @@ export class BlockBuilder implements IBlockBuilder {
 		};
 
 		return dividerBlock;
+	}
+
+	public createActionBlock(param: ActionBlockParam): ActionsBlock {
+		const { elements } = param;
+		const actionBlock: ActionsBlock = {
+			type: LayoutBlockType.ACTIONS,
+			elements: elements,
+		};
+		return actionBlock;
 	}
 }
