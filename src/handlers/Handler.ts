@@ -20,6 +20,7 @@ import {
 } from '../helper/notification';
 import { setUserPreferenceLanguageModal } from '../modal/setUserPreferenceModal';
 import { getUserPreferredLanguage } from '../helper/userPreference';
+import { Language } from '../lib/Translation/translation';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -51,13 +52,18 @@ export class Handler implements IHandler {
 		);
 	}
 
-	public async CreateReply(): Promise<void> {
+	private async getlanguage(): Promise<Language> {
 		const language = await getUserPreferredLanguage(
 			this.app,
 			this.read.getPersistenceReader(),
 			this.persis,
 			this.sender.id,
 		);
+		return language;
+	}
+
+	public async CreateReply(): Promise<void> {
+		const language = await this.getlanguage();
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -92,6 +98,8 @@ export class Handler implements IHandler {
 			this.sender,
 		);
 
+		const language = await this.getlanguage();
+
 		const contextualBar = await listReply(
 			this.app,
 			this.sender,
@@ -100,6 +108,7 @@ export class Handler implements IHandler {
 			this.modify,
 			this.room,
 			userReplies,
+			language,
 		);
 
 		if (contextualBar instanceof Error) {
@@ -118,20 +127,26 @@ export class Handler implements IHandler {
 		}
 	}
 	public async Help(): Promise<void> {
+		const language = await this.getlanguage();
+
 		await sendHelperNotification(
 			this.read,
 			this.modify,
 			this.sender,
 			this.room,
+			language,
 		);
 	}
 	public async sendDefault(): Promise<void> {
+		const language = await this.getlanguage();
+
 		await sendDefaultNotification(
 			this.app,
 			this.read,
 			this.modify,
 			this.sender,
 			this.room,
+			language,
 		);
 	}
 	public async DeleteReply(): Promise<void> {

@@ -17,6 +17,16 @@
 	"quick_reply": "Resposta rápida",
 	"created_successfully": "Criado com sucesso",
 	"fail_create_reply": "Falha ao criar",
-	"error_fill_fields": "Erro: Por favor, preencha todos os campos."
-
+	"error_fill_fields": "Erro: Por favor, preencha todos os campos.",
+	"helper_commands": "Use \"/quick create\" para criar uma nova resposta rápida \n Use \"/quick list\" para listar todas as mensagens rápidas \n Use \"/quick config\" para configurar a preferência do usuário \n",
+	"helper_text": "Eu sou o Quick Bot 👋 Aqui estão algumas dicas rápidas para você começar!",
+	"default_message": "Eu sou o Quick Bot 👋 Posso ajudar você a criar respostas rápidas para si mesmo. Como posso ajudar você?",
+	"create_reply": "Criar Resposta",
+	"list_reply": "Listar todas as Respostas",
+	"configure_preferences": "Configurar suas Preferências",
+	"need_more": "Precisa de mais?",
+	"send": "Enviar",
+	"edit": "Editar",
+	"delete": "Excluir",
+	"list_reply_title": "Lista de todas as respostas"
 }

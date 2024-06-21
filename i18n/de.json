@@ -17,5 +17,18 @@
 	"quick_reply": "Schnelle Antwort",
 	"created_successfully": "Erfolgreich erstellt",
 	"fail_create_reply": "Erstellung fehlgeschlagen",
-	"error_fill_fields": "Fehler: Bitte füllen Sie alle Felder aus."
+	"error_fill_fields": "Fehler: Bitte füllen Sie alle Felder aus.",
+	"helper_commands": "Verwenden Sie `/quick create`, um eine neue schnelle Antwort zu erstellen  \n Verwenden Sie `/quick list`, um alle schnellen Nachrichten aufzulisten  \n Verwenden Sie `/quick config`, um die Benutzereinstellungen zu konfigurieren  \n",
+	"helper_text": "Ich bin Quick Bot 👋 Hier sind einige schnelle Tipps, um Ihnen den Einstieg zu erleichtern!",
+	"default_message": "Ich bin Quick Bot 👋 Ich kann Ihnen helfen, schnelle Antworten für sich selbst zu erstellen. Wie kann ich Ihnen helfen?",
+
+	"create_reply": "Antwort erstellen",
+	"list_reply": "Alle Antworten auflisten",
+	"configure_preferences": "Einstellungen konfigurieren",
+	"need_more": "Brauchen Sie mehr?",
+	"send": "Senden",
+	"edit": "Bearbeiten",
+	"delete": "Löschen",
+
+	"list_reply_title": "Liste aller Antworten"
 }

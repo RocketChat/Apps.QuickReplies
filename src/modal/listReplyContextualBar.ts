@@ -15,6 +15,7 @@ import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IReply } from '../definition/reply/IReply';
 import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
+import { Language, t } from '../lib/Translation/translation';
 
 export async function listReply(
 	app: QuickRepliesApp,
@@ -24,6 +25,7 @@ export async function listReply(
 	modify: IModify,
 	room: IRoom,
 	userReplies: IReply[],
+	language: Language,
 ): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 	const blocks: Block[] = [];
@@ -36,7 +38,7 @@ export async function listReply(
 					{
 						text: {
 							type: 'plain_text',
-							text: ListContextualBarEnum.SEND,
+							text: t('send', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.SEND} : ${reply.id}`,
@@ -44,7 +46,7 @@ export async function listReply(
 					{
 						text: {
 							type: 'plain_text',
-							text: ListContextualBarEnum.EDIT,
+							text: t('edit', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.EDIT} : ${reply.id}`,
@@ -52,7 +54,7 @@ export async function listReply(
 					{
 						text: {
 							type: 'plain_text',
-							text: ListContextualBarEnum.DELETE,
+							text: t('delete', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.DELETE} : ${reply.id}`,
@@ -81,7 +83,7 @@ export async function listReply(
 
 	const close = elementBuilder.addButton(
 		{
-			text: ListContextualBarEnum.CLOESE_BUTTON_TEXT,
+			text: t('close_button', language),
 			style: ButtonStyle.DANGER,
 		},
 		{
@@ -95,7 +97,7 @@ export async function listReply(
 		type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: ListContextualBarEnum.TITLE,
+			text: t('list_reply_title', language),
 		},
 		blocks,
 		close,
