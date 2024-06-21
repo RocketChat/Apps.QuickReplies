@@ -18,8 +18,8 @@ import {
 	sendDefaultNotification,
 	sendHelperNotification,
 } from '../helper/notification';
-// import { getUserPreference } from '../helper/userPreference';
 import { setUserPreferenceLanguageModal } from '../modal/setUserPreferenceModal';
+import { getUserPreferredLanguage } from '../helper/userPreference';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -153,19 +153,18 @@ export class Handler implements IHandler {
 		await Promise.all([
 			this.roomInteractionStorage.storeInteractionRoomId(roomId),
 		]);
-		console.log(this.room.id);
 
-		// const existingPreference = await getUserPreference(
-		// 	this.app,
-		// 	this.read.getPersistenceReader(),
-		// 	this.persis,
-		// 	this.sender.id,
-		// );
+		const existingPreference = await getUserPreferredLanguage(
+			this.app,
+			this.read.getPersistenceReader(),
+			this.persis,
+			this.sender.id,
+		);
 
 		const modal = await setUserPreferenceLanguageModal({
 			app: this.app,
 			modify: this.modify,
-			// existingPreference: existingPreference,
+			existingPreferencelanguage: existingPreference,
 		});
 
 		if (modal instanceof Error) {

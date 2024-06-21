@@ -14,9 +14,12 @@ import {
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { sendNotification } from '../helper/notification';
-import { CreateModal } from '../enum/modals/CreateModal';
+import { CreateModalEnum } from '../enum/modals/CreateModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
+import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
+import { isSupportedLanguage } from '../helper/userPreference';
+import { setUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -43,8 +46,11 @@ export class ExecuteViewSubmitHandler {
 		const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
 
 		switch (view.id) {
-			case CreateModal.VIEW_ID: {
+			case CreateModalEnum.VIEW_ID: {
 				return this.handleCreate(room, user, view);
+			}
+			case setUserPreferenceModalEnum.VIEW_ID: {
+				return this.handleSetUserPreference(room, user, view);
 			}
 		}
 
@@ -57,13 +63,13 @@ export class ExecuteViewSubmitHandler {
 		view: IUIKitSurface,
 	): Promise<IUIKitResponse> {
 		const nameStateValue =
-			view.state?.[CreateModal.REPLY_NAME_BLOCK_ID]?.[
-				CreateModal.REPLY_NAME_ACTION_ID
+			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
+				CreateModalEnum.REPLY_NAME_ACTION_ID
 			];
 
 		const bodyStateValue =
-			view.state?.[CreateModal.REPLY_BODY_BLOCK_ID]?.[
-				CreateModal.REPLY_BODY_ACTION_ID
+			view.state?.[CreateModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				CreateModalEnum.REPLY_BODY_ACTION_ID
 			];
 
 		if (!nameStateValue || !bodyStateValue) {
@@ -104,5 +110,35 @@ export class ExecuteViewSubmitHandler {
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
+	}
+	public async handleSetUserPreference(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+	): Promise<IUIKitResponse> {
+		const LanguageInput =
+			view.state?.[
+				setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
+			]?.[setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID];
+
+		if (!LanguageInput) {
+			return this.context.getInteractionResponder().errorResponse();
+		}
+
+		const userPreference = new UserPreferenceStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+
+		if (!isSupportedLanguage(LanguageInput)) {
+			return this.context.getInteractionResponder().errorResponse();
+		}
+		await userPreference.storeUserPreference({
+			userId: user.id,
+			language: LanguageInput,
+		});
+
+		return this.context.getInteractionResponder().successResponse();
 	}
 }

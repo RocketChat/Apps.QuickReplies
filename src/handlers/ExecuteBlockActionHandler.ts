@@ -10,7 +10,7 @@ import {
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-import { ListContextualBar } from '../enum/modals/ListContextualBar';
+import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
 import { Handler } from './Handler';
 import { messageActionButton } from '../enum/notification';
 
@@ -63,16 +63,16 @@ export class ExecuteBlockActionHandler {
 		console.log(actionId);
 
 		switch (actionId) {
-			case ListContextualBar.REPLY_OVERFLOW_ACTIONID: {
+			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
 				console.log(value);
 				if (value) {
 					const command = value.split(' : ')[0].trim();
 					const replyId = value.split(' : ')[1].trim();
 					switch (command) {
-						case ListContextualBar.SEND:
+						case ListContextualBarEnum.SEND:
 							console.log('send', replyId);
 							break;
-						case ListContextualBar.EDIT:
+						case ListContextualBarEnum.EDIT:
 							console.log('edit', replyId);
 							break;
 						case 'Delete':

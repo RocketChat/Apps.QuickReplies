@@ -4,79 +4,98 @@ import {
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { TextObjectType, Block } from '@rocket.chat/ui-kit';
 
-// import { concatStrings, uuid } from '../../../lib/utils';
-import { IPreference } from '../definition/helper/userPreference';
-// import { t } from '../lib/Translation/translation';
 import {
 	ButtonStyle,
 	UIKitSurfaceType,
 } from '@rocket.chat/apps-engine/definition/uikit';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-import { CreateModal } from '../enum/modals/CreateModal';
+import { CreateModalEnum } from '../enum/modals/CreateModal';
 import { Modals } from '../enum/modals/common/Modal';
-
-export const SetUserPreferenceModalViewIdPrefix =
-	'setUserPreferenceLanguageModal';
+import { Language, t } from '../lib/Translation/translation';
+import { setUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
 
 export async function setUserPreferenceLanguageModal({
 	app,
 	modify,
-	existingPreference,
+	existingPreferencelanguage,
 }: {
 	app: QuickRepliesApp;
 	modify: IModify;
-	existingPreference?: Omit<IPreference, 'userId'>;
+	existingPreferencelanguage: Language;
 }): Promise<IUIKitSurfaceViewParam | Error> {
-	// const viewId = concatStrings(
-	// 	[SetUserPreferenceModalViewIdPrefix, uuid()],
-	// 	'-',
-	// );
-
-	console.log('modal');
-	const viewId = SetUserPreferenceModalViewIdPrefix;
+	const viewId = setUserPreferenceModalEnum.VIEW_ID;
 	const { elementBuilder, blockBuilder } = app.getUtils();
-
-	// blockBuilder.createInputBlock({element:elementBuilder.
-	// })
 
 	const blocks: Block[] = [];
 	const selectOptions = [
-		{ text: 'Option 1', value: '1' },
-		{ text: 'Option 2', value: '2' },
-		{ text: 'Option 3', value: '3' },
+		{
+			text: getLanguageDisplayTextFromCode(
+				Language.en,
+				existingPreferencelanguage,
+			),
+			value: Language.en,
+		},
+		{
+			text: getLanguageDisplayTextFromCode(
+				Language.de,
+				existingPreferencelanguage,
+			),
+			value: Language.de,
+		},
+		{
+			text: getLanguageDisplayTextFromCode(
+				Language.pt,
+				existingPreferencelanguage,
+			),
+			value: Language.pt,
+		},
 	];
 	const dropDownOption = elementBuilder.createDropDownOptions(selectOptions);
 
-	// eslint-disable-next-line prefer-const
 	const dropDown = elementBuilder.addDropDown(
 		{
-			placeholder: 'placeholder',
+			placeholder: t('language', existingPreferencelanguage),
 			options: dropDownOption,
+
+			initialOption: dropDownOption.find((option) => {
+				return option.value === existingPreferencelanguage;
+			}),
 			dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
 		},
-		{ blockId: 'blockid', actionId: 'actionID' },
+		{
+			blockId:
+				setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID,
+			actionId:
+				setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID,
+		},
 	);
 	blocks.push(
 		blockBuilder.createInputBlock({
-			text: 'drop down',
+			text: t('language', existingPreferencelanguage),
 			element: dropDown,
 			optional: false,
 		}),
 	);
 
 	const submit = elementBuilder.addButton(
-		{ text: CreateModal.CREATE, style: ButtonStyle.PRIMARY },
 		{
-			actionId: CreateModal.SUBMIT_ACTION_ID,
-			blockId: CreateModal.SUBMIT_BLOCK_ID,
+			text: setUserPreferenceModalEnum.CREATE,
+			style: ButtonStyle.PRIMARY,
+		},
+		{
+			actionId: setUserPreferenceModalEnum.SUBMIT_ACTION_ID,
+			blockId: setUserPreferenceModalEnum.SUBMIT_BLOCK_ID,
 		},
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: CreateModal.CLOSE, style: ButtonStyle.DANGER },
 		{
-			actionId: CreateModal.CLOSE_ACTION_ID,
-			blockId: CreateModal.CLOSE_BLOCK_ID,
+			text: setUserPreferenceModalEnum.CLOSE,
+			style: ButtonStyle.DANGER,
+		},
+		{
+			actionId: setUserPreferenceModalEnum.CLOSE_ACTION_ID,
+			blockId: setUserPreferenceModalEnum.CLOSE_BLOCK_ID,
 		},
 	);
 
@@ -85,10 +104,27 @@ export async function setUserPreferenceLanguageModal({
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: CreateModal.TITLE,
+			text: setUserPreferenceModalEnum.TITLE,
 		},
 		blocks: blocks,
 		close,
 		submit,
 	};
 }
+
+const getLanguageDisplayTextFromCode = (
+	code: Language,
+	language: Language,
+): string => {
+	switch (code) {
+		case Language.en: {
+			return t('language_en', language);
+		}
+		case Language.de: {
+			return t('language_de', language);
+		}
+		case Language.pt: {
+			return t('language_pt', language);
+		}
+	}
+};

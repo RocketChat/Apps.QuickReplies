@@ -1,5 +1,8 @@
 {
-	
 	"QuickCommandParams": "Quick Command Parameters",
-	"QuickCommandDescription": "Quick Command Description"
+	"QuickCommandDescription": "Quick Command Description",
+	"language": "Language",
+	"language_en": "English",
+	"language_pt": "Portuguese",
+	"language_de": "German"
 }

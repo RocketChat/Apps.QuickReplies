@@ -1,4 +1,4 @@
-export enum ListContextualBar {
+export enum ListContextualBarEnum {
 	VIEW_ID = 'list-reply-view-id',
 	TITLE = 'List of all replies',
 	CLOSE = 'Close',
