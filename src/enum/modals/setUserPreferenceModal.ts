@@ -4,10 +4,6 @@ export enum setUserPreferenceModalEnum {
 	CLOSE = 'Close',
 	CREATE = 'Create',
 
-	REPLY_NAME_INPUT = 'reply-name-input',
-	REPLY_NAME_LABEL = 'Enter your reply name',
-	REPLY_NAME_PLACEHOLDER = 'Your reply name',
-
 	LANGUAGE_INPUT_DROPDOWN_BLOCK_ID = 'language-input-drop-down-block-id',
 	LANGUAGE_INPUT_DROPDOWN_ACTION_ID = 'language-input-drop-down-action-id',
 
