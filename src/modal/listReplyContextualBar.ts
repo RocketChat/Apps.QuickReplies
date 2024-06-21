@@ -14,7 +14,7 @@ import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IReply } from '../definition/reply/IReply';
-import { ListContextualBar } from '../enum/modals/ListContextualBar';
+import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
 
 export async function listReply(
 	app: QuickRepliesApp,
@@ -36,32 +36,32 @@ export async function listReply(
 					{
 						text: {
 							type: 'plain_text',
-							text: ListContextualBar.SEND,
+							text: ListContextualBarEnum.SEND,
 							emoji: true,
 						},
-						value: `${ListContextualBar.SEND} : ${reply.id}`,
+						value: `${ListContextualBarEnum.SEND} : ${reply.id}`,
 					},
 					{
 						text: {
 							type: 'plain_text',
-							text: ListContextualBar.EDIT,
+							text: ListContextualBarEnum.EDIT,
 							emoji: true,
 						},
-						value: `${ListContextualBar.EDIT} : ${reply.id}`,
+						value: `${ListContextualBarEnum.EDIT} : ${reply.id}`,
 					},
 					{
 						text: {
 							type: 'plain_text',
-							text: ListContextualBar.DELETE,
+							text: ListContextualBarEnum.DELETE,
 							emoji: true,
 						},
-						value: `${ListContextualBar.DELETE} : ${reply.id}`,
+						value: `${ListContextualBarEnum.DELETE} : ${reply.id}`,
 					},
 				],
 			},
 			{
-				blockId: ListContextualBar.REPLY_OVERFLOW_BLOCKID,
-				actionId: ListContextualBar.REPLY_OVERFLOW_ACTIONID,
+				blockId: ListContextualBarEnum.REPLY_OVERFLOW_BLOCKID,
+				actionId: ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID,
 			},
 		);
 
@@ -81,21 +81,21 @@ export async function listReply(
 
 	const close = elementBuilder.addButton(
 		{
-			text: ListContextualBar.CLOESE_BUTTON_TEXT,
+			text: ListContextualBarEnum.CLOESE_BUTTON_TEXT,
 			style: ButtonStyle.DANGER,
 		},
 		{
-			actionId: ListContextualBar.LIST_REPLY_CLOSE_ACTION_ID,
-			blockId: ListContextualBar.LIST_REPLY_CLOSE_BLOCK_ID,
+			actionId: ListContextualBarEnum.LIST_REPLY_CLOSE_ACTION_ID,
+			blockId: ListContextualBarEnum.LIST_REPLY_CLOSE_BLOCK_ID,
 		},
 	);
 
 	return {
-		id: ListContextualBar.VIEW_ID,
+		id: ListContextualBarEnum.VIEW_ID,
 		type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: ListContextualBar.TITLE,
+			text: ListContextualBarEnum.TITLE,
 		},
 		blocks,
 		close,

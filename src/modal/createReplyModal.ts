@@ -14,7 +14,7 @@ import {
 	ButtonStyle,
 	UIKitSurfaceType,
 } from '@rocket.chat/apps-engine/definition/uikit';
-import { CreateModal } from '../enum/modals/CreateModal';
+import { CreateModalEnum } from '../enum/modals/CreateModal';
 
 export async function CreateReplyModal(
 	app: QuickRepliesApp,
@@ -28,8 +28,9 @@ export async function CreateReplyModal(
 
 	const blocks: Block[] = [];
 
-	const labelReplyName = CreateModal.REPLY_NAME_LABEL.toString();
-	const placeholderReplyName = CreateModal.REPLY_NAME_PLACEHOLDER.toString();
+	const labelReplyName = CreateModalEnum.REPLY_NAME_LABEL.toString();
+	const placeholderReplyName =
+		CreateModalEnum.REPLY_NAME_PLACEHOLDER.toString();
 
 	const inputReplyName = inputElementComponent(
 		{
@@ -39,13 +40,14 @@ export async function CreateReplyModal(
 			optional: false,
 		},
 		{
-			blockId: CreateModal.REPLY_NAME_BLOCK_ID,
-			actionId: CreateModal.REPLY_NAME_ACTION_ID,
+			blockId: CreateModalEnum.REPLY_NAME_BLOCK_ID,
+			actionId: CreateModalEnum.REPLY_NAME_ACTION_ID,
 		},
 	);
 
-	const labelReplyBody = CreateModal.REPLY_BODY_LABEL.toString();
-	const placeholderReplyBody = CreateModal.REPLY_BODY_PLACEHOLDER.toString();
+	const labelReplyBody = CreateModalEnum.REPLY_BODY_LABEL.toString();
+	const placeholderReplyBody =
+		CreateModalEnum.REPLY_BODY_PLACEHOLDER.toString();
 
 	const inputReplyBody = inputElementComponent(
 		{
@@ -56,8 +58,8 @@ export async function CreateReplyModal(
 			multiline: true,
 		},
 		{
-			blockId: CreateModal.REPLY_BODY_BLOCK_ID,
-			actionId: CreateModal.REPLY_BODY_ACTION_ID,
+			blockId: CreateModalEnum.REPLY_BODY_BLOCK_ID,
+			actionId: CreateModalEnum.REPLY_BODY_ACTION_ID,
 		},
 	);
 
@@ -65,26 +67,26 @@ export async function CreateReplyModal(
 	blocks.push(inputReplyBody);
 
 	const submit = elementBuilder.addButton(
-		{ text: CreateModal.CREATE, style: ButtonStyle.PRIMARY },
+		{ text: CreateModalEnum.CREATE, style: ButtonStyle.PRIMARY },
 		{
-			actionId: CreateModal.SUBMIT_ACTION_ID,
-			blockId: CreateModal.SUBMIT_BLOCK_ID,
+			actionId: CreateModalEnum.SUBMIT_ACTION_ID,
+			blockId: CreateModalEnum.SUBMIT_BLOCK_ID,
 		},
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: CreateModal.CLOSE, style: ButtonStyle.DANGER },
+		{ text: CreateModalEnum.CLOSE, style: ButtonStyle.DANGER },
 		{
-			actionId: CreateModal.CLOSE_ACTION_ID,
-			blockId: CreateModal.CLOSE_BLOCK_ID,
+			actionId: CreateModalEnum.CLOSE_ACTION_ID,
+			blockId: CreateModalEnum.CLOSE_BLOCK_ID,
 		},
 	);
 	return {
-		id: CreateModal.VIEW_ID,
+		id: CreateModalEnum.VIEW_ID,
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: CreateModal.TITLE,
+			text: CreateModalEnum.TITLE,
 		},
 		blocks,
 		close,
