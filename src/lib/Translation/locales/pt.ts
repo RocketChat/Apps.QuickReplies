@@ -3,6 +3,8 @@ export const pt = {
 	language_en: 'Inglês',
 	language_pt: 'Português',
 	language_de: 'Alemão',
+	language_pl: 'Polonês',
+	language_ru: 'Russo',
 	set_user_preference_modal_title: 'Configure sua preferência de idioma',
 	quick_command_params: 'criar, listar, ajuda',
 	quick_command_description:

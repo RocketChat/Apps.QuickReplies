@@ -115,5 +115,9 @@ const getLanguageDisplayTextFromCode = (
 			return t('language_de', language);
 		case Language.pt:
 			return t('language_pt', language);
+		case Language.pl:
+			return t('language_pl', language);
+		case Language.ru:
+			return t('language_ru', language);
 	}
 };

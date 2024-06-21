@@ -3,6 +3,9 @@ export const de = {
 	language_en: 'Englisch',
 	language_pt: 'Portugiesisch',
 	language_de: 'Deutsch',
+	language_pl: 'Polnisch',
+	language_ru: 'Russisch',
+	
 	set_user_preference_modal_title: 'Konfigurieren Sie Ihre Spracheinstellung',
 	quick_command_params: 'erstellen, auflisten, hilfe',
 	quick_command_description:
