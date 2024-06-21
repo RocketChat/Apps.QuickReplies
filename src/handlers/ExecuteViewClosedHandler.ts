@@ -35,11 +35,11 @@ export class ExecuteViewClosedHandler {
 		);
 		switch (view.id) {
 			case ListContextualBar.VIEW_ID: {
-				RoomInteraction.clearInteractionRoomId();
+				// RoomInteraction.clearInteractionRoomId();
 				break;
 			}
 			case CreateModal.VIEW_ID: {
-				RoomInteraction.clearInteractionRoomId();
+				// RoomInteraction.clearInteractionRoomId();
 			}
 		}
 

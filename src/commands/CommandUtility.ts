@@ -78,15 +78,18 @@ export class CommandUtility implements ICommandUtility {
 	private async handleSingleParam(handler: Handler): Promise<void> {
 		switch (this.params[0].toLowerCase()) {
 			case CommandParam.CREATE: {
-				await handler.Create();
+				await handler.CreateReply();
 				break;
 			}
 			case CommandParam.LIST: {
-				await handler.List();
+				await handler.ListReply();
 				break;
 			}
 			case CommandParam.HELP:
 				await handler.Help();
+				break;
+			case CommandParam.CONFIG:
+				await handler.Configure();
 				break;
 			default: {
 				await handler.sendDefault();

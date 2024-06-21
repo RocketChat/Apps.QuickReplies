@@ -10,8 +10,14 @@ import {
 	TextObjectType,
 	OverflowElement,
 	PlainTextInputElement,
+	Option,
+	StaticSelectElement,
 } from '@rocket.chat/ui-kit';
 import { PlainTextInputParam } from '../definition/ui-kit/Element/IPlainTextInputElement';
+import {
+	StaticSelectElementParam,
+	StaticSelectOptionsParam,
+} from '../definition/ui-kit/Element/IStaticSelectElement';
 
 export class ElementBuilder implements IElementBuilder {
 	constructor(private readonly appId: string) {}
@@ -82,5 +88,62 @@ export class ElementBuilder implements IElementBuilder {
 			actionId,
 		};
 		return overflow;
+	}
+	public addDropDown(
+		param: StaticSelectElementParam,
+		interaction: ElementInteractionParam,
+	): StaticSelectElement {
+		const {
+			placeholder,
+			options,
+			optionGroups,
+			initialOption,
+			initialValue,
+			dispatchActionConfig,
+		} = param;
+		const { blockId, actionId } = interaction;
+		const dropDown: StaticSelectElement = {
+			type: BlockElementType.STATIC_SELECT,
+			placeholder: {
+				type: TextObjectType.PLAIN_TEXT,
+				text: placeholder,
+			},
+			options,
+			optionGroups,
+			initialOption,
+			initialValue,
+			appId: this.appId,
+			blockId,
+			actionId,
+			dispatchActionConfig,
+		};
+		return dropDown;
+	}
+
+	public createDropDownOptions(
+		param: StaticSelectOptionsParam,
+	): Array<Option> {
+		const options: Array<Option> = param.map((option) => {
+			const { text, value, description, url } = option;
+			const optionObject: Option = {
+				text: {
+					type: TextObjectType.PLAIN_TEXT,
+					text,
+				},
+				value,
+				...(description
+					? {
+							description: {
+								type: TextObjectType.PLAIN_TEXT,
+								text: description,
+							},
+							// eslint-disable-next-line no-mixed-spaces-and-tabs
+					  }
+					: undefined),
+				url,
+			};
+			return optionObject;
+		});
+		return options;
 	}
 }

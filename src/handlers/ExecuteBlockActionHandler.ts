@@ -84,15 +84,15 @@ export class ExecuteBlockActionHandler {
 				break;
 			}
 			case messageActionButton.CREATE_REPLY_ACTION_ID: {
-				await handler.Create();
+				await handler.CreateReply();
 				break;
 			}
 			case messageActionButton.LIST_REPLY_ACTION_ID: {
-				await handler.List();
+				await handler.ListReply();
 				break;
 			}
 			case messageActionButton.CONFIGURE_PREFERENCES_ACTION_ID:
-				// await handler.Configure();
+				await handler.Configure();
 				break;
 			case messageActionButton.NEED_MORE_ACTION_ID:
 				await handler.Help();

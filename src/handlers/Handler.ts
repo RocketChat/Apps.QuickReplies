@@ -18,6 +18,8 @@ import {
 	sendDefaultNotification,
 	sendHelperNotification,
 } from '../helper/notification';
+// import { getUserPreference } from '../helper/userPreference';
+import { setUserPreferenceLanguageModal } from '../modal/setUserPreferenceModal';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -49,7 +51,7 @@ export class Handler implements IHandler {
 		);
 	}
 
-	public async Create(): Promise<void> {
+	public async CreateReply(): Promise<void> {
 		const roomId = this.room.id;
 		await Promise.all([
 			this.roomInteractionStorage.storeInteractionRoomId(roomId),
@@ -78,7 +80,7 @@ export class Handler implements IHandler {
 		}
 		return;
 	}
-	public async List(): Promise<void> {
+	public async ListReply(): Promise<void> {
 		const roomId = this.room.id;
 		await Promise.all([
 			this.roomInteractionStorage.storeInteractionRoomId(roomId),
@@ -127,7 +129,6 @@ export class Handler implements IHandler {
 		);
 	}
 	public async sendDefault(): Promise<void> {
-		console.log('Default');
 		await sendDefaultNotification(
 			this.app,
 			this.read,
@@ -136,13 +137,49 @@ export class Handler implements IHandler {
 			this.room,
 		);
 	}
-	public async Delete(): Promise<void> {
+	public async DeleteReply(): Promise<void> {
 		console.log('Delete');
 	}
-	public async Edit(): Promise<void> {
+	public async EditReply(): Promise<void> {
 		console.log('Edit');
 	}
-	public async Send(): Promise<void> {
+	public async SendReply(): Promise<void> {
 		console.log('Send');
+	}
+	public async Configure(): Promise<void> {
+		console.log('configure');
+		const roomId = this.room.id;
+
+		await Promise.all([
+			this.roomInteractionStorage.storeInteractionRoomId(roomId),
+		]);
+		console.log(this.room.id);
+
+		// const existingPreference = await getUserPreference(
+		// 	this.app,
+		// 	this.read.getPersistenceReader(),
+		// 	this.persis,
+		// 	this.sender.id,
+		// );
+
+		const modal = await setUserPreferenceLanguageModal({
+			app: this.app,
+			modify: this.modify,
+			// existingPreference: existingPreference,
+		});
+
+		if (modal instanceof Error) {
+			this.app.getLogger().error(modal.message);
+			return;
+		}
+
+		const triggerId = this.triggerId;
+		console.log(triggerId);
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(modal, { triggerId }, this.sender);
+		}
+		return;
 	}
 }
