@@ -104,7 +104,12 @@ export class ExecuteViewSubmitHandler {
 			this.read.getPersistenceReader(),
 		);
 
-		const result = await replyStorage.createReply(user, name, body);
+		const result = await replyStorage.createReply(
+			user,
+			name,
+			body,
+			language,
+		);
 
 		if (result.success) {
 			const successMessage = `${t('hey', language)} ${user.name},${t(
@@ -119,7 +124,7 @@ export class ExecuteViewSubmitHandler {
 			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
 				'fail_create_reply',
 				language,
-			)} ❌\n\n${t('error_fill_fields', language)}`;
+			)} ❌\n\n ${result.error}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
