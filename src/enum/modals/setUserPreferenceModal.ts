@@ -2,7 +2,7 @@ export enum setUserPreferenceModalEnum {
 	VIEW_ID = 'set-user-preference-language-modal-view-id',
 	TITLE = 'Configure your language preference',
 	CLOSE = 'Close',
-	CREATE = 'Create',
+	UPDATE = 'Update',
 
 	LANGUAGE_INPUT_DROPDOWN_BLOCK_ID = 'language-input-drop-down-block-id',
 	LANGUAGE_INPUT_DROPDOWN_ACTION_ID = 'language-input-drop-down-action-id',
