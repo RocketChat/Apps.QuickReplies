@@ -18,8 +18,12 @@ import { CreateModalEnum } from '../enum/modals/CreateModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
-import { isSupportedLanguage } from '../helper/userPreference';
+import {
+	getUserPreferredLanguage,
+	isSupportedLanguage,
+} from '../helper/userPreference';
 import { setUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
+import { Language, t } from '../lib/Translation/translation';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -44,10 +48,15 @@ export class ExecuteViewSubmitHandler {
 		);
 		const roomId = await roomInteractionStorage.getInteractionRoomId();
 		const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
-
+		const language = await getUserPreferredLanguage(
+			this.app,
+			this.read.getPersistenceReader(),
+			this.persistence,
+			user.id,
+		);
 		switch (view.id) {
 			case CreateModalEnum.VIEW_ID: {
-				return this.handleCreate(room, user, view);
+				return this.handleCreate(room, user, view, language);
 			}
 			case setUserPreferenceModalEnum.VIEW_ID: {
 				return this.handleSetUserPreference(room, user, view);
@@ -61,6 +70,7 @@ export class ExecuteViewSubmitHandler {
 		room: IRoom,
 		user: IUser,
 		view: IUIKitSurface,
+		language: Language,
 	): Promise<IUIKitResponse> {
 		const nameStateValue =
 			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
@@ -73,15 +83,14 @@ export class ExecuteViewSubmitHandler {
 			];
 
 		if (!nameStateValue || !bodyStateValue) {
-			const missingFields: string[] = [];
-			if (!nameStateValue) missingFields.push('name');
-			if (!bodyStateValue) missingFields.push('body');
+			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
+				'fail_create_reply',
+				language,
+			)} ${t('quick_reply', language)}. ❌\n\n ${t(
+				'error_fill_fields',
+				language,
+			)}`;
 
-			const errorMessage = `Hey ${
-				user.name
-			}, \n please provide a **${missingFields.join(
-				'** and a **',
-			)}** for the reply. ❌`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
@@ -98,13 +107,19 @@ export class ExecuteViewSubmitHandler {
 		const result = await replyStorage.createReply(user, name, body);
 
 		if (result.success) {
-			const successMessage = `Hey ${user.name}, reply **${name}** created successfully! ✅`;
+			const successMessage = `${t('hey', language)} ${user.name},${t(
+				'quick_reply',
+				language,
+			)} **${name}** ${t('created_successfully', language)} ✅`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
 			return this.context.getInteractionResponder().successResponse();
 		} else {
-			const errorMessage = `Hey ${user.name}, failed to create reply. ❌\n\nError: ${result.error}`;
+			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
+				'fail_create_reply',
+				language,
+			)} ❌\n\n${t('error_fill_fields', language)}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});

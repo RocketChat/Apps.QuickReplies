@@ -31,7 +31,7 @@ export class ExecuteBlockActionHandler {
 		const { actionId, user, container, blockId, value, triggerId } =
 			this.context.getInteractionData();
 		let { room } = this.context.getInteractionData();
-		console.log('handler hit');
+
 		const persistenceRead = this.read.getPersistenceReader();
 
 		const roomInteractionStorage = new RoomInteractionStorage(

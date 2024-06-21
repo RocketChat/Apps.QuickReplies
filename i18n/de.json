@@ -3,5 +3,19 @@
 	"language_en": "Englisch",
 	"language_pt": "Portugiesisch",
 	"language_de": "Deutsch",
-	"set_user_preference_modal_title": "Konfigurieren Sie Ihre Spracheinstellung"
+	"set_user_preference_modal_title": "Konfigurieren Sie Ihre Spracheinstellung",
+	"quick_command_params": "erstellen, auflisten, hilfe",
+	"quick_command_description": "Schnelle Antworten erstellen. Geben Sie /quick hilfe ein, um mehr Informationen zu erhalten.",
+	"reply_name_label": "Antwortname",
+	"reply_name_placeholder": "Geben Sie den Namen Ihrer Antwort ein",
+	"reply_body_label": "Antwortinhalt",
+	"reply_body_placeholder": "Geben Sie den Inhalt Ihrer Antwort ein",
+	"close_button": "Schließen",
+	"create_button": "Erstellen",
+	"create_modal_title": "Neue Antwort erstellen",
+	"hey": "Hey",
+	"quick_reply": "Schnelle Antwort",
+	"created_successfully": "Erfolgreich erstellt",
+	"fail_create_reply": "Erstellung fehlgeschlagen",
+	"error_fill_fields": "Fehler: Bitte füllen Sie alle Felder aus."
 }

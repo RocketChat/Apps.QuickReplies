@@ -15,6 +15,7 @@ import {
 	UIKitSurfaceType,
 } from '@rocket.chat/apps-engine/definition/uikit';
 import { CreateModalEnum } from '../enum/modals/CreateModal';
+import { Language, t } from '../lib/Translation/translation';
 
 export async function CreateReplyModal(
 	app: QuickRepliesApp,
@@ -23,14 +24,14 @@ export async function CreateReplyModal(
 	persistence: IPersistence,
 	modify: IModify,
 	room: IRoom,
+	language: Language,
 ): Promise<IUIKitSurfaceViewParam | Error> {
-	const { elementBuilder, blockBuilder } = app.getUtils();
+	const { elementBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
 
-	const labelReplyName = CreateModalEnum.REPLY_NAME_LABEL.toString();
-	const placeholderReplyName =
-		CreateModalEnum.REPLY_NAME_PLACEHOLDER.toString();
+	const labelReplyName = t('reply_name_label', language);
+	const placeholderReplyName = t('reply_name_placeholder', language);
 
 	const inputReplyName = inputElementComponent(
 		{
@@ -45,9 +46,8 @@ export async function CreateReplyModal(
 		},
 	);
 
-	const labelReplyBody = CreateModalEnum.REPLY_BODY_LABEL.toString();
-	const placeholderReplyBody =
-		CreateModalEnum.REPLY_BODY_PLACEHOLDER.toString();
+	const labelReplyBody = t('reply_body_label', language);
+	const placeholderReplyBody = t('reply_body_placeholder', language);
 
 	const inputReplyBody = inputElementComponent(
 		{
@@ -67,7 +67,7 @@ export async function CreateReplyModal(
 	blocks.push(inputReplyBody);
 
 	const submit = elementBuilder.addButton(
-		{ text: CreateModalEnum.CREATE, style: ButtonStyle.PRIMARY },
+		{ text: t('create_button', language), style: ButtonStyle.PRIMARY },
 		{
 			actionId: CreateModalEnum.SUBMIT_ACTION_ID,
 			blockId: CreateModalEnum.SUBMIT_BLOCK_ID,
@@ -75,7 +75,7 @@ export async function CreateReplyModal(
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: CreateModalEnum.CLOSE, style: ButtonStyle.DANGER },
+		{ text: t('close_button', language), style: ButtonStyle.DANGER },
 		{
 			actionId: CreateModalEnum.CLOSE_ACTION_ID,
 			blockId: CreateModalEnum.CLOSE_BLOCK_ID,
@@ -86,7 +86,7 @@ export async function CreateReplyModal(
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: CreateModalEnum.TITLE,
+			text: t('create_modal_title', language),
 		},
 		blocks,
 		close,

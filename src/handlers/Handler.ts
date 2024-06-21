@@ -52,11 +52,12 @@ export class Handler implements IHandler {
 	}
 
 	public async CreateReply(): Promise<void> {
-		const roomId = this.room.id;
-		await Promise.all([
-			this.roomInteractionStorage.storeInteractionRoomId(roomId),
-		]);
-
+		const language = await getUserPreferredLanguage(
+			this.app,
+			this.read.getPersistenceReader(),
+			this.persis,
+			this.sender.id,
+		);
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -64,6 +65,7 @@ export class Handler implements IHandler {
 			this.persis,
 			this.modify,
 			this.room,
+			language,
 		);
 
 		if (modal instanceof Error) {
@@ -81,11 +83,6 @@ export class Handler implements IHandler {
 		return;
 	}
 	public async ListReply(): Promise<void> {
-		const roomId = this.room.id;
-		await Promise.all([
-			this.roomInteractionStorage.storeInteractionRoomId(roomId),
-		]);
-
 		const replyStorage = new ReplyStorage(
 			this.persis,
 			this.read.getPersistenceReader(),
@@ -147,13 +144,6 @@ export class Handler implements IHandler {
 		console.log('Send');
 	}
 	public async Configure(): Promise<void> {
-		console.log('configure');
-		const roomId = this.room.id;
-
-		await Promise.all([
-			this.roomInteractionStorage.storeInteractionRoomId(roomId),
-		]);
-
 		const existingPreference = await getUserPreferredLanguage(
 			this.app,
 			this.read.getPersistenceReader(),

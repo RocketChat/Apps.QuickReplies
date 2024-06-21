@@ -16,8 +16,8 @@ export class QuickCommand implements ISlashCommand {
 	constructor(private readonly app: QuickRepliesApp) {}
 
 	public command = 'quick';
-	public i18nParamsExample = 'QuickCommandParams';
-	public i18nDescription = 'QuickCommandDescription';
+	public i18nParamsExample = 'quick_command_params';
+	public i18nDescription = 'quick_command_description';
 	public providesPreview = false;
 
 	public async executor(
