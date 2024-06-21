@@ -72,6 +72,7 @@ By selecting quick replies instead of typing manually, agents/users can respond 
   👋 Need some help with /quick?
     • use `/quick create` to create a new quick reply
     • use `/quick list` to list all the quick replies
+    • use `/quick config` to configure user language preference
 
 
 
