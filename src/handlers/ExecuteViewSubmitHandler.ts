@@ -29,6 +29,7 @@ import { CacheReplyStorage } from '../storage/ReplyCache';
 import { IReply } from '../definition/reply/IReply';
 import { listReplyContextualBar } from '../modal/listContextualBar';
 import { confirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
+import { editModalEnum } from '../enum/modals/editModal';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -70,7 +71,8 @@ export class ExecuteViewSubmitHandler {
 				return this.handleSend(room, user, view);
 			case confirmDeleteModalEnum.VIEW_ID:
 				return this.handleDelete(room, user, view, language);
-
+			case editModalEnum.VIEW_ID:
+				return this.handleEdit(room, user, view, language);
 			default:
 				return this.context.getInteractionResponder().successResponse();
 		}
@@ -272,6 +274,95 @@ export class ExecuteViewSubmitHandler {
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
 			const errorMessage = `Failed to delete reply **${cachedReply.name}** ❌\n\n${result.error}`;
+			await sendNotification(this.read, this.modify, user, room, {
+				message: errorMessage,
+			});
+			return this.context.getInteractionResponder().errorResponse();
+		}
+	}
+
+	private async handleEdit(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+		language,
+	): Promise<IUIKitResponse> {
+		const persistenceRead = this.read.getPersistenceReader();
+		const replyStorage = new ReplyStorage(
+			this.persistence,
+			persistenceRead,
+		);
+
+		const replyCacheStorage = new CacheReplyStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+		);
+
+		let name = '';
+		let body = '';
+
+		const cachedReply = await replyCacheStorage.getCacheReply(user);
+
+		const nameStateValue =
+			view.state?.[editModalEnum.REPLY_NAME_BLOCK_ID]?.[
+				editModalEnum.REPLY_NAME_ACTION_ID
+			];
+
+		const bodyStateValue =
+			view.state?.[editModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				editModalEnum.REPLY_BODY_ACTION_ID
+			];
+
+		console.log(nameStateValue, cachedReply.name, view.state);
+
+		name = nameStateValue ? nameStateValue.trim() : cachedReply.name;
+		body = bodyStateValue ? bodyStateValue.trim() : cachedReply.body;
+
+		const result = await replyStorage.updateReplyById(
+			user,
+			cachedReply.id,
+			name,
+			body,
+			// language,
+		);
+
+		if (result.success) {
+			const successMessage = `${t('hey', language)} ${user.name}, ${t(
+				'quick_reply',
+				language,
+			)}
+			 **${name}** edited_successfully
+			  ✅`;
+			//   			  ${t('edited_successfully', language)}
+
+			await sendNotification(this.read, this.modify, user, room, {
+				message: successMessage,
+			});
+
+			await replyCacheStorage.removeCacheReply(user);
+			const userReplies: IReply[] = await replyStorage.getReplyForUser(
+				user,
+			);
+
+			const UpdatedListBar = await listReplyContextualBar(
+				this.app,
+				user,
+				this.read,
+				this.persistence,
+				this.modify,
+				room,
+				userReplies,
+				language,
+			);
+			return this.context
+				.getInteractionResponder()
+				.updateModalViewResponse(UpdatedListBar);
+		} else {
+			const errorMessage = `${t('hey', language)} ${user.name},
+			 fail_edit_reply
+			❌\n\n${result.error}`;
+			// 			 ${t(	'fail_edit_reply',language)}
+
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});

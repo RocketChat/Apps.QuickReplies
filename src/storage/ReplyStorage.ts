@@ -156,6 +156,7 @@ export class ReplyStorage {
 	): Promise<{ success: boolean; error?: string }> {
 		try {
 			// this.validateReply(name, body);
+			console.log('updateReplyById', user.name, replyId, name, body);
 
 			const userReplies = await this.getReplyForUser(user);
 			const replyIndex = userReplies.findIndex(

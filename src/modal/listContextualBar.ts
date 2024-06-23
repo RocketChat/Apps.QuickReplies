@@ -31,7 +31,11 @@ export async function listReplyContextualBar(
 	const blocks: Block[] = [];
 	const divider = blockBuilder.createDividerBlock();
 
-	userReplies.forEach((reply) => {
+	const sortedReplies = userReplies.sort((a, b) => {
+		return a.name.localeCompare(b.name);
+	});
+
+	sortedReplies.forEach((reply) => {
 		const accessoryElement = elementBuilder.createOverflow(
 			{
 				options: [

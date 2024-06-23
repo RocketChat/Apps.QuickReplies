@@ -18,6 +18,7 @@ import { messageActionButton } from '../enum/notification';
 import { listContextualBarEnum } from '../enum/modals/listContextualBar';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { confirmDeleteModal } from '../modal/confirmDeleteModal';
+import { EditReplyModal } from '../modal/editModal';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -122,9 +123,21 @@ export class ExecuteBlockActionHandler {
 
 								break;
 							case listContextualBarEnum.EDIT:
-								console.log('edit', replyId);
+								const editModal = await EditReplyModal(
+									this.app,
+									user,
+									this.read,
+									this.persistence,
+									this.modify,
+									room,
+									reply,
+								);
+								return this.context
+									.getInteractionResponder()
+									.openModalViewResponse(editModal);
+
 								break;
-							case 'Delete':
+							case listContextualBarEnum.DELETE:
 								const confirmModal = await confirmDeleteModal(
 									this.app,
 									user,
