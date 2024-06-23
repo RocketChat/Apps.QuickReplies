@@ -46,7 +46,6 @@ export async function SendReplyModal(
 		},
 	);
 
-	// blocks.push(inputReplyName);
 	blocks.push(inputReplyBody);
 
 	const submit = elementBuilder.addButton(
