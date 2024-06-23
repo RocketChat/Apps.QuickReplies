@@ -10,13 +10,15 @@ import {
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
 import { ReplyStorage } from '../storage/ReplyStorage';
-import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { SendReplyModal } from '../modal/sendReplyModal';
 import { listReplyContextualBar } from '../modal/listReplyContextualBar';
 import { IReply } from '../definition/reply/IReply';
 import { CacheReplyStorage } from '../storage/ReplyCache';
+import { Handler } from './Handler';
+import { messageActionButton } from '../enum/notification';
+import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
+import { getUserPreferredLanguage } from '../helper/userPreference';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -32,8 +34,10 @@ export class ExecuteBlockActionHandler {
 	}
 
 	public async handleActions(): Promise<IUIKitResponse> {
-		const { actionId, user, container, blockId, value } =
+		const { actionId, user, container, blockId, value, triggerId } =
 			this.context.getInteractionData();
+		let { room } = this.context.getInteractionData();
+
 		const persistenceRead = this.read.getPersistenceReader();
 
 		const roomInteractionStorage = new RoomInteractionStorage(
@@ -41,8 +45,36 @@ export class ExecuteBlockActionHandler {
 			persistenceRead,
 			user.id,
 		);
+
 		const roomId = await roomInteractionStorage.getInteractionRoomId();
-		const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
+		const roomPersistance = await this.read.getRoomReader().getById(roomId);
+
+		const language = await getUserPreferredLanguage(
+			this.app,
+			this.read.getPersistenceReader(),
+			this.persistence,
+			user.id,
+		);
+
+		if (!room) {
+			if (roomPersistance) {
+				room = roomPersistance;
+			} else {
+				console.log("Room doesn't exist");
+				return this.context.getInteractionResponder().errorResponse();
+			}
+		}
+		const handler = new Handler({
+			app: this.app,
+			sender: user,
+			room: room,
+			read: this.read,
+			modify: this.modify,
+			http: this.http,
+			persis: this.persistence,
+			triggerId,
+		});
+		console.log(actionId);
 
 		switch (actionId) {
 			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
@@ -106,6 +138,7 @@ export class ExecuteBlockActionHandler {
 										this.modify,
 										room,
 										userReplies,
+										language,
 									);
 								return this.context
 									.getInteractionResponder()
@@ -117,6 +150,20 @@ export class ExecuteBlockActionHandler {
 				}
 				break;
 			}
+			case messageActionButton.CREATE_REPLY_ACTION_ID: {
+				await handler.CreateReply();
+				break;
+			}
+			case messageActionButton.LIST_REPLY_ACTION_ID: {
+				await handler.ListReply();
+				break;
+			}
+			case messageActionButton.CONFIGURE_PREFERENCES_ACTION_ID:
+				await handler.Configure();
+				break;
+			case messageActionButton.NEED_MORE_ACTION_ID:
+				await handler.Help();
+				break;
 		}
 
 		return this.context.getInteractionResponder().successResponse();

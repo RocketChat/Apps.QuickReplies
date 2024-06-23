@@ -14,7 +14,13 @@ import { CreateReplyModal } from '../modal/createReplyModal';
 import { listReplyContextualBar } from '../modal/listReplyContextualBar';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IReply } from '../definition/reply/IReply';
-import { sendHelperNotification } from '../helper/notification';
+import {
+	sendDefaultNotification,
+	sendHelperNotification,
+} from '../helper/notification';
+import { setUserPreferenceLanguageModal } from '../modal/setUserPreferenceModal';
+import { getUserPreferredLanguage } from '../helper/userPreference';
+import { Language } from '../lib/Translation/translation';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -61,10 +67,18 @@ export class Handler implements IHandler {
 		}
 	}
 
-	public async Create(): Promise<void> {
-		const roomId = this.room.id;
-		await this.storeRoomInteractionId(roomId);
+	private async getlanguage(): Promise<Language> {
+		const language = await getUserPreferredLanguage(
+			this.app,
+			this.read.getPersistenceReader(),
+			this.persis,
+			this.sender.id,
+		);
+		return language;
+	}
 
+	public async CreateReply(): Promise<void> {
+		const language = await this.getlanguage();
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -72,6 +86,7 @@ export class Handler implements IHandler {
 			this.persis,
 			this.modify,
 			this.room,
+			language,
 		);
 
 		if (modal instanceof Error) {
@@ -79,13 +94,16 @@ export class Handler implements IHandler {
 			return;
 		}
 
-		await this.openSurfaceView(modal, this.triggerId);
+		const triggerId = this.triggerId;
+
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(modal, { triggerId }, this.sender);
+		}
+		return;
 	}
-
-	public async List(): Promise<void> {
-		const roomId = this.room.id;
-		await this.storeRoomInteractionId(roomId);
-
+	public async ListReply(): Promise<void> {
 		const replyStorage = new ReplyStorage(
 			this.persis,
 			this.read.getPersistenceReader(),
@@ -95,6 +113,8 @@ export class Handler implements IHandler {
 			this.sender,
 		);
 
+		const language = await this.getlanguage();
+
 		const contextualBar = await listReplyContextualBar(
 			this.app,
 			this.sender,
@@ -103,6 +123,7 @@ export class Handler implements IHandler {
 			this.modify,
 			this.room,
 			userReplies,
+			language,
 		);
 
 		if (contextualBar instanceof Error) {
@@ -114,23 +135,63 @@ export class Handler implements IHandler {
 	}
 
 	public async Help(): Promise<void> {
+		const language = await this.getlanguage();
+
 		await sendHelperNotification(
 			this.read,
 			this.modify,
 			this.sender,
 			this.room,
+			language,
 		);
 	}
+	public async sendDefault(): Promise<void> {
+		const language = await this.getlanguage();
 
-	public async Delete(): Promise<void> {
+		await sendDefaultNotification(
+			this.app,
+			this.read,
+			this.modify,
+			this.sender,
+			this.room,
+			language,
+		);
+	}
+	public async DeleteReply(): Promise<void> {
 		console.log('Delete');
 	}
-
-	public async Edit(): Promise<void> {
+	public async EditReply(): Promise<void> {
 		console.log('Edit');
 	}
-
-	public async Send(): Promise<void> {
+	public async SendReply(): Promise<void> {
 		console.log('Send');
+	}
+	public async Configure(): Promise<void> {
+		const existingPreference = await getUserPreferredLanguage(
+			this.app,
+			this.read.getPersistenceReader(),
+			this.persis,
+			this.sender.id,
+		);
+
+		const modal = await setUserPreferenceLanguageModal({
+			app: this.app,
+			modify: this.modify,
+			existingPreferencelanguage: existingPreference,
+		});
+
+		if (modal instanceof Error) {
+			this.app.getLogger().error(modal.message);
+			return;
+		}
+
+		const triggerId = this.triggerId;
+		console.log(triggerId);
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(modal, { triggerId }, this.sender);
+		}
+		return;
 	}
 }

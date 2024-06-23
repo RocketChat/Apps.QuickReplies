@@ -1,7 +1,8 @@
 export enum CommandParam {
-	ADD = 'add',
+	CREATE = 'create',
 	LIST = 'list',
 	HELP = 'help',
+	CONFIG = 'config',
 	DELETE = 'delete',
 	EDIT = 'edit',
 	SEND = 'send',

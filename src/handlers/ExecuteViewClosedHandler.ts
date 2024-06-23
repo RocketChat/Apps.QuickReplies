@@ -37,11 +37,9 @@ export class ExecuteViewClosedHandler {
 		);
 		switch (view.id) {
 			case ListContextualBarEnum.VIEW_ID: {
-				RoomInteraction.clearInteractionRoomId();
 				break;
 			}
 			case CreateModalEnum.VIEW_ID: {
-				RoomInteraction.clearInteractionRoomId();
 				break;
 			}
 			case SendModalEnum.VIEW_ID: {

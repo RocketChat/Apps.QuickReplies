@@ -1,10 +1,3 @@
-export enum Messages {
-	HELPER_COMMANDS = `• use \`/quick add\` to create a new quick message
-            • use \`/quick list\` to list all quick messages
-            `,
-	HELPER_TEXT = `Need some help with \`/quick\`?`,
-}
-
 export enum OnInstallContent {
 	PREVIEW_TITLE = '**QuickReplies App**',
 	PREVIEW_DESCRIPTION = "**Installed and Rollin' on your Server!**",
@@ -20,4 +13,18 @@ export enum OnInstallContent {
         `,
 
 	WELCOME_TEXT = `Welcome to **Quick App** in RocketChat!`,
+}
+
+export enum messageActionButton {
+	CREATE_REPLY_ACTION_ID = 'create-reply-actionId',
+	CREATE_REPLY_BLOCK_ID = 'create-reply-blockId',
+
+	LIST_REPLY_ACTION_ID = 'list-reply-actionId',
+	LIST_REPLY_BLOCK_ID = 'list-reply-blockId',
+
+	CONFIGURE_PREFERENCES_ACTION_ID = 'configure-preferences-actionId',
+	CONFIGURE_PREFERENCES_BLOCK_ID = 'configure-preferences-blockId',
+
+	NEED_MORE_ACTION_ID = 'need-more-actionId',
+	NEED_MORE_BLOCK_ID = 'need-more-blockId',
 }

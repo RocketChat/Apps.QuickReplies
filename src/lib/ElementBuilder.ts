@@ -1,30 +1,23 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 import { ButtonParam } from '../definition/ui-kit/Element/IButtonElement';
-import { DatePickerElementParam } from '../definition/ui-kit/Element/IDatePickerElement';
 import {
 	IElementBuilder,
 	ElementInteractionParam,
 } from '../definition/ui-kit/Element/IElementBuilder';
-import { ImageParam } from '../definition/ui-kit/Element/IImageElement';
-import { MultiStaticSelectElementParam } from '../definition/ui-kit/Element/IMultiStaticSelectElement';
 import { OverflowElementParam } from '../definition/ui-kit/Element/IOverflowElement';
+import {
+	ButtonElement,
+	BlockElementType,
+	TextObjectType,
+	OverflowElement,
+	PlainTextInputElement,
+	Option,
+	StaticSelectElement,
+} from '@rocket.chat/ui-kit';
 import { PlainTextInputParam } from '../definition/ui-kit/Element/IPlainTextInputElement';
 import {
 	StaticSelectElementParam,
 	StaticSelectOptionsParam,
 } from '../definition/ui-kit/Element/IStaticSelectElement';
-import {
-	ButtonElement,
-	BlockElementType,
-	TextObjectType,
-	ImageElement,
-	StaticSelectElement,
-	PlainTextInputElement,
-	OverflowElement,
-	Option,
-	DatePickerElement,
-	MultiStaticSelectElement,
-} from '@rocket.chat/ui-kit';
 
 export class ElementBuilder implements IElementBuilder {
 	constructor(private readonly appId: string) {}
@@ -49,17 +42,53 @@ export class ElementBuilder implements IElementBuilder {
 		};
 		return button;
 	}
-
-	public addImage(param: ImageParam): ImageElement {
-		const { imageUrl, altText } = param;
-		const image: ImageElement = {
-			type: BlockElementType.IMAGE,
-			imageUrl,
-			altText,
+	public createPlainTextInput(
+		param: PlainTextInputParam,
+		interaction: ElementInteractionParam,
+	): PlainTextInputElement {
+		const {
+			text,
+			initialValue,
+			multiline,
+			minLength,
+			maxLength,
+			dispatchActionConfig,
+		} = param;
+		const { blockId, actionId } = interaction;
+		const plainTextInput: PlainTextInputElement = {
+			type: BlockElementType.PLAIN_TEXT_INPUT,
+			placeholder: {
+				type: TextObjectType.PLAIN_TEXT,
+				text,
+			},
+			appId: this.appId,
+			blockId,
+			actionId,
+			initialValue,
+			multiline,
+			minLength,
+			maxLength,
+			dispatchActionConfig,
 		};
-		return image;
+
+		return plainTextInput;
 	}
 
+	public createOverflow(
+		param: OverflowElementParam,
+		interaction: ElementInteractionParam,
+	): OverflowElement {
+		const { options } = param;
+		const { blockId, actionId } = interaction;
+		const overflow: OverflowElement = {
+			type: BlockElementType.OVERFLOW,
+			options,
+			appId: this.appId,
+			blockId,
+			actionId,
+		};
+		return overflow;
+	}
 	public addDropDown(
 		param: StaticSelectElementParam,
 		interaction: ElementInteractionParam,
@@ -108,6 +137,7 @@ export class ElementBuilder implements IElementBuilder {
 								type: TextObjectType.PLAIN_TEXT,
 								text: description,
 							},
+							// eslint-disable-next-line no-mixed-spaces-and-tabs
 					  }
 					: undefined),
 				url,
@@ -115,117 +145,5 @@ export class ElementBuilder implements IElementBuilder {
 			return optionObject;
 		});
 		return options;
-	}
-
-	public createPlainTextInput(
-		param: PlainTextInputParam,
-		interaction: ElementInteractionParam,
-	): PlainTextInputElement {
-		const {
-			text,
-			initialValue,
-			multiline,
-			minLength,
-			maxLength,
-			dispatchActionConfig,
-		} = param;
-		const { blockId, actionId } = interaction;
-		const plainTextInput: PlainTextInputElement = {
-			type: BlockElementType.PLAIN_TEXT_INPUT,
-			placeholder: {
-				type: TextObjectType.PLAIN_TEXT,
-				text,
-			},
-			appId: this.appId,
-			blockId,
-			actionId,
-			initialValue,
-			multiline,
-			minLength,
-			maxLength,
-			dispatchActionConfig,
-		};
-
-		return plainTextInput;
-	}
-
-	public createOverflow(
-		param: OverflowElementParam,
-		interaction: ElementInteractionParam,
-	): OverflowElement {
-		const { options } = param;
-		const { blockId, actionId } = interaction;
-		const overflow: OverflowElement = {
-			type: BlockElementType.OVERFLOW,
-			options,
-			appId: this.appId,
-			blockId,
-			actionId,
-		};
-		return overflow;
-	}
-
-	public createDatePicker(
-		param: DatePickerElementParam,
-		interaction: ElementInteractionParam,
-	): DatePickerElement {
-		const { initialDate, text, dispatchActionConfig } = param;
-		const { blockId, actionId } = interaction;
-
-		const datePicker: DatePickerElement = {
-			type: BlockElementType.DATEPICKER,
-			...(text
-				? {
-						placeholder: {
-							type: TextObjectType.PLAIN_TEXT,
-							text,
-						},
-				  }
-				: undefined),
-			initialDate,
-			appId: this.appId,
-			blockId,
-			actionId,
-			dispatchActionConfig,
-		};
-
-		return datePicker;
-	}
-
-	public createMultiStaticSelect(
-		param: MultiStaticSelectElementParam,
-		interaction: ElementInteractionParam,
-	): MultiStaticSelectElement {
-		const {
-			text,
-			options,
-			optionGroups,
-			maxSelectItems,
-			initialOption,
-			initialValue,
-			dispatchActionConfig,
-			confirm,
-		} = param;
-		const { blockId, actionId } = interaction;
-
-		const multiStaticSelect: MultiStaticSelectElement = {
-			type: BlockElementType.MULTI_STATIC_SELECT,
-			placeholder: {
-				type: TextObjectType.PLAIN_TEXT,
-				text,
-			},
-			options,
-			optionGroups,
-			maxSelectItems,
-			initialOption,
-			initialValue,
-			appId: this.appId,
-			blockId,
-			actionId,
-			dispatchActionConfig,
-			confirm,
-		};
-
-		return multiStaticSelect;
 	}
 }

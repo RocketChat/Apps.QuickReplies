@@ -8,6 +8,7 @@ import {
 } from '@rocket.chat/apps-engine/definition/metadata';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IReply } from '../definition/reply/IReply';
+import { Language, t } from '../lib/Translation/translation';
 
 export class ReplyStorage {
 	constructor(
@@ -20,25 +21,52 @@ export class ReplyStorage {
 		return `${userId}-${timestamp}`;
 	}
 
-	private validateReply(name: string, body: string): void {
-		if (
-			typeof name !== 'string' ||
-			name.trim().length === 0 ||
-			name.length > 100
-		) {
-			throw new Error(
-				'Invalid name: Name must be a non-empty string with a maximum length of 100 characters.',
-			);
+	// Validates the name and body of the reply
+	private validateReply(
+		name: string,
+		body: string,
+		language: Language,
+	): { success: boolean; error?: string } {
+		if (!name && !body) {
+			return {
+				success: false,
+				error: t('error_fill_fields', language),
+			};
 		}
-		if (
-			typeof body !== 'string' ||
-			body.trim().length === 0 ||
-			body.length > 1000
-		) {
-			throw new Error(
-				'Invalid body: Body must be a non-empty string with a maximum length of 1000 characters.',
-			);
+
+		const isNameValid =
+			typeof name === 'string' &&
+			name.trim().length > 0 &&
+			name.length <= 100;
+		const isBodyValid =
+			typeof body === 'string' &&
+			body.trim().length > 0 &&
+			body.length <= 1000;
+
+		if (!isNameValid) {
+			return {
+				success: false,
+				error: t('error_reply_name_invalid', language),
+			};
 		}
+
+		if (!isBodyValid) {
+			return {
+				success: false,
+				error: t('error_reply_body_invalid', language),
+			};
+		}
+
+		return { success: true };
+	}
+
+	// Checks if the reply name is unique for the user
+	private async isUniqueReplyName(
+		user: IUser,
+		name: string,
+	): Promise<boolean> {
+		const replies = await this.getReplyForUser(user);
+		return !replies.some((reply) => reply.name === name);
 	}
 
 	private getAssociations(userId: string): RocketChatAssociationRecord[] {
@@ -54,13 +82,26 @@ export class ReplyStorage {
 		];
 	}
 
+	// Creates a new reply and stores it
 	public async createReply(
 		user: IUser,
 		name: string,
 		body: string,
+		language: Language,
 	): Promise<{ success: boolean; error?: string }> {
+		const validation = this.validateReply(name, body, language);
+
+		if (!validation.success) {
+			return validation;
+		}
+
 		try {
-			this.validateReply(name, body);
+			if (!(await this.isUniqueReplyName(user, name))) {
+				return {
+					success: false,
+					error: t('error_reply_name_already_exists', language),
+				};
+			}
 
 			const association = this.getAssociations(user.id);
 			const userPrevReply: IReply[] = await this.getReplyForUser(user);
@@ -81,10 +122,7 @@ export class ReplyStorage {
 			console.warn('Create Reply Error: ', error);
 			return {
 				success: false,
-				error:
-					error instanceof Error
-						? error.message
-						: 'Failed to create reply due to an internal error.',
+				error: t('error_fail_internal', language),
 			};
 		}
 	}
@@ -117,7 +155,7 @@ export class ReplyStorage {
 		body: string,
 	): Promise<{ success: boolean; error?: string }> {
 		try {
-			this.validateReply(name, body);
+			// this.validateReply(name, body);
 
 			const userReplies = await this.getReplyForUser(user);
 			const replyIndex = userReplies.findIndex(

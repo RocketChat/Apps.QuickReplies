@@ -3,18 +3,15 @@ import {
 	LayoutBlockType,
 	TextObjectType,
 	TextObject,
-	ActionsBlock,
-	PreviewBlockBase,
-	PreviewBlockWithThumb,
 	ContextBlock,
 	InputBlock,
 	DividerBlock,
+	ActionsBlock,
 } from '@rocket.chat/ui-kit';
 import { ActionBlockParam } from '../definition/ui-kit/Block/IActionBlock';
 import { IBlockBuilder } from '../definition/ui-kit/Block/IBlockBuilder';
 import { ContextBlockParam } from '../definition/ui-kit/Block/IContextBlock';
 import { InputBlockParam } from '../definition/ui-kit/Block/IInputBlock';
-import { PreviewBlockParam } from '../definition/ui-kit/Block/IPreviewBlock';
 import { SectionBlockParam } from '../definition/ui-kit/Block/ISectionBlock';
 
 export class BlockBuilder implements IBlockBuilder {
@@ -34,14 +31,6 @@ export class BlockBuilder implements IBlockBuilder {
 		};
 		return sectionBlock;
 	}
-	public createActionBlock(param: ActionBlockParam): ActionsBlock {
-		const { elements } = param;
-		const actionBlock: ActionsBlock = {
-			type: LayoutBlockType.ACTIONS,
-			elements: elements,
-		};
-		return actionBlock;
-	}
 
 	private createTextObjects(fields: Array<string>): Array<TextObject> {
 		return fields.map((field) => {
@@ -50,21 +39,6 @@ export class BlockBuilder implements IBlockBuilder {
 				text: field,
 			};
 		});
-	}
-
-	public createPreviewBlock(
-		param: PreviewBlockParam,
-	): PreviewBlockBase | PreviewBlockWithThumb {
-		const { title, description, footer, thumb } = param;
-		const previewBlock: PreviewBlockBase | PreviewBlockWithThumb = {
-			type: LayoutBlockType.PREVIEW,
-			title: this.createTextObjects(title),
-			description: this.createTextObjects(description),
-			footer,
-			thumb,
-		};
-
-		return previewBlock;
 	}
 
 	public createContextBlock(param: ContextBlockParam): ContextBlock {
@@ -117,5 +91,14 @@ export class BlockBuilder implements IBlockBuilder {
 		};
 
 		return dividerBlock;
+	}
+
+	public createActionBlock(param: ActionBlockParam): ActionsBlock {
+		const { elements } = param;
+		const actionBlock: ActionsBlock = {
+			type: LayoutBlockType.ACTIONS,
+			elements: elements,
+		};
+		return actionBlock;
 	}
 }
