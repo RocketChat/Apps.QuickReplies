@@ -9,11 +9,11 @@ import {
 	IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
+import { listContextualBarEnum } from '../enum/modals/listContextualBar';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
-import { CreateModalEnum } from '../enum/modals/CreateModal';
+import { createModalEnum } from '../enum/modals/createModal';
 import { CacheReplyStorage } from '../storage/ReplyCache';
-import { SendModalEnum } from '../enum/modals/SendModal';
+import { sendModalEnum } from '../enum/modals/sendModal';
 
 export class ExecuteViewClosedHandler {
 	private context: UIKitViewCloseInteractionContext;
@@ -36,13 +36,13 @@ export class ExecuteViewClosedHandler {
 			user.id,
 		);
 		switch (view.id) {
-			case ListContextualBarEnum.VIEW_ID: {
+			case listContextualBarEnum.VIEW_ID: {
 				break;
 			}
-			case CreateModalEnum.VIEW_ID: {
+			case createModalEnum.VIEW_ID: {
 				break;
 			}
-			case SendModalEnum.VIEW_ID: {
+			case sendModalEnum.VIEW_ID: {
 				const replyCache = new CacheReplyStorage(
 					this.persistence,
 					this.read.getPersistenceReader(),

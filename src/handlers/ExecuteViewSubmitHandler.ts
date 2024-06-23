@@ -13,7 +13,7 @@ import {
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { sendNotification } from '../helper/notification';
-import { CreateModalEnum } from '../enum/modals/CreateModal';
+import { createModalEnum } from '../enum/modals/createModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
@@ -23,11 +23,12 @@ import {
 } from '../helper/userPreference';
 import { setUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
-import { SendModalEnum } from '../enum/modals/SendModal';
+import { sendModalEnum } from '../enum/modals/sendModal';
 import { sendMessage } from '../helper/message';
 import { CacheReplyStorage } from '../storage/ReplyCache';
 import { IReply } from '../definition/reply/IReply';
-import { listReplyContextualBar } from '../modal/listReplyContextualBar';
+import { listReplyContextualBar } from '../modal/listContextualBar';
+import { confirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -61,12 +62,14 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		switch (view.id) {
-			case CreateModalEnum.VIEW_ID:
+			case createModalEnum.VIEW_ID:
 				return this.handleCreate(room, user, view, language);
 			case setUserPreferenceModalEnum.VIEW_ID:
 				return this.handleSetUserPreference(room, user, view);
-			case SendModalEnum.VIEW_ID:
+			case sendModalEnum.VIEW_ID:
 				return this.handleSend(room, user, view);
+			case confirmDeleteModalEnum.VIEW_ID:
+				return this.handleDelete(room, user, view, language);
 
 			default:
 				return this.context.getInteractionResponder().successResponse();
@@ -80,12 +83,12 @@ export class ExecuteViewSubmitHandler {
 		language: Language,
 	): Promise<IUIKitResponse> {
 		const nameStateValue =
-			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
-				CreateModalEnum.REPLY_NAME_ACTION_ID
+			view.state?.[createModalEnum.REPLY_NAME_BLOCK_ID]?.[
+				createModalEnum.REPLY_NAME_ACTION_ID
 			];
 		const bodyStateValue =
-			view.state?.[CreateModalEnum.REPLY_BODY_BLOCK_ID]?.[
-				CreateModalEnum.REPLY_BODY_ACTION_ID
+			view.state?.[createModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				createModalEnum.REPLY_BODY_ACTION_ID
 			];
 
 		if (!nameStateValue || !bodyStateValue) {
@@ -199,8 +202,8 @@ export class ExecuteViewSubmitHandler {
 			const cachedReply = await replyCacheStorage.getCacheReply(user);
 
 			const bodyStateValue = view.state?.[
-				SendModalEnum.REPLY_BODY_BLOCK_ID
-			]?.[SendModalEnum.REPLY_BODY_ACTION_ID] as string;
+				sendModalEnum.REPLY_BODY_BLOCK_ID
+			]?.[sendModalEnum.REPLY_BODY_ACTION_ID] as string;
 
 			console.log(bodyStateValue);
 
@@ -211,12 +214,67 @@ export class ExecuteViewSubmitHandler {
 				return this.context.getInteractionResponder().errorResponse();
 			}
 
-			// Send the message
 			await sendMessage(this.modify, user, room, body);
 			await replyCacheStorage.removeCacheReply(user);
 			return this.context.getInteractionResponder().successResponse();
 		} catch (error) {
 			console.error('Error handling send:', error);
+			return this.context.getInteractionResponder().errorResponse();
+		}
+	}
+
+	private async handleDelete(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+		language,
+	): Promise<IUIKitResponse> {
+		console.log('deleteHanler ');
+		const persistenceRead = this.read.getPersistenceReader();
+		const replyStorage = new ReplyStorage(
+			this.persistence,
+			persistenceRead,
+		);
+
+		const replyCacheStorage = new CacheReplyStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+		);
+
+		const cachedReply = await replyCacheStorage.getCacheReply(user);
+		console.log(cachedReply);
+
+		const replyId = cachedReply.id;
+		const result = await replyStorage.deleteReplyById(user, replyId);
+
+		if (result.success) {
+			const successMessage = `Reply **${cachedReply.name}** deleted successfully ✅`;
+			await sendNotification(this.read, this.modify, user, room, {
+				message: successMessage,
+			});
+			await replyCacheStorage.removeCacheReply(user);
+			const userReplies: IReply[] = await replyStorage.getReplyForUser(
+				user,
+			);
+
+			const UpdatedListBar = await listReplyContextualBar(
+				this.app,
+				user,
+				this.read,
+				this.persistence,
+				this.modify,
+				room,
+				userReplies,
+				language,
+			);
+			return this.context
+				.getInteractionResponder()
+				.updateModalViewResponse(UpdatedListBar);
+		} else {
+			const errorMessage = `Failed to delete reply **${cachedReply.name}** ❌\n\n${result.error}`;
+			await sendNotification(this.read, this.modify, user, room, {
+				message: errorMessage,
+			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
 	}

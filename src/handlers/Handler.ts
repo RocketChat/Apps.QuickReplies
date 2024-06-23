@@ -10,8 +10,8 @@ import {
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
-import { CreateReplyModal } from '../modal/createReplyModal';
-import { listReplyContextualBar } from '../modal/listReplyContextualBar';
+import { CreateReplyModal } from '../modal/createModal';
+import { listReplyContextualBar } from '../modal/listContextualBar';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IReply } from '../definition/reply/IReply';
 import {

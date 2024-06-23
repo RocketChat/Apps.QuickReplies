@@ -14,7 +14,7 @@ import {
 	ButtonStyle,
 	UIKitSurfaceType,
 } from '@rocket.chat/apps-engine/definition/uikit';
-import { CreateModalEnum } from '../enum/modals/CreateModal';
+import { createModalEnum } from '../enum/modals/createModal';
 import { Language, t } from '../lib/Translation/translation';
 
 export async function CreateReplyModal(
@@ -26,7 +26,7 @@ export async function CreateReplyModal(
 	room: IRoom,
 	language: Language,
 ): Promise<IUIKitSurfaceViewParam | Error> {
-	const { elementBuilder } = app.getUtils();
+	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
 
@@ -41,8 +41,8 @@ export async function CreateReplyModal(
 			optional: false,
 		},
 		{
-			blockId: CreateModalEnum.REPLY_NAME_BLOCK_ID,
-			actionId: CreateModalEnum.REPLY_NAME_ACTION_ID,
+			blockId: createModalEnum.REPLY_NAME_BLOCK_ID,
+			actionId: createModalEnum.REPLY_NAME_ACTION_ID,
 		},
 	);
 
@@ -58,31 +58,30 @@ export async function CreateReplyModal(
 			multiline: true,
 		},
 		{
-			blockId: CreateModalEnum.REPLY_BODY_BLOCK_ID,
-			actionId: CreateModalEnum.REPLY_BODY_ACTION_ID,
+			blockId: createModalEnum.REPLY_BODY_BLOCK_ID,
+			actionId: createModalEnum.REPLY_BODY_ACTION_ID,
 		},
 	);
 
-	blocks.push(inputReplyName);
-	blocks.push(inputReplyBody);
+	blocks.push(inputReplyName, inputReplyBody);
 
 	const submit = elementBuilder.addButton(
 		{ text: t('create_button', language), style: ButtonStyle.PRIMARY },
 		{
-			actionId: CreateModalEnum.SUBMIT_ACTION_ID,
-			blockId: CreateModalEnum.SUBMIT_BLOCK_ID,
+			actionId: createModalEnum.SUBMIT_ACTION_ID,
+			blockId: createModalEnum.SUBMIT_BLOCK_ID,
 		},
 	);
 
 	const close = elementBuilder.addButton(
 		{ text: t('close_button', language), style: ButtonStyle.DANGER },
 		{
-			actionId: CreateModalEnum.CLOSE_ACTION_ID,
-			blockId: CreateModalEnum.CLOSE_BLOCK_ID,
+			actionId: createModalEnum.CLOSE_ACTION_ID,
+			blockId: createModalEnum.CLOSE_BLOCK_ID,
 		},
 	);
 	return {
-		id: CreateModalEnum.VIEW_ID,
+		id: createModalEnum.VIEW_ID,
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,

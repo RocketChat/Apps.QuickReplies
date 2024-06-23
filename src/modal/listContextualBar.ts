@@ -14,7 +14,7 @@ import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IReply } from '../definition/reply/IReply';
-import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
+import { listContextualBarEnum } from '../enum/modals/listContextualBar';
 import { Language, t } from '../lib/Translation/translation';
 
 export async function listReplyContextualBar(
@@ -41,7 +41,7 @@ export async function listReplyContextualBar(
 							text: t('send', language),
 							emoji: true,
 						},
-						value: `${ListContextualBarEnum.SEND} : ${reply.id}`,
+						value: `${listContextualBarEnum.SEND} : ${reply.id}`,
 					},
 					{
 						text: {
@@ -49,7 +49,7 @@ export async function listReplyContextualBar(
 							text: t('edit', language),
 							emoji: true,
 						},
-						value: `${ListContextualBarEnum.EDIT} : ${reply.id}`,
+						value: `${listContextualBarEnum.EDIT} : ${reply.id}`,
 					},
 					{
 						text: {
@@ -57,13 +57,13 @@ export async function listReplyContextualBar(
 							text: t('delete', language),
 							emoji: true,
 						},
-						value: `${ListContextualBarEnum.DELETE} : ${reply.id}`,
+						value: `${listContextualBarEnum.DELETE} : ${reply.id}`,
 					},
 				],
 			},
 			{
-				blockId: ListContextualBarEnum.REPLY_OVERFLOW_BLOCKID,
-				actionId: ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID,
+				blockId: listContextualBarEnum.REPLY_OVERFLOW_BLOCKID,
+				actionId: listContextualBarEnum.REPLY_OVERFLOW_ACTIONID,
 			},
 		);
 
@@ -87,13 +87,13 @@ export async function listReplyContextualBar(
 			style: ButtonStyle.DANGER,
 		},
 		{
-			actionId: ListContextualBarEnum.LIST_REPLY_CLOSE_ACTION_ID,
-			blockId: ListContextualBarEnum.LIST_REPLY_CLOSE_BLOCK_ID,
+			actionId: listContextualBarEnum.LIST_REPLY_CLOSE_ACTION_ID,
+			blockId: listContextualBarEnum.LIST_REPLY_CLOSE_BLOCK_ID,
 		},
 	);
 
 	return {
-		id: ListContextualBarEnum.VIEW_ID,
+		id: listContextualBarEnum.VIEW_ID,
 		type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,

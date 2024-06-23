@@ -10,7 +10,7 @@ import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { inputElementComponent } from './common/inputElementComponent';
 import { ButtonStyle } from '@rocket.chat/apps-engine/definition/uikit';
-import { SendModalEnum } from '../enum/modals/SendModal';
+import { sendModalEnum } from '../enum/modals/sendModal';
 import { IReply } from '../definition/reply/IReply';
 import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 
@@ -27,9 +27,9 @@ export async function SendReplyModal(
 
 	const blocks: Block[] = [];
 
-	const labelReplyBody = SendModalEnum.REPLY_BODY_LABEL.toString();
+	const labelReplyBody = sendModalEnum.REPLY_BODY_LABEL.toString();
 	const placeholderReplyBody =
-		SendModalEnum.REPLY_BODY_PLACEHOLDER.toString();
+		sendModalEnum.REPLY_BODY_PLACEHOLDER.toString();
 
 	const inputReplyBody = inputElementComponent(
 		{
@@ -41,33 +41,33 @@ export async function SendReplyModal(
 			initialValue: reply.body,
 		},
 		{
-			blockId: SendModalEnum.REPLY_BODY_BLOCK_ID,
-			actionId: SendModalEnum.REPLY_BODY_ACTION_ID,
+			blockId: sendModalEnum.REPLY_BODY_BLOCK_ID,
+			actionId: sendModalEnum.REPLY_BODY_ACTION_ID,
 		},
 	);
 
 	blocks.push(inputReplyBody);
 
 	const submit = elementBuilder.addButton(
-		{ text: SendModalEnum.SEND, style: ButtonStyle.PRIMARY },
+		{ text: sendModalEnum.SEND, style: ButtonStyle.PRIMARY },
 		{
-			actionId: SendModalEnum.SUBMIT_ACTION_ID,
-			blockId: SendModalEnum.SUBMIT_BLOCK_ID,
+			actionId: sendModalEnum.SUBMIT_ACTION_ID,
+			blockId: sendModalEnum.SUBMIT_BLOCK_ID,
 		},
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: SendModalEnum.CLOSE, style: ButtonStyle.DANGER },
+		{ text: sendModalEnum.CLOSE },
 		{
-			actionId: SendModalEnum.CLOSE_ACTION_ID,
-			blockId: SendModalEnum.CLOSE_BLOCK_ID,
+			actionId: sendModalEnum.CLOSE_ACTION_ID,
+			blockId: sendModalEnum.CLOSE_BLOCK_ID,
 		},
 	);
 	return {
-		id: SendModalEnum.VIEW_ID,
+		id: sendModalEnum.VIEW_ID,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: SendModalEnum.TITLE,
+			text: sendModalEnum.TITLE,
 		},
 		blocks,
 		close,

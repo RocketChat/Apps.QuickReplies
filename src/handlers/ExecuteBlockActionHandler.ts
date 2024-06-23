@@ -11,14 +11,13 @@ import {
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ReplyStorage } from '../storage/ReplyStorage';
-import { SendReplyModal } from '../modal/sendReplyModal';
-import { listReplyContextualBar } from '../modal/listReplyContextualBar';
-import { IReply } from '../definition/reply/IReply';
+import { SendReplyModal } from '../modal/sendModal';
 import { CacheReplyStorage } from '../storage/ReplyCache';
 import { Handler } from './Handler';
 import { messageActionButton } from '../enum/notification';
-import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
+import { listContextualBarEnum } from '../enum/modals/listContextualBar';
 import { getUserPreferredLanguage } from '../helper/userPreference';
+import { confirmDeleteModal } from '../modal/confirmDeleteModal';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -77,7 +76,7 @@ export class ExecuteBlockActionHandler {
 		console.log(actionId);
 
 		switch (actionId) {
-			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
+			case listContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
 				if (value) {
 					const command = value.split(' : ')[0].trim();
 					const replyId = value.split(' : ')[1].trim();
@@ -92,15 +91,21 @@ export class ExecuteBlockActionHandler {
 						replyId,
 					);
 
-					if (reply && room) {
-						switch (command) {
-							case ListContextualBarEnum.SEND:
-								const replyCache = new CacheReplyStorage(
-									this.persistence,
-									this.read.getPersistenceReader(),
-								);
-								await replyCache.setCacheReply(user, reply);
+					const replyCache = new CacheReplyStorage(
+						this.persistence,
+						this.read.getPersistenceReader(),
+					);
 
+					if (!reply) {
+						return this.context
+							.getInteractionResponder()
+							.errorResponse();
+					}
+					await replyCache.setCacheReply(user, reply);
+
+					if (room) {
+						switch (command) {
+							case listContextualBarEnum.SEND:
 								const sendModal = await SendReplyModal(
 									this.app,
 									user,
@@ -116,34 +121,23 @@ export class ExecuteBlockActionHandler {
 									.openModalViewResponse(sendModal);
 
 								break;
-							case ListContextualBarEnum.EDIT:
+							case listContextualBarEnum.EDIT:
 								console.log('edit', replyId);
 								break;
 							case 'Delete':
-								console.log('Delete', replyId);
-
-								await replyStorage.deleteReplyById(
+								const confirmModal = await confirmDeleteModal(
+									this.app,
 									user,
-									replyId,
+									this.read,
+									this.persistence,
+									this.modify,
+									room,
+									reply,
 								);
-								const userReplies: IReply[] =
-									await replyStorage.getReplyForUser(user);
-
-								const UpdatedListBar =
-									await listReplyContextualBar(
-										this.app,
-										user,
-										this.read,
-										this.persistence,
-										this.modify,
-										room,
-										userReplies,
-										language,
-									);
 								return this.context
 									.getInteractionResponder()
-									.updateModalViewResponse(UpdatedListBar);
-								break;
+									.openModalViewResponse(confirmModal);
+
 							default:
 						}
 					}

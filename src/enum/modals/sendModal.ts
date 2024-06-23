@@ -1,4 +1,4 @@
-export enum SendModalEnum {
+export enum sendModalEnum {
 	VIEW_ID = 'send-reply-view-id',
 	TITLE = 'Send a Reply',
 	CLOSE = 'Close',
