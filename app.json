@@ -1,15 +1,16 @@
 {
-	"id": "e664d2cb-7beb-413a-837a-80fd840c387b",
-	"version": "0.0.1",
-	"requiredApiVersion": "^1.4.0",
-	"iconFile": "icon.png",
-	"author": {
-		"name": "Vipin Chaudhary",
-		"homepage": "https://github.com/RocketChat/Apps.QuickReplies",
-		"support": "https://github.com/RocketChat/Apps.QuickReplies/issues"
-	},
-	"name": "QuickReplies",
-	"nameSlug": "quickreplies",
-	"classFile": "QuickRepliesApp.ts",
-	"description": "Instantly craft and send customizable responses within Rocket.Chat."
+    "id": "e664d2cb-7beb-413a-837a-80fd840c387b",
+    "version": "0.0.1",
+    "requiredApiVersion": "^1.29.1",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "Vipin Chaudhary",
+        "homepage": "https://github.com/RocketChat/Apps.QuickReplies",
+        "support": "https://github.com/RocketChat/Apps.QuickReplies/issues"
+    },
+    "name": "QuickReplies",
+    "nameSlug": "quickreplies",
+    "classFile": "QuickRepliesApp.ts",
+    "description": "Instantly craft and send customizable responses within Rocket.Chat.",
+    "implements": []
 }
