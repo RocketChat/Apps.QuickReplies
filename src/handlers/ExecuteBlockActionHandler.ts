@@ -103,7 +103,12 @@ export class ExecuteBlockActionHandler {
 							.errorResponse();
 					}
 					await replyCache.setCacheReply(user, reply);
-
+					const language = await getUserPreferredLanguage(
+						this.app,
+						this.read.getPersistenceReader(),
+						this.persistence,
+						user.id,
+					);
 					if (room) {
 						switch (command) {
 							case listContextualBarEnum.SEND:
@@ -115,6 +120,7 @@ export class ExecuteBlockActionHandler {
 									this.modify,
 									room,
 									reply,
+									language,
 								);
 
 								return this.context
@@ -131,6 +137,7 @@ export class ExecuteBlockActionHandler {
 									this.modify,
 									room,
 									reply,
+									language,
 								);
 								return this.context
 									.getInteractionResponder()
@@ -146,6 +153,7 @@ export class ExecuteBlockActionHandler {
 									this.modify,
 									room,
 									reply,
+									language,
 								);
 								return this.context
 									.getInteractionResponder()

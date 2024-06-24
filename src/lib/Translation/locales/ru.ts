@@ -34,5 +34,24 @@ export const ru = {
 	send: "Отправить",
 	edit: "Редактировать",
 	delete: "Удалить",
-	list_reply_title: "Список всех ответов"
+	list_reply_title: "Список всех ответов",
+	
+	delete_button: "Удалить",
+	confirm_delete_modal_title: "Подтвердить удаление",
+	confirm_delete_message: "Вы уверены, что хотите удалить этот ответ?",
+	delete_successfully: "Успешно удалено",
+	fail_delete_reply: "Не удалось удалить",
+	edit_button: "Редактировать",
+	edit_modal_title: "Редактировать ответ",
+	edit_reply_name_label: "Название ответа",
+	edit_reply_name_placeholder: "Редактировать название ответа",
+	edit_reply_body_label: "Содержание ответа",
+	edit_reply_body_placeholder: "Редактировать содержание ответа",
+	edit_successfully: "Успешно отредактировано",
+	fail_edit_reply: "Не удалось отредактировать",
+	send_reply_button: "Отправить",
+	send_reply_modal_title: "Отправить ответ",
+	send_reply_body_label: "Содержание ответа",
+	send_reply_body_placeholder: "Содержание ответа, который вы собираетесь отправить",
+	error_reply_not_found: "Ответ не найден"
 }

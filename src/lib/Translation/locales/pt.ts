@@ -41,4 +41,23 @@ export const pt = {
 	edit: 'Editar',
 	delete: 'Excluir',
 	list_reply_title: 'Lista de todas as respostas',
+
+	delete_button: "Excluir",
+	confirm_delete_modal_title: "Confirmar Exclusão",
+	confirm_delete_message: "Você tem certeza que deseja excluir esta resposta?",
+	delete_successfully: "Excluído com sucesso",
+	fail_delete_reply: "Falha ao excluir",
+	edit_button: "Editar",
+	edit_modal_title: "Editar uma Resposta",
+	edit_reply_name_label: "Nome da Resposta",
+	edit_reply_name_placeholder: "Editar o nome da resposta",
+	edit_reply_body_label: "Corpo da Resposta",
+	edit_reply_body_placeholder: "Editar o conteúdo da resposta",
+	edit_successfully: "Editado com sucesso",
+	fail_edit_reply: "Falha ao editar",
+	send_reply_button: "Enviar",
+	send_reply_modal_title: "Enviar uma Resposta",
+	send_reply_body_label: "Conteúdo da Mensagem de Resposta",
+	send_reply_body_placeholder: "Conteúdo da resposta que você está prestes a enviar",
+	error_reply_not_found: "Resposta não encontrada"
 };

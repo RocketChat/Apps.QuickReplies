@@ -153,18 +153,19 @@ export class ReplyStorage {
 		replyId: string,
 		name: string,
 		body: string,
+		language: Language,
 	): Promise<{ success: boolean; error?: string }> {
 		try {
-			// this.validateReply(name, body);
-			console.log('updateReplyById', user.name, replyId, name, body);
-
 			const userReplies = await this.getReplyForUser(user);
 			const replyIndex = userReplies.findIndex(
 				(reply) => reply.id === replyId,
 			);
 
 			if (replyIndex === -1) {
-				return { success: false, error: 'Reply not found' };
+				return {
+					success: false,
+					error: t('error_reply_not_found', language),
+				};
 			}
 
 			userReplies[replyIndex] = { id: replyId, name, body };
@@ -180,10 +181,7 @@ export class ReplyStorage {
 			console.warn('Update Reply Error: ', error);
 			return {
 				success: false,
-				error:
-					error instanceof Error
-						? error.message
-						: 'Failed to update reply due to an internal error.',
+				error: t('error_fail_internal', language),
 			};
 		}
 	}
@@ -191,6 +189,7 @@ export class ReplyStorage {
 	public async deleteReplyById(
 		user: IUser,
 		replyId: string,
+		language: Language,
 	): Promise<{ success: boolean; error?: string }> {
 		try {
 			const userReplies = await this.getReplyForUser(user);
@@ -199,7 +198,10 @@ export class ReplyStorage {
 			);
 
 			if (replyIndex === -1) {
-				return { success: false, error: 'Reply not found' };
+				return {
+					success: false,
+					error: t('error_reply_not_found', language),
+				};
 			}
 
 			userReplies.splice(replyIndex, 1);
@@ -215,10 +217,7 @@ export class ReplyStorage {
 			console.warn('Delete Reply Error: ', error);
 			return {
 				success: false,
-				error:
-					error instanceof Error
-						? error.message
-						: 'Failed to delete reply due to an internal error.',
+				error: t('error_fail_internal', language),
 			};
 		}
 	}

@@ -34,5 +34,24 @@ export const pl = {
 	send: "Wyślij",
 	edit: "Edytuj",
 	delete: "Usuń",
-	list_reply_title: "Lista wszystkich odpowiedzi"
+	list_reply_title: "Lista wszystkich odpowiedzi",
+
+	delete_button: "Usuń",
+	confirm_delete_modal_title: "Potwierdź usunięcie",
+	confirm_delete_message: "Czy na pewno chcesz usunąć tę odpowiedź?",
+	delete_successfully: "Pomyślnie usunięto",
+	fail_delete_reply: "Nie udało się usunąć",
+	edit_button: "Edytuj",
+	edit_modal_title: "Edytuj odpowiedź",
+	edit_reply_name_label: "Nazwa odpowiedzi",
+	edit_reply_name_placeholder: "Edytuj nazwę odpowiedzi",
+	edit_reply_body_label: "Treść odpowiedzi",
+	edit_reply_body_placeholder: "Edytuj treść odpowiedzi",
+	edit_successfully: "Pomyślnie edytowano",
+	fail_edit_reply: "Nie udało się edytować",
+	send_reply_button: "Wyślij",
+	send_reply_modal_title: "Wyślij odpowiedź",
+	send_reply_body_label: "Treść odpowiedzi",
+	send_reply_body_placeholder: "Treść odpowiedzi, którą zamierzasz wysłać",
+	error_reply_not_found: "Odpowiedź nie znaleziona"
 }

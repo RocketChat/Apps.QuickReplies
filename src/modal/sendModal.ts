@@ -13,6 +13,7 @@ import { ButtonStyle } from '@rocket.chat/apps-engine/definition/uikit';
 import { sendModalEnum } from '../enum/modals/sendModal';
 import { IReply } from '../definition/reply/IReply';
 import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
+import { Language, t } from '../lib/Translation/translation';
 
 export async function SendReplyModal(
 	app: QuickRepliesApp,
@@ -22,14 +23,14 @@ export async function SendReplyModal(
 	modify: IModify,
 	room: IRoom,
 	reply: IReply,
+	language: Language,
 ): Promise<IUIKitModalViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
 
-	const labelReplyBody = sendModalEnum.REPLY_BODY_LABEL.toString();
-	const placeholderReplyBody =
-		sendModalEnum.REPLY_BODY_PLACEHOLDER.toString();
+	const labelReplyBody = t('send_reply_body_label', language);
+	const placeholderReplyBody = t('send_reply_body_placeholder', language);
 
 	const inputReplyBody = inputElementComponent(
 		{
@@ -49,7 +50,7 @@ export async function SendReplyModal(
 	blocks.push(inputReplyBody);
 
 	const submit = elementBuilder.addButton(
-		{ text: sendModalEnum.SEND, style: ButtonStyle.PRIMARY },
+		{ text: t('send_reply_button', language), style: ButtonStyle.PRIMARY },
 		{
 			actionId: sendModalEnum.SUBMIT_ACTION_ID,
 			blockId: sendModalEnum.SUBMIT_BLOCK_ID,
@@ -57,7 +58,7 @@ export async function SendReplyModal(
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: sendModalEnum.CLOSE },
+		{ text: t('close_button', language) },
 		{
 			actionId: sendModalEnum.CLOSE_ACTION_ID,
 			blockId: sendModalEnum.CLOSE_BLOCK_ID,
@@ -67,7 +68,7 @@ export async function SendReplyModal(
 		id: sendModalEnum.VIEW_ID,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: sendModalEnum.TITLE,
+			text: t('send_reply_modal_title', language),
 		},
 		blocks,
 		close,

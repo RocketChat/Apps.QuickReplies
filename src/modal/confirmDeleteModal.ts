@@ -4,7 +4,6 @@ import {
 	IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { TextObjectType, Block } from '@rocket.chat/ui-kit';
-
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
@@ -12,6 +11,7 @@ import { ButtonStyle } from '@rocket.chat/apps-engine/definition/uikit';
 import { IReply } from '../definition/reply/IReply';
 import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 import { confirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
+import { Language, t } from '../lib/Translation/translation';
 
 export async function confirmDeleteModal(
 	app: QuickRepliesApp,
@@ -21,17 +21,21 @@ export async function confirmDeleteModal(
 	modify: IModify,
 	room: IRoom,
 	reply: IReply,
+	language: Language,
 ): Promise<IUIKitModalViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
 
 	const confirmDelete = blockBuilder.createSectionBlock({
-		text: `### Hey ${user.name}, Are you sure you want to delete this reply?`,
+		text: `### ${t('hey', language)} ${user.name}, ${t(
+			'confirm_delete_message',
+			language,
+		)}`,
 	});
 
-	const replyInfo = `**Reply name:** ${reply.name}  
-	**Reply content:** ${reply.body}`;
+	const replyInfo = `**${t('reply_name_label', language)}:** ${reply.name}  
+	**${t('reply_body_label', language)}:** ${reply.body}`;
 
 	const replyContent = blockBuilder.createContextBlock({
 		contextElements: [replyInfo],
@@ -40,7 +44,7 @@ export async function confirmDeleteModal(
 	blocks.push(confirmDelete, replyContent);
 
 	const submit = elementBuilder.addButton(
-		{ text: confirmDeleteModalEnum.DELETE, style: ButtonStyle.DANGER },
+		{ text: t('delete_button', language), style: ButtonStyle.DANGER },
 		{
 			actionId: confirmDeleteModalEnum.SUBMIT_ACTION_ID,
 			blockId: confirmDeleteModalEnum.SUBMIT_BLOCK_ID,
@@ -48,7 +52,7 @@ export async function confirmDeleteModal(
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: confirmDeleteModalEnum.CLOSE },
+		{ text: t('close_button', language) },
 		{
 			actionId: confirmDeleteModalEnum.CLOSE_ACTION_ID,
 			blockId: confirmDeleteModalEnum.CLOSE_BLOCK_ID,
@@ -58,7 +62,7 @@ export async function confirmDeleteModal(
 		id: confirmDeleteModalEnum.VIEW_ID,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: confirmDeleteModalEnum.TITLE,
+			text: t('confirm_delete_modal_title', language),
 		},
 		blocks,
 		close,

@@ -132,7 +132,6 @@ export class ExecuteViewSubmitHandler {
 			const userReplies: IReply[] = await replyStorage.getReplyForUser(
 				user,
 			);
-
 			const UpdatedListBar = await listReplyContextualBar(
 				this.app,
 				user,
@@ -146,8 +145,6 @@ export class ExecuteViewSubmitHandler {
 			return this.context
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
-
-			// return this.context.getInteractionResponder().successResponse();
 		} else {
 			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
 				'fail_create_reply',
@@ -200,9 +197,7 @@ export class ExecuteViewSubmitHandler {
 				this.persistence,
 				this.read.getPersistenceReader(),
 			);
-
 			const cachedReply = await replyCacheStorage.getCacheReply(user);
-
 			const bodyStateValue = view.state?.[
 				sendModalEnum.REPLY_BODY_BLOCK_ID
 			]?.[sendModalEnum.REPLY_BODY_ACTION_ID] as string;
@@ -229,7 +224,7 @@ export class ExecuteViewSubmitHandler {
 		room: IRoom,
 		user: IUser,
 		view: IUIKitSurface,
-		language,
+		language: Language,
 	): Promise<IUIKitResponse> {
 		console.log('deleteHanler ');
 		const persistenceRead = this.read.getPersistenceReader();
@@ -242,15 +237,20 @@ export class ExecuteViewSubmitHandler {
 			this.persistence,
 			this.read.getPersistenceReader(),
 		);
-
 		const cachedReply = await replyCacheStorage.getCacheReply(user);
 		console.log(cachedReply);
 
 		const replyId = cachedReply.id;
-		const result = await replyStorage.deleteReplyById(user, replyId);
+		const result = await replyStorage.deleteReplyById(
+			user,
+			replyId,
+			language,
+		);
 
 		if (result.success) {
-			const successMessage = `Reply **${cachedReply.name}** deleted successfully ✅`;
+			const successMessage = `${t('quick_reply', language)} **${
+				cachedReply.name
+			}** ${t('delete_successfully', language)}✅`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
@@ -273,7 +273,9 @@ export class ExecuteViewSubmitHandler {
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
-			const errorMessage = `Failed to delete reply **${cachedReply.name}** ❌\n\n${result.error}`;
+			const errorMessage = `${t('fail_delete_reply', language)} **${
+				cachedReply.name
+			}** ❌\n\n ${result.error}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
@@ -307,7 +309,6 @@ export class ExecuteViewSubmitHandler {
 			view.state?.[editModalEnum.REPLY_NAME_BLOCK_ID]?.[
 				editModalEnum.REPLY_NAME_ACTION_ID
 			];
-
 		const bodyStateValue =
 			view.state?.[editModalEnum.REPLY_BODY_BLOCK_ID]?.[
 				editModalEnum.REPLY_BODY_ACTION_ID
@@ -323,7 +324,7 @@ export class ExecuteViewSubmitHandler {
 			cachedReply.id,
 			name,
 			body,
-			// language,
+			language,
 		);
 
 		if (result.success) {
@@ -331,9 +332,7 @@ export class ExecuteViewSubmitHandler {
 				'quick_reply',
 				language,
 			)}
-			 **${name}** edited_successfully
-			  ✅`;
-			//   			  ${t('edited_successfully', language)}
+                **${name}** ${t('edit_successfully', language)} ✅`;
 
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
@@ -358,10 +357,11 @@ export class ExecuteViewSubmitHandler {
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
-			const errorMessage = `${t('hey', language)} ${user.name},
-			 fail_edit_reply
-			❌\n\n${result.error}`;
-			// 			 ${t(	'fail_edit_reply',language)}
+			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
+				'fail_edit_reply',
+				language,
+			)}
+            ❌\n\n${result.error}`;
 
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,

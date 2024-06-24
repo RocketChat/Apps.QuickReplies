@@ -44,4 +44,23 @@ export const de = {
 	edit: 'Bearbeiten',
 	delete: 'Löschen',
 	list_reply_title: 'Liste aller Antworten',
+
+	delete_button: "Löschen",
+	confirm_delete_modal_title: "Löschen bestätigen",
+	confirm_delete_message: "Sind Sie sicher, dass Sie diese Antwort löschen möchten?",
+	delete_successfully: "Erfolgreich gelöscht",
+	fail_delete_reply: "Löschen fehlgeschlagen",
+	edit_button: "Bearbeiten",
+	edit_modal_title: "Eine Antwort bearbeiten",
+	edit_reply_name_label: "Antwortname",
+	edit_reply_name_placeholder: "Name der Antwort bearbeiten",
+	edit_reply_body_label: "Antwortinhalt",
+	edit_reply_body_placeholder: "Inhalt der Antwort bearbeiten",
+	edit_successfully: "Erfolgreich bearbeitet",
+	fail_edit_reply: "Bearbeiten fehlgeschlagen",
+	send_reply_button: "Senden",
+	send_reply_modal_title: "Eine Antwort senden",
+	send_reply_body_label: "Antwortnachrichtinhalt",
+	send_reply_body_placeholder: "Inhalt der Antwort, die Sie senden möchten",
+	error_reply_not_found: "Antwort nicht gefunden"
 };
