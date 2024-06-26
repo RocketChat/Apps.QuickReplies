@@ -19,6 +19,7 @@ import { listContextualBarEnum } from '../enum/modals/listContextualBar';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { confirmDeleteModal } from '../modal/confirmDeleteModal';
 import { EditReplyModal } from '../modal/editModal';
+import { listReplyContextualBar } from '../modal/listContextualBar';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -178,6 +179,48 @@ export class ExecuteBlockActionHandler {
 				break;
 			case messageActionButton.NEED_MORE_ACTION_ID:
 				await handler.Help();
+				break;
+			case 'search_input':
+				const replyStorage = new ReplyStorage(
+					this.persistence,
+					persistenceRead,
+				);
+				const userReplies = await replyStorage.getReplyForUser(user);
+				if (value) {
+					const UpdatedListBar = await listReplyContextualBar(
+						this.app,
+						user,
+						this.read,
+						this.persistence,
+						this.modify,
+						room,
+						userReplies,
+						language,
+						value,
+					);
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(UpdatedListBar);
+				} else {
+					const UpdatedListBar = await listReplyContextualBar(
+						this.app,
+						user,
+						this.read,
+						this.persistence,
+						this.modify,
+						room,
+						userReplies,
+						language,
+					);
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(UpdatedListBar);
+				}
+
+				break;
+			case 'search_button':
+				console.log('search_button', value);
+
 				break;
 		}
 

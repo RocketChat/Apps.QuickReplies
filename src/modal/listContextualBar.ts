@@ -16,6 +16,7 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IReply } from '../definition/reply/IReply';
 import { listContextualBarEnum } from '../enum/modals/listContextualBar';
 import { Language, t } from '../lib/Translation/translation';
+import { inputElementComponent } from './common/inputElementComponent';
 
 export async function listReplyContextualBar(
 	app: QuickRepliesApp,
@@ -26,14 +27,40 @@ export async function listReplyContextualBar(
 	room: IRoom,
 	userReplies: IReply[],
 	language: Language,
+	searchValue?: string,
 ): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 	const blocks: Block[] = [];
 	const divider = blockBuilder.createDividerBlock();
 
-	const sortedReplies = userReplies.sort((a, b) => {
+	let Replies = userReplies;
+
+	const searchValueLowerCase = searchValue?.toLowerCase();
+
+	if (searchValueLowerCase) {
+		Replies = userReplies.filter((reply) => {
+			return (
+				reply.name.toLowerCase().includes(searchValueLowerCase) ||
+				reply.body.toLowerCase().includes(searchValueLowerCase)
+			);
+		});
+	}
+
+	const sortedReplies = Replies.sort((a, b) => {
 		return a.name.localeCompare(b.name);
 	});
+
+	const searchInput = inputElementComponent(
+		{
+			app,
+			placeholder: 'Search',
+			label: 'Search',
+			dispatchActionConfigOnInput: true,
+		},
+		{ blockId: 'search_input', actionId: 'search_input' },
+	);
+
+	blocks.push(searchInput, divider);
 
 	sortedReplies.forEach((reply) => {
 		const accessoryElement = elementBuilder.createOverflow(
@@ -84,6 +111,14 @@ export async function listReplyContextualBar(
 
 		blocks.push(replySection, replyBody, divider);
 	});
+
+	if (sortedReplies.length === 0) {
+		const noReplies = blockBuilder.createSectionBlock({
+			text: "You don't have any replies yet.",
+		});
+
+		blocks.push(noReplies);
+	}
 
 	const close = elementBuilder.addButton(
 		{
