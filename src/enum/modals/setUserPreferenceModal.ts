@@ -1,4 +1,4 @@
-export enum setUserPreferenceModalEnum {
+export enum SetUserPreferenceModalEnum {
 	VIEW_ID = 'set-user-preference-language-modal-view-id',
 	TITLE = 'Configure your language preference',
 	CLOSE = 'Close',
