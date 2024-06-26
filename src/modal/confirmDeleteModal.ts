@@ -10,7 +10,7 @@ import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { ButtonStyle } from '@rocket.chat/apps-engine/definition/uikit';
 import { IReply } from '../definition/reply/IReply';
 import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
-import { confirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
+import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 import { Language, t } from '../lib/Translation/translation';
 
 export async function confirmDeleteModal(
@@ -46,20 +46,20 @@ export async function confirmDeleteModal(
 	const submit = elementBuilder.addButton(
 		{ text: t('delete_button', language), style: ButtonStyle.DANGER },
 		{
-			actionId: confirmDeleteModalEnum.SUBMIT_ACTION_ID,
-			blockId: confirmDeleteModalEnum.SUBMIT_BLOCK_ID,
+			actionId: ConfirmDeleteModalEnum.SUBMIT_ACTION_ID,
+			blockId: ConfirmDeleteModalEnum.SUBMIT_BLOCK_ID,
 		},
 	);
 
 	const close = elementBuilder.addButton(
 		{ text: t('close_button', language) },
 		{
-			actionId: confirmDeleteModalEnum.CLOSE_ACTION_ID,
-			blockId: confirmDeleteModalEnum.CLOSE_BLOCK_ID,
+			actionId: ConfirmDeleteModalEnum.CLOSE_ACTION_ID,
+			blockId: ConfirmDeleteModalEnum.CLOSE_BLOCK_ID,
 		},
 	);
 	return {
-		id: confirmDeleteModalEnum.VIEW_ID,
+		id: ConfirmDeleteModalEnum.VIEW_ID,
 		title: {
 			type: TextObjectType.MRKDWN,
 			text: t('confirm_delete_modal_title', language),

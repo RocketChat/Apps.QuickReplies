@@ -2,7 +2,7 @@ import { IRead, IModify } from '@rocket.chat/apps-engine/definition/accessors';
 import { IMessageAttachment } from '@rocket.chat/apps-engine/definition/messages';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
-import { messageActionButton } from '../enum/notification';
+import { MessageActionButton } from '../enum/notification';
 import { Block } from '@rocket.chat/ui-kit';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { Language, t } from '../lib/Translation/translation';
@@ -55,32 +55,32 @@ export async function sendDefaultNotification(
 	const CreatebuttonElement = elementBuilder.addButton(
 		{ text: t('create_reply', language), style: 'primary' },
 		{
-			blockId: messageActionButton.CREATE_REPLY_BLOCK_ID,
-			actionId: messageActionButton.CREATE_REPLY_ACTION_ID,
+			blockId: MessageActionButton.CREATE_REPLY_BLOCK_ID,
+			actionId: MessageActionButton.CREATE_REPLY_ACTION_ID,
 		},
 	);
 
 	const ListbuttonElement = elementBuilder.addButton(
 		{ text: t('list_reply', language), style: 'primary' },
 		{
-			blockId: messageActionButton.LIST_REPLY_BLOCK_ID,
-			actionId: messageActionButton.LIST_REPLY_ACTION_ID,
+			blockId: MessageActionButton.LIST_REPLY_BLOCK_ID,
+			actionId: MessageActionButton.LIST_REPLY_ACTION_ID,
 		},
 	);
 
 	const configurebuttonElement = elementBuilder.addButton(
 		{ text: t('configure_preferences', language), style: 'secondary' },
 		{
-			blockId: messageActionButton.CONFIGURE_PREFERENCES_BLOCK_ID,
-			actionId: messageActionButton.CONFIGURE_PREFERENCES_ACTION_ID,
+			blockId: MessageActionButton.CONFIGURE_PREFERENCES_BLOCK_ID,
+			actionId: MessageActionButton.CONFIGURE_PREFERENCES_ACTION_ID,
 		},
 	);
 
 	const needMorebuttonElement = elementBuilder.addButton(
 		{ text: t('need_more', language), style: 'secondary' },
 		{
-			blockId: messageActionButton.NEED_MORE_BLOCK_ID,
-			actionId: messageActionButton.NEED_MORE_ACTION_ID,
+			blockId: MessageActionButton.NEED_MORE_BLOCK_ID,
+			actionId: MessageActionButton.NEED_MORE_ACTION_ID,
 		},
 	);
 

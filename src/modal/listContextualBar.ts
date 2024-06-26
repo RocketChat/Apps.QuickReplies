@@ -14,7 +14,7 @@ import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IReply } from '../definition/reply/IReply';
-import { listContextualBarEnum } from '../enum/modals/listContextualBar';
+import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
 import { Language, t } from '../lib/Translation/translation';
 import { inputElementComponent } from './common/inputElementComponent';
 
@@ -72,7 +72,7 @@ export async function listReplyContextualBar(
 							text: t('send', language),
 							emoji: true,
 						},
-						value: `${listContextualBarEnum.SEND} : ${reply.id}`,
+						value: `${ListContextualBarEnum.SEND} : ${reply.id}`,
 					},
 					{
 						text: {
@@ -80,7 +80,7 @@ export async function listReplyContextualBar(
 							text: t('edit', language),
 							emoji: true,
 						},
-						value: `${listContextualBarEnum.EDIT} : ${reply.id}`,
+						value: `${ListContextualBarEnum.EDIT} : ${reply.id}`,
 					},
 					{
 						text: {
@@ -88,13 +88,13 @@ export async function listReplyContextualBar(
 							text: t('delete', language),
 							emoji: true,
 						},
-						value: `${listContextualBarEnum.DELETE} : ${reply.id}`,
+						value: `${ListContextualBarEnum.DELETE} : ${reply.id}`,
 					},
 				],
 			},
 			{
-				blockId: listContextualBarEnum.REPLY_OVERFLOW_BLOCKID,
-				actionId: listContextualBarEnum.REPLY_OVERFLOW_ACTIONID,
+				blockId: ListContextualBarEnum.REPLY_OVERFLOW_BLOCKID,
+				actionId: ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID,
 			},
 		);
 
@@ -126,13 +126,13 @@ export async function listReplyContextualBar(
 			style: ButtonStyle.DANGER,
 		},
 		{
-			actionId: listContextualBarEnum.LIST_REPLY_CLOSE_ACTION_ID,
-			blockId: listContextualBarEnum.LIST_REPLY_CLOSE_BLOCK_ID,
+			actionId: ListContextualBarEnum.LIST_REPLY_CLOSE_ACTION_ID,
+			blockId: ListContextualBarEnum.LIST_REPLY_CLOSE_BLOCK_ID,
 		},
 	);
 
 	return {
-		id: listContextualBarEnum.VIEW_ID,
+		id: ListContextualBarEnum.VIEW_ID,
 		type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,

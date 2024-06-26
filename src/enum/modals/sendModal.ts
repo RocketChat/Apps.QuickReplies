@@ -1,4 +1,4 @@
-export enum sendModalEnum {
+export enum SendModalEnum {
 	VIEW_ID = 'send-reply-view-id',
 	REPLY_BODY_INPUT = 'send-reply-body-input',
 	REPLY_BODY_BLOCK_ID = 'send-reply-body-block-id',

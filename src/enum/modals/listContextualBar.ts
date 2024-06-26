@@ -1,4 +1,4 @@
-export enum listContextualBarEnum {
+export enum ListContextualBarEnum {
 	VIEW_ID = 'list-reply-view-id',
 	SEND = 'Send',
 	EDIT = 'Edit',

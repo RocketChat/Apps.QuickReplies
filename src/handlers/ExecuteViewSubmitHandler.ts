@@ -13,7 +13,7 @@ import {
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { sendNotification } from '../helper/notification';
-import { createModalEnum } from '../enum/modals/createModal';
+import { CreateModalEnum } from '../enum/modals/createModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
@@ -21,15 +21,15 @@ import {
 	getUserPreferredLanguage,
 	isSupportedLanguage,
 } from '../helper/userPreference';
-import { setUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
+import { SetUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
-import { sendModalEnum } from '../enum/modals/sendModal';
+import { SendModalEnum } from '../enum/modals/sendModal';
 import { sendMessage } from '../helper/message';
 import { CacheReplyStorage } from '../storage/ReplyCache';
 import { IReply } from '../definition/reply/IReply';
 import { listReplyContextualBar } from '../modal/listContextualBar';
-import { confirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
-import { editModalEnum } from '../enum/modals/editModal';
+import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
+import { EditModalEnum } from '../enum/modals/editModal';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -63,15 +63,15 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		switch (view.id) {
-			case createModalEnum.VIEW_ID:
+			case CreateModalEnum.VIEW_ID:
 				return this.handleCreate(room, user, view, language);
-			case setUserPreferenceModalEnum.VIEW_ID:
+			case SetUserPreferenceModalEnum.VIEW_ID:
 				return this.handleSetUserPreference(room, user, view);
-			case sendModalEnum.VIEW_ID:
+			case SendModalEnum.VIEW_ID:
 				return this.handleSend(room, user, view);
-			case confirmDeleteModalEnum.VIEW_ID:
+			case ConfirmDeleteModalEnum.VIEW_ID:
 				return this.handleDelete(room, user, view, language);
-			case editModalEnum.VIEW_ID:
+			case EditModalEnum.VIEW_ID:
 				return this.handleEdit(room, user, view, language);
 			default:
 				return this.context.getInteractionResponder().successResponse();
@@ -85,12 +85,12 @@ export class ExecuteViewSubmitHandler {
 		language: Language,
 	): Promise<IUIKitResponse> {
 		const nameStateValue =
-			view.state?.[createModalEnum.REPLY_NAME_BLOCK_ID]?.[
-				createModalEnum.REPLY_NAME_ACTION_ID
+			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
+				CreateModalEnum.REPLY_NAME_ACTION_ID
 			];
 		const bodyStateValue =
-			view.state?.[createModalEnum.REPLY_BODY_BLOCK_ID]?.[
-				createModalEnum.REPLY_BODY_ACTION_ID
+			view.state?.[CreateModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				CreateModalEnum.REPLY_BODY_ACTION_ID
 			];
 
 		if (!nameStateValue || !bodyStateValue) {
@@ -165,8 +165,8 @@ export class ExecuteViewSubmitHandler {
 	): Promise<IUIKitResponse> {
 		const languageInput =
 			view.state?.[
-				setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
-			]?.[setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID];
+				SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
+			]?.[SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID];
 
 		if (!languageInput || !isSupportedLanguage(languageInput)) {
 			return this.context.getInteractionResponder().errorResponse();
@@ -199,8 +199,8 @@ export class ExecuteViewSubmitHandler {
 			);
 			const cachedReply = await replyCacheStorage.getCacheReply(user);
 			const bodyStateValue = view.state?.[
-				sendModalEnum.REPLY_BODY_BLOCK_ID
-			]?.[sendModalEnum.REPLY_BODY_ACTION_ID] as string;
+				SendModalEnum.REPLY_BODY_BLOCK_ID
+			]?.[SendModalEnum.REPLY_BODY_ACTION_ID] as string;
 
 			console.log(bodyStateValue);
 
@@ -306,12 +306,12 @@ export class ExecuteViewSubmitHandler {
 		const cachedReply = await replyCacheStorage.getCacheReply(user);
 
 		const nameStateValue =
-			view.state?.[editModalEnum.REPLY_NAME_BLOCK_ID]?.[
-				editModalEnum.REPLY_NAME_ACTION_ID
+			view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
+				EditModalEnum.REPLY_NAME_ACTION_ID
 			];
 		const bodyStateValue =
-			view.state?.[editModalEnum.REPLY_BODY_BLOCK_ID]?.[
-				editModalEnum.REPLY_BODY_ACTION_ID
+			view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				EditModalEnum.REPLY_BODY_ACTION_ID
 			];
 
 		console.log(nameStateValue, cachedReply.name, view.state);

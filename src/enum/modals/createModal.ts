@@ -1,4 +1,4 @@
-export enum createModalEnum {
+export enum CreateModalEnum {
 	VIEW_ID = 'create-reply-view-id',
 	REPLY_NAME_BLOCK_ID = 'reply-name-block-id',
 	REPLY_NAME_ACTION_ID = 'reply-name-action-id',

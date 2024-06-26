@@ -14,8 +14,8 @@ import { ReplyStorage } from '../storage/ReplyStorage';
 import { SendReplyModal } from '../modal/sendModal';
 import { CacheReplyStorage } from '../storage/ReplyCache';
 import { Handler } from './Handler';
-import { messageActionButton } from '../enum/notification';
-import { listContextualBarEnum } from '../enum/modals/listContextualBar';
+import { MessageActionButton } from '../enum/notification';
+import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { confirmDeleteModal } from '../modal/confirmDeleteModal';
 import { EditReplyModal } from '../modal/editModal';
@@ -78,7 +78,7 @@ export class ExecuteBlockActionHandler {
 		console.log(actionId);
 
 		switch (actionId) {
-			case listContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
+			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
 				if (value) {
 					const command = value.split(' : ')[0].trim();
 					const replyId = value.split(' : ')[1].trim();
@@ -112,7 +112,7 @@ export class ExecuteBlockActionHandler {
 					);
 					if (room) {
 						switch (command) {
-							case listContextualBarEnum.SEND:
+							case ListContextualBarEnum.SEND:
 								const sendModal = await SendReplyModal(
 									this.app,
 									user,
@@ -129,7 +129,7 @@ export class ExecuteBlockActionHandler {
 									.openModalViewResponse(sendModal);
 
 								break;
-							case listContextualBarEnum.EDIT:
+							case ListContextualBarEnum.EDIT:
 								const editModal = await EditReplyModal(
 									this.app,
 									user,
@@ -145,7 +145,7 @@ export class ExecuteBlockActionHandler {
 									.openModalViewResponse(editModal);
 
 								break;
-							case listContextualBarEnum.DELETE:
+							case ListContextualBarEnum.DELETE:
 								const confirmModal = await confirmDeleteModal(
 									this.app,
 									user,
@@ -166,18 +166,18 @@ export class ExecuteBlockActionHandler {
 				}
 				break;
 			}
-			case messageActionButton.CREATE_REPLY_ACTION_ID: {
+			case MessageActionButton.CREATE_REPLY_ACTION_ID: {
 				await handler.CreateReply();
 				break;
 			}
-			case messageActionButton.LIST_REPLY_ACTION_ID: {
+			case MessageActionButton.LIST_REPLY_ACTION_ID: {
 				await handler.ListReply();
 				break;
 			}
-			case messageActionButton.CONFIGURE_PREFERENCES_ACTION_ID:
+			case MessageActionButton.CONFIGURE_PREFERENCES_ACTION_ID:
 				await handler.Configure();
 				break;
-			case messageActionButton.NEED_MORE_ACTION_ID:
+			case MessageActionButton.NEED_MORE_ACTION_ID:
 				await handler.Help();
 				break;
 			case 'search_input':
