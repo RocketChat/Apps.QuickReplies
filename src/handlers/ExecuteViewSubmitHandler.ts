@@ -94,13 +94,7 @@ export class ExecuteViewSubmitHandler {
 			];
 
 		if (!nameStateValue || !bodyStateValue) {
-			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
-				'fail_create_reply',
-				language,
-			)} ${t('quick_reply', language)}. ❌\n\n${t(
-				'error_fill_fields',
-				language,
-			)}`;
+			const errorMessage = `${t('error_fill_required_fields', language)}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
@@ -121,10 +115,10 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		if (result.success) {
-			const successMessage = `${t('hey', language)} ${user.name}, ${t(
-				'quick_reply',
-				language,
-			)} **${name}** ${t('created_successfully', language)} ✅`;
+			const successMessage = `${t('success_create_reply', language, {
+				name: user.name,
+				replyname: name,
+			})}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
@@ -146,10 +140,9 @@ export class ExecuteViewSubmitHandler {
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
-			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
-				'fail_create_reply',
-				language,
-			)} ❌\n\n${result.error}`;
+			const errorMessage = `${t('fail_create_reply', language, {
+				name: user.name,
+			})} \n\n ${result.error}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
@@ -248,9 +241,11 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		if (result.success) {
-			const successMessage = `${t('quick_reply', language)} **${
-				cachedReply.name
-			}** ${t('delete_successfully', language)}✅`;
+			const successMessage = `${t(
+				'success_delete_successfully',
+				language,
+				{ replyname: cachedReply.name },
+			)}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
@@ -273,9 +268,9 @@ export class ExecuteViewSubmitHandler {
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
-			const errorMessage = `${t('fail_delete_reply', language)} **${
-				cachedReply.name
-			}** ❌\n\n ${result.error}`;
+			const errorMessage = `${t('fail_delete_reply', language)} \n\n ${
+				result.error
+			}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
@@ -325,11 +320,9 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		if (result.success) {
-			const successMessage = `${t('hey', language)} ${user.name}, ${t(
-				'quick_reply',
-				language,
-			)}
-                **${name}** ${t('edit_successfully', language)} ✅`;
+			const successMessage = `${t('success_edit_successfully', language, {
+				replyname: cachedReply.name,
+			})} `;
 
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
@@ -354,11 +347,10 @@ export class ExecuteViewSubmitHandler {
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
-			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
-				'fail_edit_reply',
-				language,
-			)}
-            ❌\n\n${result.error}`;
+			const errorMessage = `${t('fail_edit_reply', language, {
+				replyname: cachedReply.name,
+			})}
+            \n\n${result.error}`;
 
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,

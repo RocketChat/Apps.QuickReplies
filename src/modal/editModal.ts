@@ -29,8 +29,8 @@ export async function EditReplyModal(
 
 	const blocks: Block[] = [];
 
-	const labelReplyName = t('reply_name_label', language);
-	const placeholderReplyName = t('reply_name_placeholder', language);
+	const labelReplyName = t('edit_reply_name_label', language);
+	const placeholderReplyName = t('edit_reply_name_placeholder', language);
 
 	const inputReplyName = inputElementComponent(
 		{
@@ -47,8 +47,8 @@ export async function EditReplyModal(
 		},
 	);
 
-	const labelReplyBody = t('reply_body_label', language);
-	const placeholderReplyBody = t('reply_body_placeholder', language);
+	const labelReplyBody = t('edit_reply_body_label', language);
+	const placeholderReplyBody = t('edit_reply_body_placeholder', language);
 
 	const inputReplyBody = inputElementComponent(
 		{
