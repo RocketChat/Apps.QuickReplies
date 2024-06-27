@@ -7,8 +7,7 @@ export const en = {
 	language_ru: 'Russian',
 	set_user_preference_modal_title: 'Configure your language preference',
 	quick_command_params: 'create, list, help',
-	quick_command_description:
-		'Create Quick replies. Type /quick help for more information.',
+	quick_command_description:'Create Quick replies. Type /quick help for more information.',
 	reply_name_label: 'Reply Name',
 	reply_name_placeholder: 'Enter the name of your reply',
 	reply_body_label: 'Reply Body',
@@ -20,12 +19,9 @@ export const en = {
 	error_fill_fields: 'Name and body of the reply are required.',
 	error_fill_required_fields :"Failed to create reply. Please fill all the required fields ❌",
 	success_create_reply: "Hey __name__, Quick Reply **__replyname__** created successfully ✅",
-	error_reply_name_already_exists:
-		'A reply with this name already exists. Please choose a different name.',
-	error_reply_name_invalid:
-		'Invalid name: Name must be a non-empty string with a maximum length of 100 characters.',
-	error_reply_body_invalid:
-		'Invalid body: Body must be a non-empty string with a maximum length of 1000 characters.',
+	error_reply_name_already_exists:	'A reply with this name already exists. Please choose a different name.',
+	error_reply_name_invalid:'Invalid name: Name must be a non-empty string with a maximum length of 100 characters.',
+	error_reply_body_invalid:'Invalid body: Body must be a non-empty string with a maximum length of 1000 characters.',
 	error_fail_internal: 'Internal error. Please try again later.',
 	helper_commands: "Use \"/quick create\" to create a new quick reply   \n Use \"/quick list\" to list all quick messages  \n Use \"/quick config\" to configure user preference \n",
 	helper_text: "Hey __name__, I'm Quick Bot 👋 Here are some quick tips to get you started!",
