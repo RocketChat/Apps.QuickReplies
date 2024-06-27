@@ -15,7 +15,7 @@ export enum OnInstallContent {
 	WELCOME_TEXT = `Welcome to **Quick App** in RocketChat!`,
 }
 
-export enum messageActionButton {
+export enum MessageActionButton {
 	CREATE_REPLY_ACTION_ID = 'create-reply-actionId',
 	CREATE_REPLY_BLOCK_ID = 'create-reply-blockId',
 

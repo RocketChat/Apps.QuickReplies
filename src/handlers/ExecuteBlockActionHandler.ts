@@ -10,9 +10,15 @@ import {
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
-import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
+import { ReplyStorage } from '../storage/ReplyStorage';
+import { SendReplyModal } from '../modal/sendModal';
+import { CacheReplyStorage } from '../storage/ReplyCache';
 import { Handler } from './Handler';
-import { messageActionButton } from '../enum/notification';
+import { MessageActionButton } from '../enum/notification';
+import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
+import { getUserPreferredLanguage } from '../helper/userPreference';
+import { confirmDeleteModal } from '../modal/confirmDeleteModal';
+import { EditReplyModal } from '../modal/editModal';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -42,6 +48,14 @@ export class ExecuteBlockActionHandler {
 
 		const roomId = await roomInteractionStorage.getInteractionRoomId();
 		const roomPersistance = await this.read.getRoomReader().getById(roomId);
+
+		const language = await getUserPreferredLanguage(
+			this.app,
+			this.read.getPersistenceReader(),
+			this.persistence,
+			user.id,
+		);
+
 		if (!room) {
 			if (roomPersistance) {
 				room = roomPersistance;
@@ -64,37 +78,105 @@ export class ExecuteBlockActionHandler {
 
 		switch (actionId) {
 			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
-				console.log(value);
 				if (value) {
 					const command = value.split(' : ')[0].trim();
 					const replyId = value.split(' : ')[1].trim();
-					switch (command) {
-						case ListContextualBarEnum.SEND:
-							console.log('send', replyId);
-							break;
-						case ListContextualBarEnum.EDIT:
-							console.log('edit', replyId);
-							break;
-						case 'Delete':
-							console.log('Delete', replyId);
-							break;
-						default:
+
+					const replyStorage = new ReplyStorage(
+						this.persistence,
+						persistenceRead,
+					);
+
+					const reply = await replyStorage.getReplyById(
+						user,
+						replyId,
+					);
+
+					const replyCache = new CacheReplyStorage(
+						this.persistence,
+						this.read.getPersistenceReader(),
+					);
+
+					if (!reply) {
+						return this.context
+							.getInteractionResponder()
+							.errorResponse();
+					}
+					await replyCache.setCacheReply(user, reply);
+					const language = await getUserPreferredLanguage(
+						this.app,
+						this.read.getPersistenceReader(),
+						this.persistence,
+						user.id,
+					);
+					if (room) {
+						switch (command) {
+							case ListContextualBarEnum.SEND:
+								const sendModal = await SendReplyModal(
+									this.app,
+									user,
+									this.read,
+									this.persistence,
+									this.modify,
+									room,
+									reply,
+									language,
+								);
+
+								return this.context
+									.getInteractionResponder()
+									.openModalViewResponse(sendModal);
+
+								break;
+							case ListContextualBarEnum.EDIT:
+								const editModal = await EditReplyModal(
+									this.app,
+									user,
+									this.read,
+									this.persistence,
+									this.modify,
+									room,
+									reply,
+									language,
+								);
+								return this.context
+									.getInteractionResponder()
+									.openModalViewResponse(editModal);
+
+								break;
+							case ListContextualBarEnum.DELETE:
+								const confirmModal = await confirmDeleteModal(
+									this.app,
+									user,
+									this.read,
+									this.persistence,
+									this.modify,
+									room,
+									reply,
+									language,
+								);
+								return this.context
+									.getInteractionResponder()
+									.openModalViewResponse(confirmModal);
+
+							default:
+						}
 					}
 				}
 				break;
 			}
-			case messageActionButton.CREATE_REPLY_ACTION_ID: {
+			case MessageActionButton.CREATE_REPLY_ACTION_ID: {
 				await handler.CreateReply();
 				break;
 			}
-			case messageActionButton.LIST_REPLY_ACTION_ID: {
+			case MessageActionButton.LIST_REPLY_ACTION_ID: {
 				await handler.ListReply();
 				break;
 			}
-			case messageActionButton.CONFIGURE_PREFERENCES_ACTION_ID:
+			case MessageActionButton.CONFIGURE_PREFERENCES_ACTION_ID:
 				await handler.Configure();
 				break;
-			case messageActionButton.NEED_MORE_ACTION_ID:
+			case MessageActionButton.NEED_MORE_ACTION_ID:
 				await handler.Help();
 				break;
 		}

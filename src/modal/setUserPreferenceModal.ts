@@ -15,7 +15,7 @@ import {
 	supportedLanguageList,
 	t,
 } from '../lib/Translation/translation';
-import { setUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
+import { SetUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
 
 export async function setUserPreferenceLanguageModal({
 	app,
@@ -26,7 +26,7 @@ export async function setUserPreferenceLanguageModal({
 	modify: IModify;
 	existingPreferencelanguage: Language;
 }): Promise<IUIKitSurfaceViewParam | Error> {
-	const viewId = setUserPreferenceModalEnum.VIEW_ID;
+	const viewId = SetUserPreferenceModalEnum.VIEW_ID;
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
@@ -43,7 +43,7 @@ export async function setUserPreferenceLanguageModal({
 
 	const dropDown = elementBuilder.addDropDown(
 		{
-			placeholder: t('language', existingPreferencelanguage),
+			placeholder: t('Language', existingPreferencelanguage),
 			options: dropDownOption,
 			initialOption: dropDownOption.find(
 				(option) => option.value === existingPreferencelanguage,
@@ -52,15 +52,15 @@ export async function setUserPreferenceLanguageModal({
 		},
 		{
 			blockId:
-				setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID,
+				SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID,
 			actionId:
-				setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID,
+				SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID,
 		},
 	);
 
 	blocks.push(
 		blockBuilder.createInputBlock({
-			text: t('language', existingPreferencelanguage),
+			text: t('Language', existingPreferencelanguage),
 			element: dropDown,
 			optional: false,
 		}),
@@ -68,23 +68,23 @@ export async function setUserPreferenceLanguageModal({
 
 	const submit = elementBuilder.addButton(
 		{
-			text: setUserPreferenceModalEnum.UPDATE,
+			text: SetUserPreferenceModalEnum.UPDATE,
 			style: ButtonStyle.PRIMARY,
 		},
 		{
-			actionId: setUserPreferenceModalEnum.SUBMIT_ACTION_ID,
-			blockId: setUserPreferenceModalEnum.SUBMIT_BLOCK_ID,
+			actionId: SetUserPreferenceModalEnum.SUBMIT_ACTION_ID,
+			blockId: SetUserPreferenceModalEnum.SUBMIT_BLOCK_ID,
 		},
 	);
 
 	const close = elementBuilder.addButton(
 		{
-			text: setUserPreferenceModalEnum.CLOSE,
+			text: SetUserPreferenceModalEnum.CLOSE,
 			style: ButtonStyle.DANGER,
 		},
 		{
-			actionId: setUserPreferenceModalEnum.CLOSE_ACTION_ID,
-			blockId: setUserPreferenceModalEnum.CLOSE_BLOCK_ID,
+			actionId: SetUserPreferenceModalEnum.CLOSE_ACTION_ID,
+			blockId: SetUserPreferenceModalEnum.CLOSE_BLOCK_ID,
 		},
 	);
 
@@ -94,7 +94,7 @@ export async function setUserPreferenceLanguageModal({
 		title: {
 			type: TextObjectType.MRKDWN,
 			text: t(
-				'set_user_preference_modal_title',
+				'Set_User_Preference_Modal_Title',
 				existingPreferencelanguage,
 			),
 		},
@@ -110,14 +110,14 @@ const getLanguageDisplayTextFromCode = (
 ): string => {
 	switch (code) {
 		case Language.en:
-			return t('language_en', language);
+			return t('Language_EN', language);
 		case Language.de:
-			return t('language_de', language);
+			return t('Language_DE', language);
 		case Language.pt:
-			return t('language_pt', language);
+			return t('Language_PT', language);
 		case Language.pl:
-			return t('language_pl', language);
+			return t('Language_PL', language);
 		case Language.ru:
-			return t('language_ru', language);
+			return t('Language_RU', language);
 	}
 };

@@ -1,8 +1,7 @@
 import { IRead, IModify } from '@rocket.chat/apps-engine/definition/accessors';
-import { IMessageAttachment } from '@rocket.chat/apps-engine/definition/messages';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
-import { messageActionButton } from '../enum/notification';
+import { MessageActionButton } from '../enum/notification';
 import { Block } from '@rocket.chat/ui-kit';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { Language, t } from '../lib/Translation/translation';
@@ -15,11 +14,10 @@ export async function sendHelperNotification(
 	language: Language,
 ): Promise<void> {
 	const appUser = (await read.getUserReader().getAppUser()) as IUser;
-	const message = `Hey ${user.name}, ${t('helper_text', language)}`;
-	const attachment: IMessageAttachment = {
-		color: '#000000',
-		text: t('helper_commands', language),
-	};
+	const message = `${t('Helper_Text', language, {
+		name: user.name,
+	})} \n\n ${t('Helper_Commands', language)} 
+	`;
 
 	const helperMessage = modify
 		.getCreator()
@@ -27,7 +25,6 @@ export async function sendHelperNotification(
 		.setRoom(room)
 		.setSender(appUser)
 		.setText(message)
-		.setAttachments([attachment])
 		.setGroupable(false);
 
 	return read.getNotifier().notifyUser(user, helperMessage.getMessage());
@@ -45,42 +42,38 @@ export async function sendDefaultNotification(
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const text = blockBuilder.createSectionBlock({
-		text: `${t('hey', language)} ${user.name}, ${t(
-			'default_message',
-			language,
-		)} \n
-`,
+		text: `${t('Default_Message', language, { name: user.name })}`,
 	});
 
 	const CreatebuttonElement = elementBuilder.addButton(
-		{ text: t('create_reply', language), style: 'primary' },
+		{ text: t('Create_Reply', language), style: 'primary' },
 		{
-			blockId: messageActionButton.CREATE_REPLY_BLOCK_ID,
-			actionId: messageActionButton.CREATE_REPLY_ACTION_ID,
+			blockId: MessageActionButton.CREATE_REPLY_BLOCK_ID,
+			actionId: MessageActionButton.CREATE_REPLY_ACTION_ID,
 		},
 	);
 
 	const ListbuttonElement = elementBuilder.addButton(
-		{ text: t('list_reply', language), style: 'primary' },
+		{ text: t('List_Reply', language), style: 'primary' },
 		{
-			blockId: messageActionButton.LIST_REPLY_BLOCK_ID,
-			actionId: messageActionButton.LIST_REPLY_ACTION_ID,
+			blockId: MessageActionButton.LIST_REPLY_BLOCK_ID,
+			actionId: MessageActionButton.LIST_REPLY_ACTION_ID,
 		},
 	);
 
 	const configurebuttonElement = elementBuilder.addButton(
-		{ text: t('configure_preferences', language), style: 'secondary' },
+		{ text: t('Configure_Preferences', language), style: 'secondary' },
 		{
-			blockId: messageActionButton.CONFIGURE_PREFERENCES_BLOCK_ID,
-			actionId: messageActionButton.CONFIGURE_PREFERENCES_ACTION_ID,
+			blockId: MessageActionButton.CONFIGURE_PREFERENCES_BLOCK_ID,
+			actionId: MessageActionButton.CONFIGURE_PREFERENCES_ACTION_ID,
 		},
 	);
 
 	const needMorebuttonElement = elementBuilder.addButton(
-		{ text: t('need_more', language), style: 'secondary' },
+		{ text: t('Need_More', language), style: 'secondary' },
 		{
-			blockId: messageActionButton.NEED_MORE_BLOCK_ID,
-			actionId: messageActionButton.NEED_MORE_ACTION_ID,
+			blockId: MessageActionButton.NEED_MORE_BLOCK_ID,
+			actionId: MessageActionButton.NEED_MORE_ACTION_ID,
 		},
 	);
 
