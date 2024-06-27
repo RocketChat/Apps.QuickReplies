@@ -29,8 +29,8 @@ export async function EditReplyModal(
 
 	const blocks: Block[] = [];
 
-	const labelReplyName = t('edit_reply_name_label', language);
-	const placeholderReplyName = t('edit_reply_name_placeholder', language);
+	const labelReplyName = t('Edit_Reply_Name_Label', language);
+	const placeholderReplyName = t('Edit_Reply_Name_Placeholder', language);
 
 	const inputReplyName = inputElementComponent(
 		{
@@ -47,8 +47,8 @@ export async function EditReplyModal(
 		},
 	);
 
-	const labelReplyBody = t('edit_reply_body_label', language);
-	const placeholderReplyBody = t('edit_reply_body_placeholder', language);
+	const labelReplyBody = t('Edit_Reply_Body_Label', language);
+	const placeholderReplyBody = t('Edit_Reply_Body_Placeholder', language);
 
 	const inputReplyBody = inputElementComponent(
 		{
@@ -68,7 +68,7 @@ export async function EditReplyModal(
 	blocks.push(inputReplyName, inputReplyBody);
 
 	const submit = elementBuilder.addButton(
-		{ text: t('edit_button', language), style: ButtonStyle.PRIMARY },
+		{ text: t('Edit_Button', language), style: ButtonStyle.PRIMARY },
 		{
 			actionId: EditModalEnum.SUBMIT_ACTION_ID,
 			blockId: EditModalEnum.SUBMIT_BLOCK_ID,
@@ -76,7 +76,7 @@ export async function EditReplyModal(
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: t('close_button', language) },
+		{ text: t('Close_Button', language) },
 		{
 			actionId: EditModalEnum.CLOSE_ACTION_ID,
 			blockId: EditModalEnum.CLOSE_BLOCK_ID,
@@ -86,7 +86,7 @@ export async function EditReplyModal(
 		id: EditModalEnum.VIEW_ID,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: t('edit_modal_title', language),
+			text: t('Edit_Modal_Title', language),
 		},
 		blocks,
 		close,

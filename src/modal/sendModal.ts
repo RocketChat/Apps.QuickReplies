@@ -29,8 +29,8 @@ export async function SendReplyModal(
 
 	const blocks: Block[] = [];
 
-	const labelReplyBody = t('send_reply_body_label', language);
-	const placeholderReplyBody = t('send_reply_body_placeholder', language);
+	const labelReplyBody = t('Send_Reply_Body_Label', language);
+	const placeholderReplyBody = t('Send_Reply_Body_Placeholder', language);
 
 	const inputReplyBody = inputElementComponent(
 		{
@@ -50,7 +50,7 @@ export async function SendReplyModal(
 	blocks.push(inputReplyBody);
 
 	const submit = elementBuilder.addButton(
-		{ text: t('send_reply_button', language), style: ButtonStyle.PRIMARY },
+		{ text: t('Send_Reply_Button', language), style: ButtonStyle.PRIMARY },
 		{
 			actionId: SendModalEnum.SUBMIT_ACTION_ID,
 			blockId: SendModalEnum.SUBMIT_BLOCK_ID,
@@ -58,7 +58,7 @@ export async function SendReplyModal(
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: t('close_button', language) },
+		{ text: t('Close_Button', language) },
 		{
 			actionId: SendModalEnum.CLOSE_ACTION_ID,
 			blockId: SendModalEnum.CLOSE_BLOCK_ID,
@@ -68,7 +68,7 @@ export async function SendReplyModal(
 		id: SendModalEnum.VIEW_ID,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: t('send_reply_modal_title', language),
+			text: t('Send_Reply_Modal_Title', language),
 		},
 		blocks,
 		close,

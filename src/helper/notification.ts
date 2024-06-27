@@ -14,9 +14,9 @@ export async function sendHelperNotification(
 	language: Language,
 ): Promise<void> {
 	const appUser = (await read.getUserReader().getAppUser()) as IUser;
-	const message = `${t('helper_text', language, {
+	const message = `${t('Helper_Text', language, {
 		name: user.name,
-	})} \n\n ${t('helper_commands', language)} 
+	})} \n\n ${t('Helper_Commands', language)} 
 	`;
 
 	const helperMessage = modify
@@ -42,11 +42,11 @@ export async function sendDefaultNotification(
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const text = blockBuilder.createSectionBlock({
-		text: `${t('default_message', language, { name: user.name })}`,
+		text: `${t('Default_Message', language, { name: user.name })}`,
 	});
 
 	const CreatebuttonElement = elementBuilder.addButton(
-		{ text: t('create_reply', language), style: 'primary' },
+		{ text: t('Create_Reply', language), style: 'primary' },
 		{
 			blockId: MessageActionButton.CREATE_REPLY_BLOCK_ID,
 			actionId: MessageActionButton.CREATE_REPLY_ACTION_ID,
@@ -54,7 +54,7 @@ export async function sendDefaultNotification(
 	);
 
 	const ListbuttonElement = elementBuilder.addButton(
-		{ text: t('list_reply', language), style: 'primary' },
+		{ text: t('List_Reply', language), style: 'primary' },
 		{
 			blockId: MessageActionButton.LIST_REPLY_BLOCK_ID,
 			actionId: MessageActionButton.LIST_REPLY_ACTION_ID,
@@ -62,7 +62,7 @@ export async function sendDefaultNotification(
 	);
 
 	const configurebuttonElement = elementBuilder.addButton(
-		{ text: t('configure_preferences', language), style: 'secondary' },
+		{ text: t('Configure_Preferences', language), style: 'secondary' },
 		{
 			blockId: MessageActionButton.CONFIGURE_PREFERENCES_BLOCK_ID,
 			actionId: MessageActionButton.CONFIGURE_PREFERENCES_ACTION_ID,
@@ -70,7 +70,7 @@ export async function sendDefaultNotification(
 	);
 
 	const needMorebuttonElement = elementBuilder.addButton(
-		{ text: t('need_more', language), style: 'secondary' },
+		{ text: t('Need_More', language), style: 'secondary' },
 		{
 			blockId: MessageActionButton.NEED_MORE_BLOCK_ID,
 			actionId: MessageActionButton.NEED_MORE_ACTION_ID,

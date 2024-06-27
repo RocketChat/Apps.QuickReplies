@@ -43,7 +43,7 @@ export async function setUserPreferenceLanguageModal({
 
 	const dropDown = elementBuilder.addDropDown(
 		{
-			placeholder: t('language', existingPreferencelanguage),
+			placeholder: t('Language', existingPreferencelanguage),
 			options: dropDownOption,
 			initialOption: dropDownOption.find(
 				(option) => option.value === existingPreferencelanguage,
@@ -60,7 +60,7 @@ export async function setUserPreferenceLanguageModal({
 
 	blocks.push(
 		blockBuilder.createInputBlock({
-			text: t('language', existingPreferencelanguage),
+			text: t('Language', existingPreferencelanguage),
 			element: dropDown,
 			optional: false,
 		}),
@@ -94,7 +94,7 @@ export async function setUserPreferenceLanguageModal({
 		title: {
 			type: TextObjectType.MRKDWN,
 			text: t(
-				'set_user_preference_modal_title',
+				'Set_User_Preference_Modal_Title',
 				existingPreferencelanguage,
 			),
 		},
@@ -110,14 +110,14 @@ const getLanguageDisplayTextFromCode = (
 ): string => {
 	switch (code) {
 		case Language.en:
-			return t('language_en', language);
+			return t('Language_EN', language);
 		case Language.de:
-			return t('language_de', language);
+			return t('Language_DE', language);
 		case Language.pt:
-			return t('language_pt', language);
+			return t('Language_PT', language);
 		case Language.pl:
-			return t('language_pl', language);
+			return t('Language_PL', language);
 		case Language.ru:
-			return t('language_ru', language);
+			return t('Language_RU', language);
 	}
 };
