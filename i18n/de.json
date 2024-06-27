@@ -23,7 +23,7 @@
 	"error_reply_name_invalid": "Ungültiger Name: Der Name muss eine nicht leere Zeichenfolge mit einer maximalen Länge von 100 Zeichen sein.",
 	"error_reply_body_invalid": "Ungültiger Inhalt: Der Inhalt muss eine nicht leere Zeichenfolge mit einer maximalen Länge von 1000 Zeichen sein.",
 	"error_fail_internal": "Interner Fehler. Bitte versuchen Sie es später erneut.",
-	"helper_commands": "Verwenden Sie \"/quick create\", um eine neue Schnellantwort zu erstellen \n Verwenden Sie \"/quick list\", um alle schnellen Nachrichten aufzulisten \n Verwenden Sie \"/quick config\", um die Benutzereinstellungen zu konfigurieren \n",
+	"helper_commands": "Verwenden Sie `/quick create`, um eine neue Schnellantwort zu erstellen  \n Verwenden Sie `/quick list`, um alle schnellen Nachrichten aufzulisten  \n Verwenden Sie `/quick config`, um die Benutzereinstellungen zu konfigurieren",
 	"helper_text": "Hey __name__, ich bin Quick Bot 👋 Hier sind einige schnelle Tipps, um Ihnen den Einstieg zu erleichtern!",
 	"default_message": "Hey __name__, ich bin Quick Bot 👋 Ich kann Ihnen helfen, schnelle Antworten zu erstellen und zu senden. Wie kann ich helfen?",
 	"create_reply": "Antwort erstellen",

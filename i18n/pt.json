@@ -23,7 +23,7 @@
 	"error_reply_name_invalid": "Nome inválido: O nome deve ser uma string não vazia com um comprimento máximo de 100 caracteres.",
 	"error_reply_body_invalid": "Corpo inválido: O corpo deve ser uma string não vazia com um comprimento máximo de 1000 caracteres.",
 	"error_fail_internal": "Erro interno. Por favor, tente novamente mais tarde.",
-	"helper_commands": "Use \"/quick create\" para criar uma nova resposta rápida \n Use \"/quick list\" para listar todas as mensagens rápidas \n Use \"/quick config\" para configurar a preferência do usuário \n",
+	"helper_commands": "Use `/quick create` para criar uma nova resposta rápida \n Use `/quick list` para listar todas as mensagens rápidas \n Use `/quick config` para configurar a preferência do usuário \n",
 	"helper_text": "Ei __name__, sou o Quick Bot 👋 Aqui estão algumas dicas rápidas para você começar!",
 	"default_message": "Ei __name__, sou o Quick Bot 👋 Posso ajudá-lo a criar e enviar respostas rápidas. Como posso ajudar?",
 	"create_reply": "Criar Resposta",

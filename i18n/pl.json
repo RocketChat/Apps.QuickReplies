@@ -23,7 +23,7 @@
 	"error_reply_name_invalid": "Nieprawidłowa nazwa: Nazwa musi być niepustym ciągiem znaków o maksymalnej długości 100 znaków.",
 	"error_reply_body_invalid": "Nieprawidłowa treść: Treść musi być niepustym ciągiem znaków o maksymalnej długości 1000 znaków.",
 	"error_fail_internal": "Błąd wewnętrzny. Spróbuj ponownie później.",
-	"helper_commands": "Użyj \"/quick create\", aby utworzyć nową szybką odpowiedź \n Użyj \"/quick list\", aby wyświetlić wszystkie szybkie wiadomości \n Użyj \"/quick config\", aby skonfigurować preferencje użytkownika \n",
+	"helper_commands": "Użyj `/quick create`, aby utworzyć nową szybką odpowiedź \n Użyj `/quick list`, aby wyświetlić wszystkie szybkie wiadomości \n Użyj `/quick config`, aby skonfigurować preferencje użytkownika \n",
 	"helper_text": "Hej __name__, jestem Quick Bot 👋 Oto kilka szybkich wskazówek, aby rozpocząć!",
 	"default_message": "Hej __name__, jestem Quick Bot 👋 Mogę pomóc w tworzeniu i wysyłaniu szybkich odpowiedzi. Jak mogę pomóc?",
 	"create_reply": "Utwórz Odpowiedź",
