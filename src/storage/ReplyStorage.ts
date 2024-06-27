@@ -30,7 +30,7 @@ export class ReplyStorage {
 		if (!name && !body) {
 			return {
 				success: false,
-				error: t('error_fill_fields', language),
+				error: t('Error_Fill_Fields', language),
 			};
 		}
 
@@ -46,14 +46,14 @@ export class ReplyStorage {
 		if (!isNameValid) {
 			return {
 				success: false,
-				error: t('error_reply_name_invalid', language),
+				error: t('Error_Reply_Name_Invalid', language),
 			};
 		}
 
 		if (!isBodyValid) {
 			return {
 				success: false,
-				error: t('error_reply_body_invalid', language),
+				error: t('Error_Reply_Body_Invalid', language),
 			};
 		}
 
@@ -99,7 +99,7 @@ export class ReplyStorage {
 			if (!(await this.isUniqueReplyName(user, name))) {
 				return {
 					success: false,
-					error: t('error_reply_name_already_exists', language),
+					error: t('Error_Reply_Name_Already_Exists', language),
 				};
 			}
 
@@ -122,7 +122,7 @@ export class ReplyStorage {
 			console.warn('Create Reply Error: ', error);
 			return {
 				success: false,
-				error: t('error_fail_internal', language),
+				error: t('Error_Fail_Internal', language),
 			};
 		}
 	}
@@ -164,7 +164,7 @@ export class ReplyStorage {
 			if (replyIndex === -1) {
 				return {
 					success: false,
-					error: t('error_reply_not_found', language),
+					error: t('Error_Reply_Not_Found', language),
 				};
 			}
 
@@ -181,7 +181,7 @@ export class ReplyStorage {
 			console.warn('Update Reply Error: ', error);
 			return {
 				success: false,
-				error: t('error_fail_internal', language),
+				error: t('Error_Fail_Internal', language),
 			};
 		}
 	}
@@ -200,7 +200,7 @@ export class ReplyStorage {
 			if (replyIndex === -1) {
 				return {
 					success: false,
-					error: t('error_reply_not_found', language),
+					error: t('Error_Reply_Not_Found', language),
 				};
 			}
 
@@ -217,7 +217,7 @@ export class ReplyStorage {
 			console.warn('Delete Reply Error: ', error);
 			return {
 				success: false,
-				error: t('error_fail_internal', language),
+				error: t('Error_Fail_Internal', language),
 			};
 		}
 	}

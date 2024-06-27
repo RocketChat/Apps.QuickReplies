@@ -69,7 +69,7 @@ export async function listReplyContextualBar(
 					{
 						text: {
 							type: 'plain_text',
-							text: t('send', language),
+							text: t('Send_Text', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.SEND} : ${reply.id}`,
@@ -77,7 +77,7 @@ export async function listReplyContextualBar(
 					{
 						text: {
 							type: 'plain_text',
-							text: t('edit', language),
+							text: t('Edit_Text', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.EDIT} : ${reply.id}`,
@@ -85,7 +85,7 @@ export async function listReplyContextualBar(
 					{
 						text: {
 							type: 'plain_text',
-							text: t('delete', language),
+							text: t('Delete_Text', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.DELETE} : ${reply.id}`,
@@ -122,7 +122,7 @@ export async function listReplyContextualBar(
 
 	const close = elementBuilder.addButton(
 		{
-			text: t('close_button', language),
+			text: t('Close_Button', language),
 			style: ButtonStyle.DANGER,
 		},
 		{
@@ -136,7 +136,7 @@ export async function listReplyContextualBar(
 		type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: t('list_reply_title', language),
+			text: t('List_Reply_Title', language),
 		},
 		blocks,
 		close,

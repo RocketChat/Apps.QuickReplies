@@ -28,10 +28,10 @@ export async function confirmDeleteModal(
 	const blocks: Block[] = [];
 
 	const confirmDelete = blockBuilder.createSectionBlock({
-		text: `### ${t('confirm_delete_message', language)}`,
+		text: `### ${t('Confirm_Delete_Message', language)}`,
 	});
 
-	const replyInfo = `${t('delete_reply_info', language, {
+	const replyInfo = `${t('Delete_Reply_Info', language, {
 		replyname: reply.name,
 		replybody: reply.body,
 	})}`;
@@ -43,7 +43,7 @@ export async function confirmDeleteModal(
 	blocks.push(confirmDelete, replyContent);
 
 	const submit = elementBuilder.addButton(
-		{ text: t('delete_button', language), style: ButtonStyle.DANGER },
+		{ text: t('Delete_Button', language), style: ButtonStyle.DANGER },
 		{
 			actionId: ConfirmDeleteModalEnum.SUBMIT_ACTION_ID,
 			blockId: ConfirmDeleteModalEnum.SUBMIT_BLOCK_ID,
@@ -51,7 +51,7 @@ export async function confirmDeleteModal(
 	);
 
 	const close = elementBuilder.addButton(
-		{ text: t('close_button', language) },
+		{ text: t('Close_Button', language) },
 		{
 			actionId: ConfirmDeleteModalEnum.CLOSE_ACTION_ID,
 			blockId: ConfirmDeleteModalEnum.CLOSE_BLOCK_ID,
@@ -61,7 +61,7 @@ export async function confirmDeleteModal(
 		id: ConfirmDeleteModalEnum.VIEW_ID,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: t('confirm_delete_modal_title', language),
+			text: t('Confirm_Delete_Modal_Title', language),
 		},
 		blocks,
 		close,

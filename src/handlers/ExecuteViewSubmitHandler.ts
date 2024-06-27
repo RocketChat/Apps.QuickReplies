@@ -94,7 +94,7 @@ export class ExecuteViewSubmitHandler {
 			];
 
 		if (!nameStateValue || !bodyStateValue) {
-			const errorMessage = `${t('error_fill_required_fields', language)}`;
+			const errorMessage = `${t('Error_Fill_Required_Fields', language)}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
@@ -115,7 +115,7 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		if (result.success) {
-			const successMessage = `${t('success_create_reply', language, {
+			const successMessage = `${t('Success_Create_Reply', language, {
 				name: user.name,
 				replyname: name,
 			})}`;
@@ -140,7 +140,7 @@ export class ExecuteViewSubmitHandler {
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
-			const errorMessage = `${t('fail_create_reply', language, {
+			const errorMessage = `${t('Fail_Create_Reply', language, {
 				name: user.name,
 			})} \n\n ${result.error}`;
 			await sendNotification(this.read, this.modify, user, room, {
@@ -241,11 +241,9 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		if (result.success) {
-			const successMessage = `${t(
-				'success_delete_successfully',
-				language,
-				{ replyname: cachedReply.name },
-			)}`;
+			const successMessage = `${t('Deleted_Successfully', language, {
+				replyname: cachedReply.name,
+			})}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
@@ -268,7 +266,7 @@ export class ExecuteViewSubmitHandler {
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
-			const errorMessage = `${t('fail_delete_reply', language)} \n\n ${
+			const errorMessage = `${t('Fail_Delete_Reply', language)} \n\n ${
 				result.error
 			}`;
 			await sendNotification(this.read, this.modify, user, room, {
@@ -320,7 +318,7 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		if (result.success) {
-			const successMessage = `${t('success_edit_successfully', language, {
+			const successMessage = `${t('Edited_Sucessfully', language, {
 				replyname: cachedReply.name,
 			})} `;
 
@@ -347,7 +345,7 @@ export class ExecuteViewSubmitHandler {
 				.getInteractionResponder()
 				.updateModalViewResponse(UpdatedListBar);
 		} else {
-			const errorMessage = `${t('fail_edit_reply', language, {
+			const errorMessage = `${t('Fail_Edit_Reply', language, {
 				replyname: cachedReply.name,
 			})}
             \n\n${result.error}`;
