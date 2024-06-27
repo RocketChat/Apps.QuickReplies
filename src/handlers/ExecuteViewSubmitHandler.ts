@@ -300,9 +300,6 @@ export class ExecuteViewSubmitHandler {
 			this.read.getPersistenceReader(),
 		);
 
-		let name = '';
-		let body = '';
-
 		const cachedReply = await replyCacheStorage.getCacheReply(user);
 
 		const nameStateValue =
@@ -316,8 +313,8 @@ export class ExecuteViewSubmitHandler {
 
 		console.log(nameStateValue, cachedReply.name, view.state);
 
-		name = nameStateValue ? nameStateValue.trim() : cachedReply.name;
-		body = bodyStateValue ? bodyStateValue.trim() : cachedReply.body;
+		const name = nameStateValue ? nameStateValue.trim() : cachedReply.name;
+		const body = bodyStateValue ? bodyStateValue.trim() : cachedReply.body;
 
 		const result = await replyStorage.updateReplyById(
 			user,
