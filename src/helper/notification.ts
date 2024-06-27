@@ -1,5 +1,4 @@
 import { IRead, IModify } from '@rocket.chat/apps-engine/definition/accessors';
-import { IMessageAttachment } from '@rocket.chat/apps-engine/definition/messages';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { MessageActionButton } from '../enum/notification';
@@ -17,11 +16,8 @@ export async function sendHelperNotification(
 	const appUser = (await read.getUserReader().getAppUser()) as IUser;
 	const message = `${t('helper_text', language, {
 		name: user.name,
-	})}`;
-	const attachment: IMessageAttachment = {
-		color: '#000000',
-		text: t('helper_commands', language),
-	};
+	})} \n\n ${t('helper_commands', language)} 
+	`;
 
 	const helperMessage = modify
 		.getCreator()
@@ -29,7 +25,6 @@ export async function sendHelperNotification(
 		.setRoom(room)
 		.setSender(appUser)
 		.setText(message)
-		.setAttachments([attachment])
 		.setGroupable(false);
 
 	return read.getNotifier().notifyUser(user, helperMessage.getMessage());
