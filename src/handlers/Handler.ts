@@ -52,10 +52,6 @@ export class Handler implements IHandler {
 		);
 	}
 
-	private async storeRoomInteractionId(roomId: string): Promise<void> {
-		await this.roomInteractionStorage.storeInteractionRoomId(roomId);
-	}
-
 	private async openSurfaceView(
 		view: IUIKitSurfaceViewParam,
 		triggerId?: string,
@@ -156,15 +152,6 @@ export class Handler implements IHandler {
 			this.room,
 			language,
 		);
-	}
-	public async DeleteReply(): Promise<void> {
-		console.log('Delete');
-	}
-	public async EditReply(): Promise<void> {
-		console.log('Edit');
-	}
-	public async SendReply(): Promise<void> {
-		console.log('Send');
 	}
 	public async Configure(): Promise<void> {
 		const existingPreference = await getUserPreferredLanguage(

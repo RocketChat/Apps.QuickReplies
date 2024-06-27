@@ -28,14 +28,13 @@ export async function confirmDeleteModal(
 	const blocks: Block[] = [];
 
 	const confirmDelete = blockBuilder.createSectionBlock({
-		text: `### ${t('hey', language)} ${user.name}, ${t(
-			'confirm_delete_message',
-			language,
-		)}`,
+		text: `### ${t('confirm_delete_message', language)}`,
 	});
 
-	const replyInfo = `**${t('reply_name_label', language)}:** ${reply.name}  
-	**${t('reply_body_label', language)}:** ${reply.body}`;
+	const replyInfo = `${t('delete_reply_info', language, {
+		replyname: reply.name,
+		replybody: reply.body,
+	})}`;
 
 	const replyContent = blockBuilder.createContextBlock({
 		contextElements: [replyInfo],

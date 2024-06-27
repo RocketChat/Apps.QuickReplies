@@ -15,7 +15,9 @@ export async function sendHelperNotification(
 	language: Language,
 ): Promise<void> {
 	const appUser = (await read.getUserReader().getAppUser()) as IUser;
-	const message = `Hey ${user.name}, ${t('helper_text', language)}`;
+	const message = `${t('helper_text', language, {
+		name: user.name,
+	})}`;
 	const attachment: IMessageAttachment = {
 		color: '#000000',
 		text: t('helper_commands', language),
@@ -45,11 +47,7 @@ export async function sendDefaultNotification(
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const text = blockBuilder.createSectionBlock({
-		text: `${t('hey', language)} ${user.name}, ${t(
-			'default_message',
-			language,
-		)} \n
-`,
+		text: `${t('default_message', language, { name: user.name })}`,
 	});
 
 	const CreatebuttonElement = elementBuilder.addButton(
