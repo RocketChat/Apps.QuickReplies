@@ -52,5 +52,8 @@
 	"Send_Reply_Modal_Title": "Wyślij Odpowiedź",
 	"Send_Reply_Body_Label": "Treść Wiadomości Odpowiedzi",
 	"Send_Reply_Body_Placeholder": "Treść odpowiedzi, którą zamierzasz wysłać",
-	"Error_Reply_Not_Found": "Nie znaleziono odpowiedzi"
+	"Error_Reply_Not_Found": "Nie znaleziono odpowiedzi",
+	"Search_Reply_Label": "Szukaj",
+	"Search_Reply_Placeholder": "Szukaj odpowiedzi",
+	"Message_Update_Language": "Preferencje językowe zostały pomyślnie zaktualizowane na __language__"
 }

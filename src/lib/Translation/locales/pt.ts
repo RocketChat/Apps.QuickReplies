@@ -53,4 +53,8 @@ export const pt = {
 	Send_Reply_Body_Label: "Conteúdo da Mensagem de Resposta",
 	Send_Reply_Body_Placeholder: "Conteúdo da resposta que você está prestes a enviar",
 	Error_Reply_Not_Found: "Resposta não encontrada",
+	Search_Reply_Label: "Pesquisar",
+	Search_Reply_Placeholder: "Procure por uma resposta",
+	Message_Update_Language: "Preferência de idioma atualizada para __language__ com sucesso",
+
 };

@@ -53,4 +53,8 @@ export const de = {
 	Send_Reply_Body_Label: "Antwortnachrichtinhalt",
 	Send_Reply_Body_Placeholder: "Inhalt der Antwort, die Sie senden möchten",
 	Error_Reply_Not_Found: "Antwort nicht gefunden",
+	Search_Reply_Label: "Suche",
+	Search_Reply_Placeholder: "Suche nach einer Antwort",
+	Message_Update_Language: "Spracheinstellung erfolgreich auf __language__ aktualisiert",
+
 };

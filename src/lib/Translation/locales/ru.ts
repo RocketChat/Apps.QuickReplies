@@ -53,4 +53,7 @@ export const ru = {
 	Send_Reply_Body_Label: "Содержание Сообщения Ответа",
 	Send_Reply_Body_Placeholder: "Содержание ответа, который вы собираетесь отправить",
 	Error_Reply_Not_Found: "Ответ не найден",
+	Search_Reply_Label: "Поиск",
+	Search_Reply_Placeholder: "Искать ответ",
+	Message_Update_Language: "Языковые предпочтения успешно обновлены на __language__",
 };

@@ -18,6 +18,7 @@ import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
 import {
+	getLanguageDisplayTextFromCode,
 	getUserPreferredLanguage,
 	isSupportedLanguage,
 } from '../helper/userPreference';
@@ -170,9 +171,19 @@ export class ExecuteViewSubmitHandler {
 			this.read.getPersistenceReader(),
 			user.id,
 		);
+
 		await userPreference.storeUserPreference({
 			userId: user.id,
 			language: languageInput,
+		});
+
+		await sendNotification(this.read, this.modify, user, room, {
+			message: t('Message_Update_Language', languageInput, {
+				language: getLanguageDisplayTextFromCode(
+					languageInput,
+					languageInput,
+				),
+			}),
 		});
 
 		return this.context.getInteractionResponder().successResponse();

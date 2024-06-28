@@ -52,5 +52,8 @@
 	"Send_Reply_Modal_Title": "Send a Reply",
 	"Send_Reply_Body_Label": "Reply Message Content",
 	"Send_Reply_Body_Placeholder": "Content of reply you are about to send",
-	"Error_Reply_Not_Found": "Reply not found"
+	"Error_Reply_Not_Found": "Reply not found",
+	"Search_Reply_Label": "Search",
+	"Search_Reply_Placeholder": "Search for a reply",
+	"Message_Update_Language": "Language preference updated to __language__ successfully"
 }

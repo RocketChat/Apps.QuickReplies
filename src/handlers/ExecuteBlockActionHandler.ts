@@ -75,7 +75,6 @@ export class ExecuteBlockActionHandler {
 			persis: this.persistence,
 			triggerId,
 		});
-		console.log(actionId);
 
 		switch (actionId) {
 			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
@@ -180,7 +179,7 @@ export class ExecuteBlockActionHandler {
 			case MessageActionButton.NEED_MORE_ACTION_ID:
 				await handler.Help();
 				break;
-			case 'search_input':
+			case ListContextualBarEnum.SEARCH_ACTION_ID:
 				const replyStorage = new ReplyStorage(
 					this.persistence,
 					persistenceRead,
@@ -216,12 +215,6 @@ export class ExecuteBlockActionHandler {
 						.getInteractionResponder()
 						.updateModalViewResponse(UpdatedListBar);
 				}
-
-				break;
-			case 'search_button':
-				console.log('search_button', value);
-
-				break;
 		}
 
 		return this.context.getInteractionResponder().successResponse();

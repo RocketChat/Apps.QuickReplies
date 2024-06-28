@@ -16,6 +16,7 @@ import {
 	t,
 } from '../lib/Translation/translation';
 import { SetUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
+import { getLanguageDisplayTextFromCode } from '../helper/userPreference';
 
 export async function setUserPreferenceLanguageModal({
 	app,
@@ -104,20 +105,4 @@ export async function setUserPreferenceLanguageModal({
 	};
 }
 
-const getLanguageDisplayTextFromCode = (
-	code: Language,
-	language: Language,
-): string => {
-	switch (code) {
-		case Language.en:
-			return t('Language_EN', language);
-		case Language.de:
-			return t('Language_DE', language);
-		case Language.pt:
-			return t('Language_PT', language);
-		case Language.pl:
-			return t('Language_PL', language);
-		case Language.ru:
-			return t('Language_RU', language);
-	}
-};
+

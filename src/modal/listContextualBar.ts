@@ -53,11 +53,14 @@ export async function listReplyContextualBar(
 	const searchInput = inputElementComponent(
 		{
 			app,
-			placeholder: 'Search',
-			label: 'Search',
+			placeholder: t('Search_Reply_Placeholder', language),
+			label: t('Search_Reply_Label', language),
 			dispatchActionConfigOnInput: true,
 		},
-		{ blockId: 'search_input', actionId: 'search_input' },
+		{
+			blockId: ListContextualBarEnum.SEARCH_BLOCK_ID,
+			actionId: ListContextualBarEnum.SEARCH_ACTION_ID,
+		},
 	);
 
 	blocks.push(searchInput, divider);
