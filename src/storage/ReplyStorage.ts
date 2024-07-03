@@ -16,7 +16,6 @@ export class ReplyStorage {
 		private readonly persistenceRead: IPersistenceRead,
 	) {}
 
-	// Generates a unique ID for each reply based on user ID and a random value
 	private createUniqueId(userId: string): string {
 		const timestamp = Date.now().toString(36);
 		return `${userId}-${timestamp}`;
@@ -31,7 +30,7 @@ export class ReplyStorage {
 		if (!name && !body) {
 			return {
 				success: false,
-				error: t('error_fill_fields', language),
+				error: t('Error_Fill_Fields', language),
 			};
 		}
 
@@ -47,14 +46,14 @@ export class ReplyStorage {
 		if (!isNameValid) {
 			return {
 				success: false,
-				error: t('error_reply_name_invalid', language),
+				error: t('Error_Reply_Name_Invalid', language),
 			};
 		}
 
 		if (!isBodyValid) {
 			return {
 				success: false,
-				error: t('error_reply_body_invalid', language),
+				error: t('Error_Reply_Body_Invalid', language),
 			};
 		}
 
@@ -68,6 +67,19 @@ export class ReplyStorage {
 	): Promise<boolean> {
 		const replies = await this.getReplyForUser(user);
 		return !replies.some((reply) => reply.name === name);
+	}
+
+	private getAssociations(userId: string): RocketChatAssociationRecord[] {
+		return [
+			new RocketChatAssociationRecord(
+				RocketChatAssociationModel.USER,
+				userId,
+			),
+			new RocketChatAssociationRecord(
+				RocketChatAssociationModel.MISC,
+				'reply',
+			),
+		];
 	}
 
 	// Creates a new reply and stores it
@@ -87,21 +99,11 @@ export class ReplyStorage {
 			if (!(await this.isUniqueReplyName(user, name))) {
 				return {
 					success: false,
-					error: t('error_reply_name_already_exists', language),
+					error: t('Error_Reply_Name_Already_Exists', language),
 				};
 			}
 
-			const association: Array<RocketChatAssociationRecord> = [
-				new RocketChatAssociationRecord(
-					RocketChatAssociationModel.USER,
-					user.id,
-				),
-				new RocketChatAssociationRecord(
-					RocketChatAssociationModel.MISC,
-					'reply',
-				),
-			];
-
+			const association = this.getAssociations(user.id);
 			const userPrevReply: IReply[] = await this.getReplyForUser(user);
 
 			userPrevReply.push({
@@ -117,37 +119,106 @@ export class ReplyStorage {
 			);
 			return { success: true };
 		} catch (error) {
-			if (error instanceof Error) {
-				return { success: false, error: error.message };
-			}
 			console.warn('Create Reply Error: ', error);
 			return {
 				success: false,
-				error: t('error_fail_internal', language),
+				error: t('Error_Fail_Internal', language),
 			};
 		}
 	}
 
-	// Retrieves replies for the user
 	public async getReplyForUser(user: IUser): Promise<IReply[]> {
 		try {
-			const associations: Array<RocketChatAssociationRecord> = [
-				new RocketChatAssociationRecord(
-					RocketChatAssociationModel.MISC,
-					'reply',
-				),
-				new RocketChatAssociationRecord(
-					RocketChatAssociationModel.USER,
-					user.id,
-				),
-			];
+			const associations = this.getAssociations(user.id);
 			const reply = await this.persistenceRead.readByAssociations(
 				associations,
 			);
 			return reply && reply.length ? (reply[0] as IReply[]) : [];
 		} catch (error) {
-			console.warn('Get Reply Error :', error);
+			console.warn('Get Reply Error:', error);
 			return [];
+		}
+	}
+
+	public async getReplyById(
+		user: IUser,
+		replyId: string,
+	): Promise<IReply | null> {
+		const userReplies = await this.getReplyForUser(user);
+		return userReplies.find((reply) => reply.id === replyId) || null;
+	}
+
+	public async updateReplyById(
+		user: IUser,
+		replyId: string,
+		name: string,
+		body: string,
+		language: Language,
+	): Promise<{ success: boolean; error?: string }> {
+		try {
+			const userReplies = await this.getReplyForUser(user);
+			const replyIndex = userReplies.findIndex(
+				(reply) => reply.id === replyId,
+			);
+
+			if (replyIndex === -1) {
+				return {
+					success: false,
+					error: t('Error_Reply_Not_Found', language),
+				};
+			}
+
+			userReplies[replyIndex] = { id: replyId, name, body };
+
+			const association = this.getAssociations(user.id);
+			await this.persistence.updateByAssociations(
+				association,
+				userReplies,
+				true,
+			);
+			return { success: true };
+		} catch (error) {
+			console.warn('Update Reply Error: ', error);
+			return {
+				success: false,
+				error: t('Error_Fail_Internal', language),
+			};
+		}
+	}
+
+	public async deleteReplyById(
+		user: IUser,
+		replyId: string,
+		language: Language,
+	): Promise<{ success: boolean; error?: string }> {
+		try {
+			const userReplies = await this.getReplyForUser(user);
+			const replyIndex = userReplies.findIndex(
+				(reply) => reply.id === replyId,
+			);
+
+			if (replyIndex === -1) {
+				return {
+					success: false,
+					error: t('Error_Reply_Not_Found', language),
+				};
+			}
+
+			userReplies.splice(replyIndex, 1);
+
+			const association = this.getAssociations(user.id);
+			await this.persistence.updateByAssociations(
+				association,
+				userReplies,
+				true,
+			);
+			return { success: true };
+		} catch (error) {
+			console.warn('Delete Reply Error: ', error);
+			return {
+				success: false,
+				error: t('Error_Fail_Internal', language),
+			};
 		}
 	}
 }

@@ -14,10 +14,10 @@ import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IReply } from '../definition/reply/IReply';
-import { ListContextualBarEnum } from '../enum/modals/ListContextualBar';
+import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
 import { Language, t } from '../lib/Translation/translation';
 
-export async function listReply(
+export async function listReplyContextualBar(
 	app: QuickRepliesApp,
 	user: IUser,
 	read: IRead,
@@ -31,14 +31,18 @@ export async function listReply(
 	const blocks: Block[] = [];
 	const divider = blockBuilder.createDividerBlock();
 
-	userReplies.forEach((reply) => {
+	const sortedReplies = userReplies.sort((a, b) => {
+		return a.name.localeCompare(b.name);
+	});
+
+	sortedReplies.forEach((reply) => {
 		const accessoryElement = elementBuilder.createOverflow(
 			{
 				options: [
 					{
 						text: {
 							type: 'plain_text',
-							text: t('send', language),
+							text: t('Send_Text', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.SEND} : ${reply.id}`,
@@ -46,7 +50,7 @@ export async function listReply(
 					{
 						text: {
 							type: 'plain_text',
-							text: t('edit', language),
+							text: t('Edit_Text', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.EDIT} : ${reply.id}`,
@@ -54,7 +58,7 @@ export async function listReply(
 					{
 						text: {
 							type: 'plain_text',
-							text: t('delete', language),
+							text: t('Delete_Text', language),
 							emoji: true,
 						},
 						value: `${ListContextualBarEnum.DELETE} : ${reply.id}`,
@@ -83,7 +87,7 @@ export async function listReply(
 
 	const close = elementBuilder.addButton(
 		{
-			text: t('close_button', language),
+			text: t('Close_Button', language),
 			style: ButtonStyle.DANGER,
 		},
 		{
@@ -97,7 +101,7 @@ export async function listReply(
 		type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: t('list_reply_title', language),
+			text: t('List_Reply_Title', language),
 		},
 		blocks,
 		close,

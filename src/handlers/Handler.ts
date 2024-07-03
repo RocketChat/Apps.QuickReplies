@@ -1,17 +1,17 @@
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
-
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import {
 	IHttp,
 	IModify,
 	IPersistence,
 	IRead,
+	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
-import { CreateReplyModal } from '../modal/createReplyModal';
-import { listReply } from '../modal/listReplyContextualBar';
+import { CreateReplyModal } from '../modal/createModal';
+import { listReplyContextualBar } from '../modal/listContextualBar';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IReply } from '../definition/reply/IReply';
 import {
@@ -50,6 +50,17 @@ export class Handler implements IHandler {
 			persistenceRead,
 			params.sender.id,
 		);
+	}
+
+	private async openSurfaceView(
+		view: IUIKitSurfaceViewParam,
+		triggerId?: string,
+	): Promise<void> {
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(view, { triggerId }, this.sender);
+		}
 	}
 
 	private async getlanguage(): Promise<Language> {
@@ -100,7 +111,7 @@ export class Handler implements IHandler {
 
 		const language = await this.getlanguage();
 
-		const contextualBar = await listReply(
+		const contextualBar = await listReplyContextualBar(
 			this.app,
 			this.sender,
 			this.read,
@@ -115,17 +126,10 @@ export class Handler implements IHandler {
 			this.app.getLogger().error(contextualBar.message);
 			return;
 		}
-		const triggerId = this.triggerId;
-		if (triggerId) {
-			await this.modify.getUiController().openSurfaceView(
-				contextualBar,
-				{
-					triggerId,
-				},
-				this.sender,
-			);
-		}
+
+		await this.openSurfaceView(contextualBar, this.triggerId);
 	}
+
 	public async Help(): Promise<void> {
 		const language = await this.getlanguage();
 
@@ -148,15 +152,6 @@ export class Handler implements IHandler {
 			this.room,
 			language,
 		);
-	}
-	public async DeleteReply(): Promise<void> {
-		console.log('Delete');
-	}
-	public async EditReply(): Promise<void> {
-		console.log('Edit');
-	}
-	public async SendReply(): Promise<void> {
-		console.log('Send');
 	}
 	public async Configure(): Promise<void> {
 		const existingPreference = await getUserPreferredLanguage(

@@ -10,11 +10,10 @@ import {
 	IPersistence,
 	IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
-
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { sendNotification } from '../helper/notification';
-import { CreateModalEnum } from '../enum/modals/CreateModal';
+import { CreateModalEnum } from '../enum/modals/createModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
@@ -22,11 +21,19 @@ import {
 	getUserPreferredLanguage,
 	isSupportedLanguage,
 } from '../helper/userPreference';
-import { setUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
+import { SetUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
+import { SendModalEnum } from '../enum/modals/sendModal';
+import { sendMessage } from '../helper/message';
+import { CacheReplyStorage } from '../storage/ReplyCache';
+import { IReply } from '../definition/reply/IReply';
+import { listReplyContextualBar } from '../modal/listContextualBar';
+import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
+import { EditModalEnum } from '../enum/modals/editModal';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
+
 	constructor(
 		protected readonly app: QuickRepliesApp,
 		protected readonly read: IRead,
@@ -54,19 +61,24 @@ export class ExecuteViewSubmitHandler {
 			this.persistence,
 			user.id,
 		);
-		switch (view.id) {
-			case CreateModalEnum.VIEW_ID: {
-				return this.handleCreate(room, user, view, language);
-			}
-			case setUserPreferenceModalEnum.VIEW_ID: {
-				return this.handleSetUserPreference(room, user, view);
-			}
-		}
 
-		return this.context.getInteractionResponder().successResponse();
+		switch (view.id) {
+			case CreateModalEnum.VIEW_ID:
+				return this.handleCreate(room, user, view, language);
+			case SetUserPreferenceModalEnum.VIEW_ID:
+				return this.handleSetUserPreference(room, user, view);
+			case SendModalEnum.VIEW_ID:
+				return this.handleSend(room, user, view);
+			case ConfirmDeleteModalEnum.VIEW_ID:
+				return this.handleDelete(room, user, view, language);
+			case EditModalEnum.VIEW_ID:
+				return this.handleEdit(room, user, view, language);
+			default:
+				return this.context.getInteractionResponder().successResponse();
+		}
 	}
 
-	public async handleCreate(
+	private async handleCreate(
 		room: IRoom,
 		user: IUser,
 		view: IUIKitSurface,
@@ -76,34 +88,25 @@ export class ExecuteViewSubmitHandler {
 			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
 				CreateModalEnum.REPLY_NAME_ACTION_ID
 			];
-
 		const bodyStateValue =
 			view.state?.[CreateModalEnum.REPLY_BODY_BLOCK_ID]?.[
 				CreateModalEnum.REPLY_BODY_ACTION_ID
 			];
 
 		if (!nameStateValue || !bodyStateValue) {
-			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
-				'fail_create_reply',
-				language,
-			)} ${t('quick_reply', language)}. ❌\n\n ${t(
-				'error_fill_fields',
-				language,
-			)}`;
-
+			const errorMessage = `${t('Error_Fill_Required_Fields', language)}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
+
 		const name = nameStateValue.trim();
 		const body = bodyStateValue.trim();
-
 		const replyStorage = new ReplyStorage(
 			this.persistence,
 			this.read.getPersistenceReader(),
 		);
-
 		const result = await replyStorage.createReply(
 			user,
 			name,
@@ -112,36 +115,53 @@ export class ExecuteViewSubmitHandler {
 		);
 
 		if (result.success) {
-			const successMessage = `${t('hey', language)} ${user.name},${t(
-				'quick_reply',
-				language,
-			)} **${name}** ${t('created_successfully', language)} ✅`;
+			const successMessage = `${t('Success_Create_Reply', language, {
+				name: user.name,
+				replyname: name,
+			})}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
-			return this.context.getInteractionResponder().successResponse();
-		} else {
-			const errorMessage = `${t('hey', language)} ${user.name}, ${t(
-				'fail_create_reply',
+
+			const userReplies: IReply[] = await replyStorage.getReplyForUser(
+				user,
+			);
+			const UpdatedListBar = await listReplyContextualBar(
+				this.app,
+				user,
+				this.read,
+				this.persistence,
+				this.modify,
+				room,
+				userReplies,
 				language,
-			)} ❌\n\n ${result.error}`;
+			);
+			return this.context
+				.getInteractionResponder()
+				.updateModalViewResponse(UpdatedListBar);
+		} else {
+			const errorMessage = `${t('Fail_Create_Reply', language, {
+				name: user.name,
+			})} \n\n ${result.error}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
+
 			return this.context.getInteractionResponder().errorResponse();
 		}
 	}
-	public async handleSetUserPreference(
+
+	private async handleSetUserPreference(
 		room: IRoom,
 		user: IUser,
 		view: IUIKitSurface,
 	): Promise<IUIKitResponse> {
-		const LanguageInput =
+		const languageInput =
 			view.state?.[
-				setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
-			]?.[setUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID];
+				SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
+			]?.[SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID];
 
-		if (!LanguageInput) {
+		if (!languageInput || !isSupportedLanguage(languageInput)) {
 			return this.context.getInteractionResponder().errorResponse();
 		}
 
@@ -150,15 +170,190 @@ export class ExecuteViewSubmitHandler {
 			this.read.getPersistenceReader(),
 			user.id,
 		);
-
-		if (!isSupportedLanguage(LanguageInput)) {
-			return this.context.getInteractionResponder().errorResponse();
-		}
 		await userPreference.storeUserPreference({
 			userId: user.id,
-			language: LanguageInput,
+			language: languageInput,
 		});
 
 		return this.context.getInteractionResponder().successResponse();
+	}
+
+	private async handleSend(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+	): Promise<IUIKitResponse> {
+		try {
+			let body = '';
+
+			const replyCacheStorage = new CacheReplyStorage(
+				this.persistence,
+				this.read.getPersistenceReader(),
+			);
+			const cachedReply = await replyCacheStorage.getCacheReply(user);
+			const bodyStateValue = view.state?.[
+				SendModalEnum.REPLY_BODY_BLOCK_ID
+			]?.[SendModalEnum.REPLY_BODY_ACTION_ID] as string;
+
+			console.log(bodyStateValue);
+
+			body = bodyStateValue ? bodyStateValue : cachedReply.body;
+
+			const message = body.trim();
+			if (!message) {
+				return this.context.getInteractionResponder().errorResponse();
+			}
+
+			await sendMessage(this.modify, user, room, body);
+			await replyCacheStorage.removeCacheReply(user);
+			return this.context.getInteractionResponder().successResponse();
+		} catch (error) {
+			console.error('Error handling send:', error);
+			return this.context.getInteractionResponder().errorResponse();
+		}
+	}
+
+	private async handleDelete(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+		language: Language,
+	): Promise<IUIKitResponse> {
+		console.log('deleteHanler ');
+		const persistenceRead = this.read.getPersistenceReader();
+		const replyStorage = new ReplyStorage(
+			this.persistence,
+			persistenceRead,
+		);
+
+		const replyCacheStorage = new CacheReplyStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+		);
+		const cachedReply = await replyCacheStorage.getCacheReply(user);
+		console.log(cachedReply);
+
+		const replyId = cachedReply.id;
+		const result = await replyStorage.deleteReplyById(
+			user,
+			replyId,
+			language,
+		);
+
+		if (result.success) {
+			const successMessage = `${t('Deleted_Successfully', language, {
+				replyname: cachedReply.name,
+			})}`;
+			await sendNotification(this.read, this.modify, user, room, {
+				message: successMessage,
+			});
+			await replyCacheStorage.removeCacheReply(user);
+			const userReplies: IReply[] = await replyStorage.getReplyForUser(
+				user,
+			);
+
+			const UpdatedListBar = await listReplyContextualBar(
+				this.app,
+				user,
+				this.read,
+				this.persistence,
+				this.modify,
+				room,
+				userReplies,
+				language,
+			);
+			return this.context
+				.getInteractionResponder()
+				.updateModalViewResponse(UpdatedListBar);
+		} else {
+			const errorMessage = `${t('Fail_Delete_Reply', language)} \n\n ${
+				result.error
+			}`;
+			await sendNotification(this.read, this.modify, user, room, {
+				message: errorMessage,
+			});
+			return this.context.getInteractionResponder().errorResponse();
+		}
+	}
+
+	private async handleEdit(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+		language,
+	): Promise<IUIKitResponse> {
+		const persistenceRead = this.read.getPersistenceReader();
+		const replyStorage = new ReplyStorage(
+			this.persistence,
+			persistenceRead,
+		);
+
+		const replyCacheStorage = new CacheReplyStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+		);
+
+		const cachedReply = await replyCacheStorage.getCacheReply(user);
+
+		const nameStateValue =
+			view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
+				EditModalEnum.REPLY_NAME_ACTION_ID
+			];
+		const bodyStateValue =
+			view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				EditModalEnum.REPLY_BODY_ACTION_ID
+			];
+
+		console.log(nameStateValue, cachedReply.name, view.state);
+
+		const name = nameStateValue ? nameStateValue.trim() : cachedReply.name;
+		const body = bodyStateValue ? bodyStateValue.trim() : cachedReply.body;
+
+		const result = await replyStorage.updateReplyById(
+			user,
+			cachedReply.id,
+			name,
+			body,
+			language,
+		);
+
+		if (result.success) {
+			const successMessage = `${t('Edited_Sucessfully', language, {
+				replyname: cachedReply.name,
+			})} `;
+
+			await sendNotification(this.read, this.modify, user, room, {
+				message: successMessage,
+			});
+
+			await replyCacheStorage.removeCacheReply(user);
+			const userReplies: IReply[] = await replyStorage.getReplyForUser(
+				user,
+			);
+
+			const UpdatedListBar = await listReplyContextualBar(
+				this.app,
+				user,
+				this.read,
+				this.persistence,
+				this.modify,
+				room,
+				userReplies,
+				language,
+			);
+			return this.context
+				.getInteractionResponder()
+				.updateModalViewResponse(UpdatedListBar);
+		} else {
+			const errorMessage = `${t('Fail_Edit_Reply', language, {
+				replyname: cachedReply.name,
+			})}
+            \n\n${result.error}`;
+
+			await sendNotification(this.read, this.modify, user, room, {
+				message: errorMessage,
+			});
+			return this.context.getInteractionResponder().errorResponse();
+		}
 	}
 }
