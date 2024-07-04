@@ -2,6 +2,7 @@ import {
 	IModify,
 	IPersistence,
 	IRead,
+	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { TextObjectType, Block } from '@rocket.chat/ui-kit';
 
@@ -9,10 +10,12 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { inputElementComponent } from './common/inputElementComponent';
-import { ButtonStyle } from '@rocket.chat/apps-engine/definition/uikit';
+import {
+	ButtonStyle,
+	UIKitSurfaceType,
+} from '@rocket.chat/apps-engine/definition/uikit';
 import { SendModalEnum } from '../enum/modals/sendModal';
 import { IReply } from '../definition/reply/IReply';
-import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 import { Language, t } from '../lib/Translation/translation';
 
 export async function SendReplyModal(
@@ -24,7 +27,7 @@ export async function SendReplyModal(
 	room: IRoom,
 	reply: IReply,
 	language: Language,
-): Promise<IUIKitModalViewParam> {
+): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
@@ -66,6 +69,7 @@ export async function SendReplyModal(
 	);
 	return {
 		id: SendModalEnum.VIEW_ID,
+		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
 			text: t('Send_Reply_Modal_Title', language),
