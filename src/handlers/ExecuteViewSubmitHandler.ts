@@ -85,6 +85,13 @@ export class ExecuteViewSubmitHandler {
 		view: IUIKitSurface,
 		language: Language,
 	): Promise<IUIKitResponse> {
+		const replyCacheStorage = new CacheReplyStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+		);
+
+		const cachedReply = await replyCacheStorage.getCacheReply(user);
+
 		const nameStateValue =
 			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
 				CreateModalEnum.REPLY_NAME_ACTION_ID
@@ -94,16 +101,15 @@ export class ExecuteViewSubmitHandler {
 				CreateModalEnum.REPLY_BODY_ACTION_ID
 			];
 
-		if (!nameStateValue || !bodyStateValue) {
+		const name = nameStateValue ? nameStateValue.trim() : cachedReply.name;
+		const body = bodyStateValue ? bodyStateValue.trim() : cachedReply.body;
+		if (!name || !body) {
 			const errorMessage = `${t('Error_Fill_Required_Fields', language)}`;
 			await sendNotification(this.read, this.modify, user, room, {
 				message: errorMessage,
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
-
-		const name = nameStateValue.trim();
-		const body = bodyStateValue.trim();
 		const replyStorage = new ReplyStorage(
 			this.persistence,
 			this.read.getPersistenceReader(),
@@ -114,6 +120,8 @@ export class ExecuteViewSubmitHandler {
 			body,
 			language,
 		);
+
+		await replyCacheStorage.removeCacheReply(user);
 
 		if (result.success) {
 			const successMessage = `${t('Success_Create_Reply', language, {
@@ -315,8 +323,6 @@ export class ExecuteViewSubmitHandler {
 				EditModalEnum.REPLY_BODY_ACTION_ID
 			];
 
-		console.log(nameStateValue, cachedReply.name, view.state);
-
 		const name = nameStateValue ? nameStateValue.trim() : cachedReply.name;
 		const body = bodyStateValue ? bodyStateValue.trim() : cachedReply.body;
 
@@ -328,6 +334,8 @@ export class ExecuteViewSubmitHandler {
 			language,
 		);
 
+		await replyCacheStorage.removeCacheReply(user);
+
 		if (result.success) {
 			const successMessage = `${t('Edited_Sucessfully', language, {
 				replyname: cachedReply.name,
@@ -337,7 +345,6 @@ export class ExecuteViewSubmitHandler {
 				message: successMessage,
 			});
 
-			await replyCacheStorage.removeCacheReply(user);
 			const userReplies: IReply[] = await replyStorage.getReplyForUser(
 				user,
 			);

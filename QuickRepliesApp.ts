@@ -23,6 +23,7 @@ import { ElementBuilder } from './src/lib/ElementBuilder';
 import { BlockBuilder } from './src/lib/BlockBuilder';
 import { ExecuteViewClosedHandler } from './src/handlers/ExecuteViewClosedHandler';
 import { ExecuteBlockActionHandler } from './src/handlers/ExecuteBlockActionHandler';
+import { QsCommand } from './src/commands/QsCommand';
 
 export class QuickRepliesApp extends App {
 	private elementBuilder: ElementBuilder;
@@ -36,6 +37,9 @@ export class QuickRepliesApp extends App {
 	): Promise<void> {
 		await configuration.slashCommands.provideSlashCommand(
 			new QuickCommand(this),
+		);
+		await configuration.slashCommands.provideSlashCommand(
+			new QsCommand(this),
 		);
 		this.elementBuilder = new ElementBuilder(this.getID());
 		this.blockBuilder = new BlockBuilder(this.getID());

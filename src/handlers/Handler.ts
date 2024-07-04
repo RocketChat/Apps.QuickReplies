@@ -5,7 +5,6 @@ import {
 	IModify,
 	IPersistence,
 	IRead,
-	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
@@ -21,6 +20,9 @@ import {
 import { setUserPreferenceLanguageModal } from '../modal/setUserPreferenceModal';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { Language } from '../lib/Translation/translation';
+import { SendReplyModal } from '../modal/sendModal';
+import { EditReplyModal } from '../modal/editModal';
+import { confirmDeleteModal } from '../modal/confirmDeleteModal';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -33,6 +35,7 @@ export class Handler implements IHandler {
 	public roomInteractionStorage: RoomInteractionStorage;
 	public triggerId?: string;
 	public threadId?: string;
+	public language: Language;
 
 	constructor(params: IHanderParams) {
 		this.app = params.app;
@@ -44,6 +47,7 @@ export class Handler implements IHandler {
 		this.persis = params.persis;
 		this.triggerId = params.triggerId;
 		this.threadId = params.threadId;
+		this.language = params.language;
 		const persistenceRead = params.read.getPersistenceReader();
 		this.roomInteractionStorage = new RoomInteractionStorage(
 			params.persis,
@@ -52,29 +56,7 @@ export class Handler implements IHandler {
 		);
 	}
 
-	private async openSurfaceView(
-		view: IUIKitSurfaceViewParam,
-		triggerId?: string,
-	): Promise<void> {
-		if (triggerId) {
-			await this.modify
-				.getUiController()
-				.openSurfaceView(view, { triggerId }, this.sender);
-		}
-	}
-
-	private async getlanguage(): Promise<Language> {
-		const language = await getUserPreferredLanguage(
-			this.app,
-			this.read.getPersistenceReader(),
-			this.persis,
-			this.sender.id,
-		);
-		return language;
-	}
-
-	public async CreateReply(): Promise<void> {
-		const language = await this.getlanguage();
+	public async CreateReply(name?: string, body?: string): Promise<void> {
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -82,7 +64,9 @@ export class Handler implements IHandler {
 			this.persis,
 			this.modify,
 			this.room,
-			language,
+			this.language,
+			name,
+			body,
 		);
 
 		if (modal instanceof Error) {
@@ -109,8 +93,6 @@ export class Handler implements IHandler {
 			this.sender,
 		);
 
-		const language = await this.getlanguage();
-
 		const contextualBar = await listReplyContextualBar(
 			this.app,
 			this.sender,
@@ -119,38 +101,38 @@ export class Handler implements IHandler {
 			this.modify,
 			this.room,
 			userReplies,
-			language,
+			this.language,
 		);
 
 		if (contextualBar instanceof Error) {
 			this.app.getLogger().error(contextualBar.message);
 			return;
 		}
-
-		await this.openSurfaceView(contextualBar, this.triggerId);
+		const triggerId = this.triggerId;
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(contextualBar, { triggerId }, this.sender);
+		}
 	}
 
 	public async Help(): Promise<void> {
-		const language = await this.getlanguage();
-
 		await sendHelperNotification(
 			this.read,
 			this.modify,
 			this.sender,
 			this.room,
-			language,
+			this.language,
 		);
 	}
 	public async sendDefault(): Promise<void> {
-		const language = await this.getlanguage();
-
 		await sendDefaultNotification(
 			this.app,
 			this.read,
 			this.modify,
 			this.sender,
 			this.room,
-			language,
+			this.language,
 		);
 	}
 	public async Configure(): Promise<void> {
@@ -178,6 +160,82 @@ export class Handler implements IHandler {
 			await this.modify
 				.getUiController()
 				.openSurfaceView(modal, { triggerId }, this.sender);
+		}
+		return;
+	}
+	public async SendReply(reply: IReply): Promise<void> {
+		const sendModal = await SendReplyModal(
+			this.app,
+			this.sender,
+			this.read,
+			this.persis,
+			this.modify,
+			this.room,
+			reply,
+			this.language,
+		);
+
+		if (sendModal instanceof Error) {
+			this.app.getLogger().error(sendModal.message);
+			return;
+		}
+		const triggerId = this.triggerId;
+		console.log(triggerId);
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(sendModal, { triggerId }, this.sender);
+		}
+		return;
+	}
+	public async EditReply(reply: IReply, body?: string): Promise<void> {
+		const editModal = await EditReplyModal(
+			this.app,
+			this.sender,
+			this.read,
+			this.persis,
+			this.modify,
+			this.room,
+			reply,
+			this.language,
+			body,
+		);
+
+		if (editModal instanceof Error) {
+			this.app.getLogger().error(editModal.message);
+			return;
+		}
+		const triggerId = this.triggerId;
+		console.log(triggerId);
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(editModal, { triggerId }, this.sender);
+		}
+		return;
+	}
+	public async DeleteReply(reply: IReply): Promise<void> {
+		const deleteModal = await confirmDeleteModal(
+			this.app,
+			this.sender,
+			this.read,
+			this.persis,
+			this.modify,
+			this.room,
+			reply,
+			this.language,
+		);
+
+		if (deleteModal instanceof Error) {
+			this.app.getLogger().error(deleteModal.message);
+			return;
+		}
+		const triggerId = this.triggerId;
+		console.log(triggerId);
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(deleteModal, { triggerId }, this.sender);
 		}
 		return;
 	}

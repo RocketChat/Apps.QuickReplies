@@ -74,6 +74,7 @@ export class ExecuteBlockActionHandler {
 			http: this.http,
 			persis: this.persistence,
 			triggerId,
+			language,
 		});
 
 		switch (actionId) {

@@ -64,9 +64,18 @@ export class ReplyStorage {
 	private async isUniqueReplyName(
 		user: IUser,
 		name: string,
+		replyId?: string,
 	): Promise<boolean> {
 		const replies = await this.getReplyForUser(user);
-		return !replies.some((reply) => reply.name === name);
+
+		const replyFound = replies.find((reply) => reply.name === name);
+		if (replyFound && replyId) {
+			replyFound.id === replyId;
+			return true;
+		} else if (replyFound) {
+			return false;
+		}
+		return true;
 	}
 
 	private getAssociations(userId: string): RocketChatAssociationRecord[] {
@@ -155,7 +164,20 @@ export class ReplyStorage {
 		body: string,
 		language: Language,
 	): Promise<{ success: boolean; error?: string }> {
+		const validation = this.validateReply(name, body, language);
+
+		if (!validation.success) {
+			return validation;
+		}
+
 		try {
+			if (!(await this.isUniqueReplyName(user, name, replyId))) {
+				return {
+					success: false,
+					error: t('Error_Reply_Name_Already_Exists', language),
+				};
+			}
+
 			const userReplies = await this.getReplyForUser(user);
 			const replyIndex = userReplies.findIndex(
 				(reply) => reply.id === replyId,
