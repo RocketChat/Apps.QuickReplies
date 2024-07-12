@@ -23,7 +23,7 @@ export const de = {
 	Error_Reply_Name_Invalid: "Ungültiger Name: Der Name muss eine nicht leere Zeichenfolge mit einer maximalen Länge von 100 Zeichen sein.",
 	Error_Reply_Body_Invalid: "Ungültiger Inhalt: Der Inhalt muss eine nicht leere Zeichenfolge mit einer maximalen Länge von 1000 Zeichen sein.",
 	Error_Fail_Internal: "Interner Fehler. Bitte versuchen Sie es später erneut.",
-	Helper_Commands: "Verwenden Sie `/quick create`, um eine neue Schnellantwort zu erstellen  \n Verwenden Sie `/quick list`, um alle schnellen Nachrichten aufzulisten  \n Verwenden Sie `/quick config`, um die Benutzereinstellungen zu konfigurieren",
+	Helper_Commands: "Verwenden Sie `/quick` um loszulegen \n Verwenden Sie `/quick create` um eine neue Schnellantwort zu erstellen \n Verwenden Sie `/quick list` um alle Schnellnachrichten aufzulisten \n Verwenden Sie `/quick config` um die Benutzereinstellungen zu konfigurieren \n Verwenden Sie `/quick help` um Hilfe zu erhalten \n Verwenden Sie `/qs <replyname>` um eine Schnellantwort zu suchen und zu senden \n",
 	Helper_Text: "Hey __name__, ich bin Quick Bot 👋 Hier sind einige schnelle Tipps, um Ihnen den Einstieg zu erleichtern!",
 	Default_Message: "Hey __name__, ich bin Quick Bot 👋 Ich kann Ihnen helfen, schnelle Antworten zu erstellen und zu senden. Wie kann ich helfen?",
 	Create_Reply: "Antwort erstellen",
