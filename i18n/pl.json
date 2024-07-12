@@ -55,5 +55,8 @@
 	"Error_Reply_Not_Found": "Nie znaleziono odpowiedzi",
 	"Search_Reply_Label": "Szukaj",
 	"Search_Reply_Placeholder": "Szukaj odpowiedzi",
-	"Message_Update_Language": "Preferencje językowe zostały pomyślnie zaktualizowane na __language__"
+	"Message_Update_Language": "Preferencje językowe zostały pomyślnie zaktualizowane na *__language__*",
+	"Quick_Search_Command_Params": "<nazwęodpowiedzi>",
+	"Quick_Search_Command_Description": "Wyszukaj szybkie odpowiedzi do wysłania. Wpisz /qs <nazwęodpowiedzi>.",
+	"No_Quick_Replies_Found": "Nie znaleziono szybkich odpowiedzi"
 }

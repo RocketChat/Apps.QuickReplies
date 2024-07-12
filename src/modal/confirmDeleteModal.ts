@@ -61,7 +61,7 @@ export async function confirmDeleteModal(
 		},
 	);
 	return {
-		id: ConfirmDeleteModalEnum.VIEW_ID,
+		id: `${ConfirmDeleteModalEnum.VIEW_ID} --- ${reply.id}`,
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,

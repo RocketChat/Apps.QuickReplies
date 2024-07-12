@@ -56,7 +56,7 @@ export class Handler implements IHandler {
 		);
 	}
 
-	public async CreateReply(name?: string, body?: string): Promise<void> {
+	public async CreateReply(): Promise<void> {
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -65,8 +65,6 @@ export class Handler implements IHandler {
 			this.modify,
 			this.room,
 			this.language,
-			name,
-			body,
 		);
 
 		if (modal instanceof Error) {
@@ -137,7 +135,6 @@ export class Handler implements IHandler {
 	}
 	public async Configure(): Promise<void> {
 		const existingPreference = await getUserPreferredLanguage(
-			this.app,
 			this.read.getPersistenceReader(),
 			this.persis,
 			this.sender.id,
@@ -155,7 +152,6 @@ export class Handler implements IHandler {
 		}
 
 		const triggerId = this.triggerId;
-		console.log(triggerId);
 		if (triggerId) {
 			await this.modify
 				.getUiController()
@@ -180,7 +176,6 @@ export class Handler implements IHandler {
 			return;
 		}
 		const triggerId = this.triggerId;
-		console.log(triggerId);
 		if (triggerId) {
 			await this.modify
 				.getUiController()
@@ -206,7 +201,6 @@ export class Handler implements IHandler {
 			return;
 		}
 		const triggerId = this.triggerId;
-		console.log(triggerId);
 		if (triggerId) {
 			await this.modify
 				.getUiController()
@@ -231,7 +225,6 @@ export class Handler implements IHandler {
 			return;
 		}
 		const triggerId = this.triggerId;
-		console.log(triggerId);
 		if (triggerId) {
 			await this.modify
 				.getUiController()

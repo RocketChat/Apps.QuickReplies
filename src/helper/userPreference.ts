@@ -2,7 +2,6 @@ import {
 	IPersistence,
 	IPersistenceRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { QuickRepliesApp } from '../../QuickRepliesApp';
 import {
 	Language,
 	supportedLanguageList,
@@ -11,7 +10,6 @@ import {
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
 
 export const getUserPreferredLanguage = async (
-	app: QuickRepliesApp,
 	read: IPersistenceRead,
 	persistence: IPersistence,
 	userId: string,

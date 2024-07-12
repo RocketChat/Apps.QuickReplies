@@ -12,7 +12,6 @@ import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { SendReplyModal } from '../modal/sendModal';
-import { CacheReplyStorage } from '../storage/ReplyCache';
 import { Handler } from './Handler';
 import { MessageActionButton } from '../enum/notification';
 import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
@@ -51,7 +50,6 @@ export class ExecuteBlockActionHandler {
 		const roomPersistance = await this.read.getRoomReader().getById(roomId);
 
 		const language = await getUserPreferredLanguage(
-			this.app,
 			this.read.getPersistenceReader(),
 			this.persistence,
 			user.id,
@@ -93,19 +91,12 @@ export class ExecuteBlockActionHandler {
 						replyId,
 					);
 
-					const replyCache = new CacheReplyStorage(
-						this.persistence,
-						this.read.getPersistenceReader(),
-					);
-
 					if (!reply) {
 						return this.context
 							.getInteractionResponder()
 							.errorResponse();
 					}
-					await replyCache.setCacheReply(user, reply);
 					const language = await getUserPreferredLanguage(
-						this.app,
 						this.read.getPersistenceReader(),
 						this.persistence,
 						user.id,

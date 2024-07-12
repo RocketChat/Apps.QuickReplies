@@ -25,8 +25,6 @@ export async function CreateReplyModal(
 	modify: IModify,
 	room: IRoom,
 	language: Language,
-	name?: string,
-	body?: string,
 ): Promise<IUIKitSurfaceViewParam | Error> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
@@ -41,7 +39,6 @@ export async function CreateReplyModal(
 			placeholder: placeholderReplyName,
 			label: labelReplyName,
 			optional: false,
-			initialValue: name,
 		},
 		{
 			blockId: CreateModalEnum.REPLY_NAME_BLOCK_ID,
@@ -59,7 +56,6 @@ export async function CreateReplyModal(
 			label: labelReplyBody,
 			optional: false,
 			multiline: true,
-			initialValue: body,
 		},
 		{
 			blockId: CreateModalEnum.REPLY_BODY_BLOCK_ID,
@@ -85,7 +81,7 @@ export async function CreateReplyModal(
 		},
 	);
 	return {
-		id: CreateModalEnum.VIEW_ID,
+		id: `${CreateModalEnum.VIEW_ID}`,
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,

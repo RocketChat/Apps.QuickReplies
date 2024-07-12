@@ -55,6 +55,11 @@ export const de = {
 	Error_Reply_Not_Found: "Antwort nicht gefunden",
 	Search_Reply_Label: "Suche",
 	Search_Reply_Placeholder: "Suche nach einer Antwort",
-	Message_Update_Language: "Spracheinstellung erfolgreich auf __language__ aktualisiert",
+	Message_Update_Language: "Spracheinstellung erfolgreich auf *__language__* aktualisiert",
+	Quick_Search_Command_Params: "<antwortname>",
+	Quick_Search_Command_Description: "Durchsuchen Sie Schnellantworten zum Senden. Geben Sie /qs <antwortname> ein.",
+	No_Quick_Replies_Found: "Keine schnellen Antworten gefunden",
 
+	
+	
 };

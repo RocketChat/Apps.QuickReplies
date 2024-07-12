@@ -55,5 +55,8 @@
 	"Error_Reply_Not_Found": "Resposta não encontrada",
 	"Search_Reply_Label": "Pesquisar",
 	"Search_Reply_Placeholder": "Procure por uma resposta",
-	"Message_Update_Language": "Preferência de idioma atualizada para __language__ com sucesso"
+	"Message_Update_Language": "Preferência de idioma atualizada para *__language__* com sucesso",
+	"Quick_Search_Command_Params": "<nomederesposta>",
+	"Quick_Search_Command_Description": "Pesquisar Respostas Rápidas para enviar. Digite /qs <nomederesposta>.",
+	"No_Quick_Replies_Found": "Nenhuma resposta rápida encontrada"
 }

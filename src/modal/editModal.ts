@@ -87,7 +87,7 @@ export async function EditReplyModal(
 		},
 	);
 	return {
-		id: EditModalEnum.VIEW_ID,
+		id: `${EditModalEnum.VIEW_ID} --- ${reply.id}`,
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,

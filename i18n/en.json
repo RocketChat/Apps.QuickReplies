@@ -55,5 +55,8 @@
 	"Error_Reply_Not_Found": "Reply not found",
 	"Search_Reply_Label": "Search",
 	"Search_Reply_Placeholder": "Search for a reply",
-	"Message_Update_Language": "Language preference updated to __language__ successfully"
+	"Message_Update_Language": "Language preference updated to *__language__* successfully",
+	"Quick_Search_Command_Params": "<replyname>",
+	"Quick_Search_Command_Description": "Search Quick Replies to send. Type /qs <replyname>.",
+	"No_Quick_Replies_Found": "No Quick Replies found"
 }

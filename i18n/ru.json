@@ -55,5 +55,8 @@
 	"Error_Reply_Not_Found": "Ответ не найден",
 	"Search_Reply_Label": "Поиск",
 	"Search_Reply_Placeholder": "Искать ответ",
-	"Message_Update_Language": "Языковые предпочтения успешно обновлены на __language__"
+	"Message_Update_Language": "Языковые предпочтения успешно обновлены на *__language__*",
+	"Quick_Search_Command_Params": "<имяответа>",
+	"Quick_Search_Command_Description": "Поиск быстрых ответов для отправки. Введите /qs <имяответа>.",
+	"No_Quick_Replies_Found": "Быстрые ответы не найдены"
 }

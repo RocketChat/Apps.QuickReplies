@@ -3,7 +3,7 @@ import { ICommandUtilityParams } from '../command/ICommandUtility';
 import { IReply } from '../reply/IReply';
 
 export interface IHandler extends Omit<ICommandUtilityParams, 'params'> {
-	CreateReply(name?: string, body?: string): Promise<void>;
+	CreateReply(): Promise<void>;
 	ListReply(): Promise<void>;
 	Help(): Promise<void>;
 	Configure(): Promise<void>;
