@@ -67,10 +67,18 @@ export class CommandUtility implements ICommandUtility {
 			language,
 		});
 
-		if (this.params.length == 0) {
-			await handler.sendDefault();
-		} else if (this.params.length == 1) {
-			await this.handleSingleParam(handler);
+		switch (this.params.length) {
+			case 0: {
+				await handler.sendDefault();
+				break;
+			}
+			case 1: {
+				await this.handleSingleParam(handler);
+				break;
+			}
+			default: {
+				await handler.sendDefault();
+			}
 		}
 	}
 

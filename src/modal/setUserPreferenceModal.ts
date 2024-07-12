@@ -104,21 +104,3 @@ export async function setUserPreferenceLanguageModal({
 		submit,
 	};
 }
-
-const getLanguageDisplayTextFromCode = (
-	code: Language,
-	language: Language,
-): string => {
-	switch (code) {
-		case Language.en:
-			return t('Language_EN', language);
-		case Language.de:
-			return t('Language_DE', language);
-		case Language.pt:
-			return t('Language_PT', language);
-		case Language.pl:
-			return t('Language_PL', language);
-		case Language.ru:
-			return t('Language_RU', language);
-	}
-};

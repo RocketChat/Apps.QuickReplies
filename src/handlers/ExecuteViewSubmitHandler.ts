@@ -316,15 +316,17 @@ export class ExecuteViewSubmitHandler {
 		const nameStateValue =
 			view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
 				EditModalEnum.REPLY_NAME_ACTION_ID
-			view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
-				EditModalEnum.REPLY_NAME_ACTION_ID
 			];
+		view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
+			EditModalEnum.REPLY_NAME_ACTION_ID
+		];
 		const bodyStateValue =
 			view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
 				EditModalEnum.REPLY_BODY_ACTION_ID
-			view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
-				EditModalEnum.REPLY_BODY_ACTION_ID
 			];
+		view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
+			EditModalEnum.REPLY_BODY_ACTION_ID
+		];
 
 		const name = nameStateValue
 			? nameStateValue.trim()
