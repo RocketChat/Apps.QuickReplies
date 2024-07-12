@@ -117,7 +117,7 @@ export async function listReplyContextualBar(
 
 	if (sortedReplies.length === 0) {
 		const noReplies = blockBuilder.createSectionBlock({
-			text: "You don't have any replies yet.",
+			text: t('No_Quick_Replies_Found', language),
 		});
 
 		blocks.push(noReplies);
