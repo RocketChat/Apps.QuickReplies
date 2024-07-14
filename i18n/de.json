@@ -58,5 +58,7 @@
 	"Message_Update_Language": "Spracheinstellung erfolgreich auf *__language__* aktualisiert",
 	"Quick_Search_Command_Params": "<antwortname>",
 	"Quick_Search_Command_Description": "Durchsuchen Sie Schnellantworten zum Senden. Geben Sie /qs <antwortname> ein.",
-	"No_Quick_Replies_Found": "Keine schnellen Antworten gefunden"
+	"No_Quick_Replies_Found": "Keine schnellen Antworten gefunden",
+	"Create_Quick_Reply_Action_Button_Label": "Erstellen Sie eine neue Schnellantwort",
+	"List_Quick_Reply_Action_Button_Label": "Alle Schnellantworten auflisten"
 }

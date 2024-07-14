@@ -58,5 +58,7 @@
 	"Message_Update_Language": "Language preference updated to *__language__* successfully",
 	"Quick_Search_Command_Params": "<replyname>",
 	"Quick_Search_Command_Description": "Search Quick Replies to send. Type /qs <replyname>.",
-	"No_Quick_Replies_Found": "No Quick Replies found"
+	"No_Quick_Replies_Found": "No Quick Replies found",
+	"Create_Quick_Reply_Action_Button_Label": "Create a new Quick Reply",
+	"List_Quick_Reply_Action_Button_Label": "List all Quick Reply"
 }

@@ -58,5 +58,7 @@
 	"Message_Update_Language": "Preferencje językowe zostały pomyślnie zaktualizowane na *__language__*",
 	"Quick_Search_Command_Params": "<nazwęodpowiedzi>",
 	"Quick_Search_Command_Description": "Wyszukaj szybkie odpowiedzi do wysłania. Wpisz /qs <nazwęodpowiedzi>.",
-	"No_Quick_Replies_Found": "Nie znaleziono szybkich odpowiedzi"
+	"No_Quick_Replies_Found": "Nie znaleziono szybkich odpowiedzi",
+	"Create_Quick_Reply_Action_Button_Label": "Utwórz nową szybką odpowiedź",
+	"List_Quick_Reply_Action_Button_Label": "Wyświetl wszystkie szybkie odpowiedzi"
 }
