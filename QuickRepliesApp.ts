@@ -62,8 +62,15 @@ export class QuickRepliesApp extends App {
 			context: UIActionButtonContext.MESSAGE_BOX_ACTION,
 		};
 
+		const ReplyUsingAI: IUIActionButtonDescriptor = {
+			actionId: ActionButton.REPLY_USING_AI,
+			labelI18n: ActionButton.REPLY_USING_AI_LABEL,
+			context: UIActionButtonContext.MESSAGE_ACTION,
+		};
+
 		configuration.ui.registerButton(listReplyButton);
 		configuration.ui.registerButton(createReplyButton);
+		configuration.ui.registerButton(ReplyUsingAI);
 	}
 	public getUtils(): IAppUtils {
 		return {

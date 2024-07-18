@@ -13,6 +13,7 @@ import { Handler } from './Handler';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ActionButton } from '../enum/modals/common/ActionButtons';
 import { getUserPreferredLanguage } from '../helper/userPreference';
+import { RoomInteractionStorage } from '../storage/RoomInteraction';
 
 export class ExecuteActionButtonHandler {
 	private context: UIKitActionButtonInteractionContext;
@@ -37,6 +38,13 @@ export class ExecuteActionButtonHandler {
 			user.id,
 		);
 
+		const roomInteractionStorage = new RoomInteractionStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+		roomInteractionStorage.storeInteractionRoomId(room.id);
+
 		const handler = new Handler({
 			app: this.app,
 			sender: user,
@@ -57,6 +65,14 @@ export class ExecuteActionButtonHandler {
 			case ActionButton.CREATE_QUICK_REPLY_ACTION: {
 				await handler.CreateReply();
 				break;
+			}
+		}
+		if (message && actionId) {
+			switch (actionId) {
+				case ActionButton.REPLY_USING_AI: {
+					await handler.replyUsingAI(message);
+					break;
+				}
 			}
 		}
 

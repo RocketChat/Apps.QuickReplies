@@ -19,6 +19,9 @@ import { getUserPreferredLanguage } from '../helper/userPreference';
 import { confirmDeleteModal } from '../modal/confirmDeleteModal';
 import { EditReplyModal } from '../modal/editModal';
 import { listReplyContextualBar } from '../modal/listContextualBar';
+import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
+import { AIstorage } from '../storage/AIStorage';
+import { ReplyAIModal } from '../modal/AIreplyModal';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -34,10 +37,16 @@ export class ExecuteBlockActionHandler {
 	}
 
 	public async handleActions(): Promise<IUIKitResponse> {
-		const { actionId, user, container, blockId, value, triggerId } =
-			this.context.getInteractionData();
+		const {
+			actionId,
+			user,
+			container,
+			blockId,
+			value,
+			triggerId,
+			message,
+		} = this.context.getInteractionData();
 		let { room } = this.context.getInteractionData();
-
 		const persistenceRead = this.read.getPersistenceReader();
 
 		const roomInteractionStorage = new RoomInteractionStorage(
@@ -55,11 +64,11 @@ export class ExecuteBlockActionHandler {
 			user.id,
 		);
 
-		if (!room) {
+		if (room === undefined) {
 			if (roomPersistance) {
 				room = roomPersistance;
 			} else {
-				console.log("Room doesn't exist");
+				console.error("Room doesn't exist");
 				return this.context.getInteractionResponder().errorResponse();
 			}
 		}
@@ -191,7 +200,7 @@ export class ExecuteBlockActionHandler {
 					);
 					return this.context
 						.getInteractionResponder()
-						.updateModalViewResponse(UpdatedListBar);
+						.updateContextualBarViewResponse(UpdatedListBar);
 				} else {
 					const UpdatedListBar = await listReplyContextualBar(
 						this.app,
@@ -205,8 +214,57 @@ export class ExecuteBlockActionHandler {
 					);
 					return this.context
 						.getInteractionResponder()
-						.updateModalViewResponse(UpdatedListBar);
+						.updateContextualBarViewResponse(UpdatedListBar);
 				}
+			case ReplyAIModalEnum.PROMPT_INPUT_ACTION_ID:
+				const aistorage = new AIstorage(
+					this.persistence,
+					this.read.getPersistenceReader(),
+					user.id,
+				);
+				if (value) {
+					await aistorage.updatePrompt(value);
+				}
+				break;
+
+			case ReplyAIModalEnum.GENERATE_BUTTON_ACTION_ID:
+				console.log('Generate button clicked');
+				const aistorage1 = new AIstorage(
+					this.persistence,
+					this.read.getPersistenceReader(),
+					user.id,
+				);
+				const message = await aistorage1.getMessage();
+				const response = await aistorage1.getResponse();
+				const prompt = await aistorage1.getPrompt();
+				console.log(prompt, 'prompt --');
+				console.log(message, 'mesage --');
+				console.log(response, ' response --');
+
+				const testvalues = ['test', 'test2', 'test3'];
+
+				const test =
+					testvalues[Math.floor(Math.random() * testvalues.length)];
+
+				console.log(test);
+
+				await aistorage1.updateResponse(test);
+
+				const updatedModal = await ReplyAIModal(
+					this.app,
+					user,
+					this.read,
+					this.persistence,
+					this.modify,
+					room,
+					language,
+					message,
+					test,
+				);
+
+				return this.context
+					.getInteractionResponder()
+					.updateModalViewResponse(updatedModal);
 		}
 
 		return this.context.getInteractionResponder().successResponse();

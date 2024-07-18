@@ -20,6 +20,9 @@ import {
 import { setUserPreferenceLanguageModal } from '../modal/setUserPreferenceModal';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { Language } from '../lib/Translation/translation';
+import { IMessage } from '@rocket.chat/apps-engine/definition/messages';
+import { ReplyAIModal } from '../modal/AIreplyModal';
+import { AIstorage } from '../storage/AIStorage';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -155,5 +158,39 @@ export class Handler implements IHandler {
 				.openSurfaceView(modal, { triggerId }, this.sender);
 		}
 		return;
+	}
+	public async replyUsingAI(message: IMessage): Promise<void> {
+		if (message.text) {
+			const aistorage = new AIstorage(
+				this.persis,
+				this.read.getPersistenceReader(),
+				this.sender.id,
+			);
+			aistorage.updateMessage(message.text);
+			const modal = await ReplyAIModal(
+				this.app,
+				this.sender,
+				this.read,
+				this.persis,
+				this.modify,
+				this.room,
+				this.language,
+				message?.text,
+			);
+
+			if (modal instanceof Error) {
+				this.app.getLogger().error(modal.message);
+				return;
+			}
+
+			const triggerId = this.triggerId;
+
+			if (triggerId) {
+				await this.modify
+					.getUiController()
+					.openSurfaceView(modal, { triggerId }, this.sender);
+			}
+			return;
+		}
 	}
 }

@@ -30,6 +30,8 @@ import { IReply } from '../definition/reply/IReply';
 import { listReplyContextualBar } from '../modal/listContextualBar';
 import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 import { EditModalEnum } from '../enum/modals/editModal';
+import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
+import { AIstorage } from '../storage/AIStorage';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -71,6 +73,9 @@ export class ExecuteViewSubmitHandler {
 					return this.handleSetUserPreference(room, user, view);
 				case CreateModalEnum.VIEW_ID:
 					return this.handleCreate(room, user, view, language);
+				case ReplyAIModalEnum.VIEW_ID:
+					console.log('hitt submit');
+					return this.handleAIresponse(room, user, view, language);
 			}
 		} else if (ViewLegnth === 2) {
 			const replyId = ViewData[1].trim();
@@ -317,16 +322,11 @@ export class ExecuteViewSubmitHandler {
 			view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
 				EditModalEnum.REPLY_NAME_ACTION_ID
 			];
-		view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
-			EditModalEnum.REPLY_NAME_ACTION_ID
-		];
+
 		const bodyStateValue =
 			view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
 				EditModalEnum.REPLY_BODY_ACTION_ID
 			];
-		view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
-			EditModalEnum.REPLY_BODY_ACTION_ID
-		];
 
 		const name = nameStateValue
 			? nameStateValue.trim()
@@ -385,5 +385,34 @@ export class ExecuteViewSubmitHandler {
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
+	}
+
+	private async handleAIresponse(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+		language: Language,
+	): Promise<IUIKitResponse> {
+		console.log('handler');
+
+		const AIStorage = new AIstorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+
+		const response = await AIStorage.getResponse();
+		let message = '';
+		const bodyStateValue =
+			view.state?.[
+				`${ReplyAIModalEnum.RESPONSE_BODY_BLOCK_ID} --- ${response}`
+			]?.[`${ReplyAIModalEnum.RESPONSE_BODY_ACTION_ID} --- ${response}`];
+
+		message = bodyStateValue ? bodyStateValue.trim() : response;
+		await sendMessage(this.modify, user, room, message);
+
+		await AIStorage.clearAIInteraction();
+
+		return this.context.getInteractionResponder().successResponse();
 	}
 }
