@@ -22,6 +22,7 @@ import { listReplyContextualBar } from '../modal/listContextualBar';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { ReplyAIModal } from '../modal/AIreplyModal';
+import AIresponse from '../helper/aiResponse';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -235,20 +236,19 @@ export class ExecuteBlockActionHandler {
 					user.id,
 				);
 				const message = await aistorage1.getMessage();
-				const response = await aistorage1.getResponse();
 				const prompt = await aistorage1.getPrompt();
 				console.log(prompt, 'prompt --');
 				console.log(message, 'mesage --');
-				console.log(response, ' response --');
 
-				const testvalues = ['test', 'test2', 'test3'];
+				const response = await AIresponse(
+					user,
+					message,
+					prompt,
+					this.http,
+					this.app,
+				);
 
-				const test =
-					testvalues[Math.floor(Math.random() * testvalues.length)];
-
-				console.log(test);
-
-				await aistorage1.updateResponse(test);
+				await aistorage1.updateResponse(response);
 
 				const updatedModal = await ReplyAIModal(
 					this.app,
@@ -259,7 +259,7 @@ export class ExecuteBlockActionHandler {
 					room,
 					language,
 					message,
-					test,
+					response,
 				);
 
 				return this.context

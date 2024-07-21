@@ -31,6 +31,7 @@ import {
 } from '@rocket.chat/apps-engine/definition/ui';
 import { ActionButton } from './src/enum/modals/common/ActionButtons';
 import { ExecuteActionButtonHandler } from './src/handlers/ExecuteActionButtonHandler';
+import { settings } from './src/config/settings';
 
 export class QuickRepliesApp extends App {
 	private elementBuilder: ElementBuilder;
@@ -71,6 +72,12 @@ export class QuickRepliesApp extends App {
 		configuration.ui.registerButton(listReplyButton);
 		configuration.ui.registerButton(createReplyButton);
 		configuration.ui.registerButton(ReplyUsingAI);
+
+		await Promise.all(
+			settings.map((setting) => {
+				configuration.settings.provideSetting(setting);
+			}),
+		);
 	}
 	public getUtils(): IAppUtils {
 		return {
