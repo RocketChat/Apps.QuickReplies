@@ -36,6 +36,10 @@ class AIHandler {
 		}
 	}
 
+	private getPrompt(message: string, prompt: string): string {
+		return `Write a reply to this message: "${message}". Ensure the reply is simple. Use the following as a prompt or response reply: "${prompt}" and make sure you respond with a well-written reply only dont try to make it long make it short can to the point , nothing else.`;
+	}
+
 	private async handleSelfHostedModel(
 		user: IUser,
 		message: string,
@@ -60,7 +64,7 @@ class AIHandler {
 				messages: [
 					{
 						role: 'system',
-						content: `Write a reply to this message: "${message}". Ensure the reply is good, professional, and to the point. Use the following as a prompt or response message: "${prompt}" and make sure you respond with a well-written reply only, nothing else.`,
+						content: this.getPrompt(message, prompt),
 					},
 				],
 				temperature: 0,
@@ -128,7 +132,7 @@ class AIHandler {
 						messages: [
 							{
 								role: 'system',
-								content: `Write a reply to this message: "${message}". Ensure the reply is good, professional, and to the point. Use the following as a prompt or response message: "${prompt}" and make sure you respond with a well-written reply only, nothing else.`,
+								content: this.getPrompt(message, prompt),
 							},
 						],
 					}),
@@ -176,7 +180,7 @@ class AIHandler {
 						messages: [
 							{
 								role: 'system',
-								content: `Write a reply to this message: "${message}". Ensure the reply is short and to the point, following this prompt: "${prompt}" and make sure you just respond with the reply only, nothing else.`,
+								content: this.getPrompt(message, prompt),
 							},
 						],
 					}),
@@ -230,7 +234,7 @@ class AIHandler {
 						contents: [
 							{
 								parts: {
-									text: `Write a reply to this message: "${message}". Ensure the reply is good, professional, and to the point. Use the following as a prompt or response message: "${prompt}" and make sure you respond with a well-written reply only, nothing else.`,
+									text: this.getPrompt(message, prompt),
 								},
 							},
 						],
