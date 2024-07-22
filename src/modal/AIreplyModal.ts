@@ -55,7 +55,10 @@ export async function ReplyAIModal(
 	);
 
 	const GenerateButton = elementBuilder.addButton(
-		{ text: 'Generate', style: ButtonStyle.PRIMARY },
+		{
+			text: response ? 'Regenerate' : 'Generate',
+			style: ButtonStyle.PRIMARY,
+		},
 		{
 			actionId: ReplyAIModalEnum.GENERATE_BUTTON_ACTION_ID,
 			blockId: ReplyAIModalEnum.GENERATE_BUTTON_BLOCK_ID,
@@ -90,7 +93,7 @@ export async function ReplyAIModal(
 	}
 
 	const submit = elementBuilder.addButton(
-		{ text: 'Send', style: ButtonStyle.PRIMARY },
+		{ text: 'Send this reply', style: ButtonStyle.PRIMARY },
 		{
 			actionId: ReplyAIModalEnum.SUBMIT_ACTION_ID,
 			blockId: ReplyAIModalEnum.SUBMIT_BLOCK_ID,
