@@ -22,7 +22,7 @@ import { listReplyContextualBar } from '../modal/listContextualBar';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { ReplyAIModal } from '../modal/AIreplyModal';
-import handleAIresponse from '../helper/aiResponse';
+import AIHandler from '../helper/aiResponse';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -240,13 +240,10 @@ export class ExecuteBlockActionHandler {
 				console.log(prompt, 'prompt --');
 				console.log(message, 'mesage --');
 
-				const response = await handleAIresponse(
-					user,
-					message,
-					prompt,
-					this.http,
+				const response = await new AIHandler(
 					this.app,
-				);
+					this.http,
+				).handleResponse(user, message, prompt);
 
 				await aistorage1.updateResponse(response);
 
