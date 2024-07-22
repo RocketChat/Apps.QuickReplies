@@ -22,7 +22,7 @@ import { listReplyContextualBar } from '../modal/listContextualBar';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { ReplyAIModal } from '../modal/AIreplyModal';
-import AIHandler from '../helper/aiResponse';
+import AIHandler from './AIHandler';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
