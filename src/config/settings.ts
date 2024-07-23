@@ -8,13 +8,13 @@ export enum SettingEnum {
 	MODEL_ADDRESS_ID = 'self-hosted-model-address-id',
 	OPEN_AI_API_KEY_ID = ' open-ai-api-key-id',
 	OPEN_AI_API_MODEL_ID = 'open-ai-api-model=id',
-	Mistral_AI_API_KEY_ID = 'mistral-ai-api-key-id',
-	Mistral_AI_API_MODEL_ID = 'mistral-ai-model-id',
+	// Mistral_AI_API_KEY_ID = 'mistral-ai-api-key-id',
+	// Mistral_AI_API_MODEL_ID = 'mistral-ai-model-id',
 	GEMINI_AI_API_KEY_ID = 'gemini-ai-api-key-id',
 	SELF_HOSTED_MODEL = 'self-hosted-model',
 	OPEN_AI = 'open-ai',
 	GEMINI = 'gemini',
-	MISTRAL = 'mistral',
+	// MISTRAL = 'mistral',
 }
 
 export const settings: Array<ISetting> = [
@@ -33,7 +33,7 @@ export const settings: Array<ISetting> = [
 			},
 			{ key: SettingEnum.OPEN_AI, i18nLabel: 'Open AI' },
 			{ key: SettingEnum.GEMINI, i18nLabel: 'Gemini' },
-			{ key: SettingEnum.MISTRAL, i18nLabel: 'Mistral' },
+			// { key: SettingEnum.MISTRAL, i18nLabel: 'Mistral' },
 		],
 	},
 	{
@@ -64,24 +64,6 @@ export const settings: Array<ISetting> = [
 		i18nPlaceholder: 'Open AI API Model',
 	},
 	{
-		id: SettingEnum.Mistral_AI_API_KEY_ID,
-		type: SettingType.PASSWORD,
-		packageValue: '',
-		required: true,
-		public: false,
-		i18nLabel: 'Mistral AI API Key',
-		i18nPlaceholder: 'Mistral AI API Key',
-	},
-	{
-		id: SettingEnum.Mistral_AI_API_MODEL_ID,
-		type: SettingType.STRING,
-		packageValue: '',
-		required: true,
-		public: false,
-		i18nLabel: 'Mistral AI Model',
-		i18nPlaceholder: 'Mistral AI API Model',
-	},
-	{
 		id: SettingEnum.GEMINI_AI_API_KEY_ID,
 		type: SettingType.PASSWORD,
 		packageValue: '',
@@ -90,4 +72,22 @@ export const settings: Array<ISetting> = [
 		i18nLabel: 'Gemini AI API Key',
 		i18nPlaceholder: 'Gemini AI API Key',
 	},
+	// {
+	// 	id: SettingEnum.Mistral_AI_API_KEY_ID,
+	// 	type: SettingType.PASSWORD,
+	// 	packageValue: '',
+	// 	required: true,
+	// 	public: false,
+	// 	i18nLabel: 'Mistral AI API Key',
+	// 	i18nPlaceholder: 'Mistral AI API Key',
+	// },
+	// {
+	// 	id: SettingEnum.Mistral_AI_API_MODEL_ID,
+	// 	type: SettingType.STRING,
+	// 	packageValue: '',
+	// 	required: true,
+	// 	public: false,
+	// 	i18nLabel: 'Mistral AI Model',
+	// 	i18nPlaceholder: 'Mistral AI API Model',
+	// },
 ];

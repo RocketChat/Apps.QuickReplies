@@ -24,8 +24,8 @@ class AIHandler {
 				return this.handleSelfHostedModel(user, message, prompt);
 			case SettingEnum.OPEN_AI:
 				return this.handleOpenAI(user, message, prompt);
-			case SettingEnum.MISTRAL:
-				return this.handleMistral(user, message, prompt);
+			// case SettingEnum.MISTRAL:
+			// 	return this.handleMistral(user, message, prompt);
 			case SettingEnum.GEMINI:
 				return this.handleGemini(user, message, prompt);
 			default:
@@ -152,58 +152,6 @@ class AIHandler {
 		}
 	}
 
-	private async handleMistral(
-		user: IUser,
-		message: string,
-		prompt: string,
-	): Promise<string> {
-		try {
-			const mistralaikey = await this.app
-				.getAccessors()
-				.environmentReader.getSettings()
-				.getValueById(SettingEnum.Mistral_AI_API_KEY_ID);
-
-			const mistralmodel = await this.app
-				.getAccessors()
-				.environmentReader.getSettings()
-				.getValueById(SettingEnum.Mistral_AI_API_MODEL_ID);
-
-			const response = await this.http.post(
-				'https://api.mistral.ai/v1/chat/completions',
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${mistralaikey}`,
-					},
-					content: JSON.stringify({
-						model: mistralmodel,
-						messages: [
-							{
-								role: 'system',
-								content: this.getPrompt(message, prompt),
-							},
-						],
-					}),
-				},
-			);
-
-			if (!response || !response.content) {
-				this.app
-					.getLogger()
-					.log('No response content received from AI.');
-				return 'Something is wrong with AI. Please try again later';
-			}
-
-			const data = response.data;
-			return data.choices[0].message.content;
-		} catch (error) {
-			this.app
-				.getLogger()
-				.log(`Error in handleMistral: ${error.message}`);
-			return 'Something went wrong. Please try again later';
-		}
-	}
-
 	private async handleGemini(
 		user: IUser,
 		message: string,
@@ -256,6 +204,57 @@ class AIHandler {
 			return 'Something went wrong. Please try again later';
 		}
 	}
+	// private async handleMistral(
+	// 	user: IUser,
+	// 	message: string,
+	// 	prompt: string,
+	// ): Promise<string> {
+	// 	try {
+	// 		const mistralaikey = await this.app
+	// 			.getAccessors()
+	// 			.environmentReader.getSettings()
+	// 			.getValueById(SettingEnum.Mistral_AI_API_KEY_ID);
+
+	// 		const mistralmodel = await this.app
+	// 			.getAccessors()
+	// 			.environmentReader.getSettings()
+	// 			.getValueById(SettingEnum.Mistral_AI_API_MODEL_ID);
+
+	// 		const response = await this.http.post(
+	// 			'https://api.mistral.ai/v1/chat/completions',
+	// 			{
+	// 				headers: {
+	// 					'Content-Type': 'application/json',
+	// 					Authorization: `Bearer ${mistralaikey}`,
+	// 				},
+	// 				content: JSON.stringify({
+	// 					model: mistralmodel,
+	// 					messages: [
+	// 						{
+	// 							role: 'system',
+	// 							content: this.getPrompt(message, prompt),
+	// 						},
+	// 					],
+	// 				}),
+	// 			},
+	// 		);
+
+	// 		if (!response || !response.content) {
+	// 			this.app
+	// 				.getLogger()
+	// 				.log('No response content received from AI.');
+	// 			return 'Something is wrong with AI. Please try again later';
+	// 		}
+
+	// 		const data = response.data;
+	// 		return data.choices[0].message.content;
+	// 	} catch (error) {
+	// 		this.app
+	// 			.getLogger()
+	// 			.log(`Error in handleMistral: ${error.message}`);
+	// 		return 'Something went wrong. Please try again later';
+	// 	}
+	// }
 }
 
 export default AIHandler;

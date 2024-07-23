@@ -229,7 +229,6 @@ export class ExecuteBlockActionHandler {
 				break;
 
 			case ReplyAIModalEnum.GENERATE_BUTTON_ACTION_ID:
-				console.log('Generate button clicked');
 				const aistorage1 = new AIstorage(
 					this.persistence,
 					this.read.getPersistenceReader(),
@@ -237,8 +236,6 @@ export class ExecuteBlockActionHandler {
 				);
 				const message = await aistorage1.getMessage();
 				const prompt = await aistorage1.getPrompt();
-				console.log(prompt, 'prompt --');
-				console.log(message, 'mesage --');
 
 				const response = await new AIHandler(
 					this.app,
