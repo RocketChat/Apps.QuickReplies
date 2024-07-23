@@ -60,5 +60,19 @@
 	"Quick_Search_Command_Description": "Durchsuchen Sie Schnellantworten zum Senden. Geben Sie /qs <antwortname> ein.",
 	"No_Quick_Replies_Found": "Keine schnellen Antworten gefunden",
 	"Create_Quick_Reply_Action_Button_Label": "Erstellen Sie eine neue Schnellantwort",
-	"List_Quick_Reply_Action_Button_Label": "Alle Schnellantworten auflisten"
+	"List_Quick_Reply_Action_Button_Label": "Alle Schnellantworten auflisten",
+	"Reply_Using_AI_Label": "Mit KI antworten",
+	"Choose_AI_Model_Label": "Wählen Sie, welche KI Sie verwenden möchten",
+	"Choose_AI_Model_Placeholder": "Wählen Sie Ihr bevorzugtes KI-Modell aus",
+	"Self_Hosted_AI_Model": "Selbst gehostetes KI-Modell",
+	"Open_AI": "Open AI",
+	"Gemini_AI": "Gemini KI",
+	"Self_Hosted_AI_Model_URL_Label": "URL des selbst gehosteten KI-Modells",
+	"Self_Hosted_AI_Model_URL_Placeholder": "Geben Sie die URL Ihres selbst gehosteten KI-Modells ein",
+	"Open_AI_API_Key_Label": "Open AI API-Schlüssel",
+	"Open_AI_API_Key_Placeholder": "Geben Sie Ihren Open AI API-Schlüssel ein",
+	"Open_AI_Model": "Open AI Modell",
+	"Open_AI_Model_Placeholder": "Wählen Sie Ihr bevorzugtes Open AI Modell aus",
+	"Gemini_API_Key_Label": "Gemini API-Schlüssel",
+	"Gemini_API_Key_Placeholder": "Geben Sie Ihren Gemini API-Schlüssel ein"
 }

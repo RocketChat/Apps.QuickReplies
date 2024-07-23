@@ -60,5 +60,19 @@
 	"Quick_Search_Command_Description": "Поиск быстрых ответов для отправки. Введите /qs <имяответа>.",
 	"No_Quick_Replies_Found": "Быстрые ответы не найдены",
 	"Create_Quick_Reply_Action_Button_Label": "Создать новый быстрый ответ",
-	"List_Quick_Reply_Action_Button_Label": "Список всех быстрых ответов"
+	"List_Quick_Reply_Action_Button_Label": "Список всех быстрых ответов",
+	"Reply_Using_AI_Label": "Ответ с использованием ИИ",
+	"Choose_AI_Model_Label": "Выберите, какой ИИ вы хотите использовать",
+	"Choose_AI_Model_Placeholder": "Выберите предпочитаемую модель ИИ",
+	"Self_Hosted_AI_Model": "Самостоятельно размещенная модель ИИ",
+	"Open_AI": "Open AI",
+	"Gemini_AI": "Gemini ИИ",
+	"Self_Hosted_AI_Model_URL_Label": "URL самостоятельной размещенной модели ИИ",
+	"Self_Hosted_AI_Model_URL_Placeholder": "Введите URL вашей самостоятельной размещенной модели ИИ",
+	"Open_AI_API_Key_Label": "API-ключ Open AI",
+	"Open_AI_API_Key_Placeholder": "Введите ваш API-ключ Open AI",
+	"Open_AI_Model": "Модель Open AI",
+	"Open_AI_Model_Placeholder": "Выберите предпочитаемую модель Open AI",
+	"Gemini_API_Key_Label": "API-ключ Gemini",
+	"Gemini_API_Key_Placeholder": "Введите ваш API-ключ Gemini"
 }

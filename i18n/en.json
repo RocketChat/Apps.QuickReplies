@@ -61,5 +61,18 @@
 	"No_Quick_Replies_Found": "No Quick Replies found",
 	"Create_Quick_Reply_Action_Button_Label": "Create a new Quick Reply",
 	"List_Quick_Reply_Action_Button_Label": "List all Quick Reply",
-	"Reply_Using_AI_Label": "Reply using AI"
+	"Reply_Using_AI_Label": "Reply using AI",
+	"Choose_AI_Model_Label": "Choose which AI you want to use",
+	"Choose_AI_Model_Placeholder": "Select your preferred AI model",
+	"Self_Hosted_AI_Model": "Self Hosted AI Model",
+	"Open_AI": "Open AI",
+	"Gemini_AI": "Gemini AI",
+	"Self_Hosted_AI_Model_URL_Label": "Self Hosted AI Model URL",
+	"Self_Hosted_AI_Model_URL_Placeholder": "Enter the URL of your self-hosted AI model",
+	"Open_AI_API_Key_Label": "Open AI API Key",
+	"Open_AI_API_Key_Placeholder": "Enter your Open AI API Key",
+	"Open_AI_Model": "Open AI Model",
+	"Open_AI_Model_Placeholder": "Select your preferred Open AI model",
+	"Gemini_API_Key_Label": "Gemini API Key",
+	"Gemini_API_Key_Placeholder": "Enter your Gemini API Key"
 }

@@ -17,7 +17,7 @@ import {
 	sendDefaultNotification,
 	sendHelperNotification,
 } from '../helper/notification';
-import { setUserPreferenceLanguageModal } from '../modal/setUserPreferenceModal';
+import { setUserPreferenceLanguageModal } from '../modal/UserPreferenceModal';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { Language } from '../lib/Translation/translation';
 import { IMessage } from '@rocket.chat/apps-engine/definition/messages';

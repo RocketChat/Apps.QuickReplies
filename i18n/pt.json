@@ -60,5 +60,19 @@
 	"Quick_Search_Command_Description": "Pesquisar Respostas Rápidas para enviar. Digite /qs <nomederesposta>.",
 	"No_Quick_Replies_Found": "Nenhuma resposta rápida encontrada",
 	"Create_Quick_Reply_Action_Button_Label": "Criar uma nova resposta rápida",
-	"List_Quick_Reply_Action_Button_Label": "Listar todas as respostas rápidas"
+	"List_Quick_Reply_Action_Button_Label": "Listar todas as respostas rápidas",
+	"Reply_Using_AI_Label": "Responder usando IA",
+	"Choose_AI_Model_Label": "Escolha qual IA você deseja usar",
+	"Choose_AI_Model_Placeholder": "Selecione seu modelo de IA preferido",
+	"Self_Hosted_AI_Model": "Modelo de IA auto-hospedado",
+	"Open_AI": "Open AI",
+	"Gemini_AI": "Gemini IA",
+	"Self_Hosted_AI_Model_URL_Label": "URL do modelo de IA auto-hospedado",
+	"Self_Hosted_AI_Model_URL_Placeholder": "Insira a URL do seu modelo de IA auto-hospedado",
+	"Open_AI_API_Key_Label": "Chave API Open AI",
+	"Open_AI_API_Key_Placeholder": "Insira sua chave API Open AI",
+	"Open_AI_Model": "Modelo Open AI",
+	"Open_AI_Model_Placeholder": "Selecione seu modelo Open AI preferido",
+	"Gemini_API_Key_Label": "Chave API Gemini",
+	"Gemini_API_Key_Placeholder": "Insira sua chave API Gemini"
 }
