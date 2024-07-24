@@ -23,6 +23,11 @@ import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import AIHandler from './AIHandler';
+import { setUserPreferenceModal } from '../modal/UserPreferenceModal';
+import {
+	AIoptions,
+	AIpreferenceEnum,
+} from '../definition/helper/userPreference';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -259,6 +264,61 @@ export class ExecuteBlockActionHandler {
 				return this.context
 					.getInteractionResponder()
 					.updateModalViewResponse(updatedModal);
+			case 'AI_PREFERENCE_DROPDOWN_ACTION_ID':
+				console.log(value);
+				if (value === AIpreferenceEnum.Personal) {
+					const updatedModal = await setUserPreferenceModal({
+						app: this.app,
+						modify: this.modify,
+						existingPreferencelanguage: language,
+						PreferedAI: AIpreferenceEnum.Personal,
+					});
+
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(updatedModal);
+				}
+				break;
+			case 'AI_DROPDOWN_ACTION_ID':
+				// console.log(value) as AIoptions;
+				const option = value as AIoptions;
+				// check if value is part of AIoptions enum
+				// if yes, update the user preference
+				// else return an error message
+
+				// if (value === AIoptions) {
+				// 	const updatedModal = await setUserPreferenceModal({
+				// 		app: this.app,
+				// 		modify: this.modify,
+				// 		existingPreferencelanguage: language,
+				// 		PreferedAI: AIpreferenceEnum.Personal,
+				// 	});
+
+				// 	return this.context
+				// 		.getInteractionResponder()
+				// 		.updateModalViewResponse(updatedModal);
+				// }
+				if (value) {
+					if (Object.values(AIoptions).includes(option)) {
+						console.log('value is part of AIoptions enum');
+						const updatedModal = await setUserPreferenceModal({
+							app: this.app,
+							modify: this.modify,
+							existingPreferencelanguage: language,
+							PreferedAI: AIpreferenceEnum.Personal,
+							ChoosedAIoption: option,
+						});
+
+						return this.context
+							.getInteractionResponder()
+							.updateModalViewResponse(updatedModal);
+					} else {
+						console.log('value is not part of AIoptions enum');
+					}
+				} else {
+					console.log('no value');
+				}
+				break;
 		}
 
 		return this.context.getInteractionResponder().successResponse();

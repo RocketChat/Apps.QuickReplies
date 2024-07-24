@@ -17,12 +17,13 @@ import {
 	sendDefaultNotification,
 	sendHelperNotification,
 } from '../helper/notification';
-import { setUserPreferenceLanguageModal } from '../modal/UserPreferenceModal';
+import { setUserPreferenceModal } from '../modal/UserPreferenceModal';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { Language } from '../lib/Translation/translation';
 import { IMessage } from '@rocket.chat/apps-engine/definition/messages';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
+import { AIpreferenceEnum } from '../definition/helper/userPreference';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -140,10 +141,11 @@ export class Handler implements IHandler {
 			this.sender.id,
 		);
 
-		const modal = await setUserPreferenceLanguageModal({
+		const modal = await setUserPreferenceModal({
 			app: this.app,
 			modify: this.modify,
 			existingPreferencelanguage: existingPreference,
+			PreferedAI: AIpreferenceEnum.Workspace,
 		});
 
 		if (modal instanceof Error) {
