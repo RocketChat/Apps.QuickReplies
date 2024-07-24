@@ -19,6 +19,7 @@ import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
 import {
 	getLanguageDisplayTextFromCode,
+	getUserPreferredAI,
 	getUserPreferredLanguage,
 	isSupportedLanguage,
 } from '../helper/userPreference';
@@ -32,6 +33,7 @@ import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 import { EditModalEnum } from '../enum/modals/editModal';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
+import { AIpreferenceEnum } from '../definition/helper/userPreference';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -180,19 +182,51 @@ export class ExecuteViewSubmitHandler {
 				SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
 			]?.[SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID];
 
-		if (!languageInput || !isSupportedLanguage(languageInput)) {
-			return this.context.getInteractionResponder().errorResponse();
-		}
+		const AIpreferenceInput =
+			view.state?.[
+				SetUserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_BLOCK_ID
+			]?.[SetUserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID];
+
+		console.log(
+			view.state,
+			AIpreferenceInput,
+			'AI input',
+			languageInput,
+			'language input',
+		);
+
+		// if (!languageInput || !isSupportedLanguage(languageInput)) {
+		// 	return this.context.getInteractionResponder().errorResponse();
+		// }
+		console.log('201');
+		// if (
+		// 	!AIpreferenceInput ||
+		// 	AIpreferenceInput !== AIpreferenceEnum.Personal ||
+		// 	AIpreferenceInput !== AIpreferenceEnum.Workspace
+		// ) {
+		// 	console.log('AI preference input is not valid');
+		// 	return this.context.getInteractionResponder().errorResponse();
+		// }
+		console.log('210');
 
 		const userPreference = new UserPreferenceStorage(
 			this.persistence,
 			this.read.getPersistenceReader(),
 			user.id,
 		);
+		console.log('217');
+
+		const currentUserPreference = await userPreference.getUserPreference();
+		console.log('220', currentUserPreference);
 
 		await userPreference.storeUserPreference({
 			userId: user.id,
-			language: languageInput,
+			language: languageInput
+				? languageInput
+				: currentUserPreference?.language,
+			AIpreference: AIpreferenceInput
+				? AIpreferenceInput
+				: currentUserPreference?.AIpreference,
 		});
 
 		await sendNotification(this.read, this.modify, user, room, {

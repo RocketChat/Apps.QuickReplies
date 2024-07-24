@@ -18,12 +18,14 @@ import {
 	sendHelperNotification,
 } from '../helper/notification';
 import { setUserPreferenceModal } from '../modal/UserPreferenceModal';
-import { getUserPreferredLanguage } from '../helper/userPreference';
+import {
+	getUserPreferredAI,
+	getUserPreferredLanguage,
+} from '../helper/userPreference';
 import { Language } from '../lib/Translation/translation';
 import { IMessage } from '@rocket.chat/apps-engine/definition/messages';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
-import { AIpreferenceEnum } from '../definition/helper/userPreference';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -140,12 +142,17 @@ export class Handler implements IHandler {
 			this.persis,
 			this.sender.id,
 		);
+		const existingAIpreference = await getUserPreferredAI(
+			this.read.getPersistenceReader(),
+			this.persis,
+			this.sender.id,
+		);
 
 		const modal = await setUserPreferenceModal({
 			app: this.app,
 			modify: this.modify,
 			existingPreferencelanguage: existingPreference,
-			PreferedAI: AIpreferenceEnum.Workspace,
+			PreferedAI: existingAIpreference,
 		});
 
 		if (modal instanceof Error) {

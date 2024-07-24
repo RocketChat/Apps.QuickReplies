@@ -92,11 +92,15 @@ export async function setUserPreferenceModal({
 		{
 			placeholder: 'Preferred AI',
 			options: AIPreferenceDropDownOption,
+			initialOption: AIPreferenceDropDownOption.find(
+				(option) => option.value === PreferedAI,
+			),
 			dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
 		},
 		{
-			blockId: 'AI_PREFERENCE_DROPDOWN_BLOCK_ID',
-			actionId: 'AI_PREFERENCE_DROPDOWN_ACTION_ID',
+			blockId: SetUserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_BLOCK_ID,
+			actionId:
+				SetUserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID,
 		},
 	);
 

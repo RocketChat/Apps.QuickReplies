@@ -20,6 +20,7 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 	}
 
 	public async storeUserPreference(preference: IPreference): Promise<void> {
+		console.log('storeUserPreference', preference);
 		const association = new RocketChatAssociationRecord(
 			RocketChatAssociationModel.USER,
 			`${this.userId}#preference`,
