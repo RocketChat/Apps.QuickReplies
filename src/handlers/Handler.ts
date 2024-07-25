@@ -5,7 +5,6 @@ import {
 	IModify,
 	IPersistence,
 	IRead,
-	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IHanderParams, IHandler } from '../definition/handlers/IHandler';
@@ -33,6 +32,7 @@ export class Handler implements IHandler {
 	public roomInteractionStorage: RoomInteractionStorage;
 	public triggerId?: string;
 	public threadId?: string;
+	public language: Language;
 
 	constructor(params: IHanderParams) {
 		this.app = params.app;
@@ -44,6 +44,7 @@ export class Handler implements IHandler {
 		this.persis = params.persis;
 		this.triggerId = params.triggerId;
 		this.threadId = params.threadId;
+		this.language = params.language;
 		const persistenceRead = params.read.getPersistenceReader();
 		this.roomInteractionStorage = new RoomInteractionStorage(
 			params.persis,
@@ -52,29 +53,7 @@ export class Handler implements IHandler {
 		);
 	}
 
-	private async openSurfaceView(
-		view: IUIKitSurfaceViewParam,
-		triggerId?: string,
-	): Promise<void> {
-		if (triggerId) {
-			await this.modify
-				.getUiController()
-				.openSurfaceView(view, { triggerId }, this.sender);
-		}
-	}
-
-	private async getlanguage(): Promise<Language> {
-		const language = await getUserPreferredLanguage(
-			this.app,
-			this.read.getPersistenceReader(),
-			this.persis,
-			this.sender.id,
-		);
-		return language;
-	}
-
 	public async CreateReply(): Promise<void> {
-		const language = await this.getlanguage();
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -82,7 +61,7 @@ export class Handler implements IHandler {
 			this.persis,
 			this.modify,
 			this.room,
-			language,
+			this.language,
 		);
 
 		if (modal instanceof Error) {
@@ -109,8 +88,6 @@ export class Handler implements IHandler {
 			this.sender,
 		);
 
-		const language = await this.getlanguage();
-
 		const contextualBar = await listReplyContextualBar(
 			this.app,
 			this.sender,
@@ -119,43 +96,42 @@ export class Handler implements IHandler {
 			this.modify,
 			this.room,
 			userReplies,
-			language,
+			this.language,
 		);
 
 		if (contextualBar instanceof Error) {
 			this.app.getLogger().error(contextualBar.message);
 			return;
 		}
-
-		await this.openSurfaceView(contextualBar, this.triggerId);
+		const triggerId = this.triggerId;
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(contextualBar, { triggerId }, this.sender);
+		}
 	}
 
 	public async Help(): Promise<void> {
-		const language = await this.getlanguage();
-
 		await sendHelperNotification(
 			this.read,
 			this.modify,
 			this.sender,
 			this.room,
-			language,
+			this.language,
 		);
 	}
 	public async sendDefault(): Promise<void> {
-		const language = await this.getlanguage();
-
 		await sendDefaultNotification(
 			this.app,
 			this.read,
 			this.modify,
 			this.sender,
 			this.room,
-			language,
+			this.language,
 		);
 	}
 	public async Configure(): Promise<void> {
 		const existingPreference = await getUserPreferredLanguage(
-			this.app,
 			this.read.getPersistenceReader(),
 			this.persis,
 			this.sender.id,
@@ -173,7 +149,6 @@ export class Handler implements IHandler {
 		}
 
 		const triggerId = this.triggerId;
-		console.log(triggerId);
 		if (triggerId) {
 			await this.modify
 				.getUiController()

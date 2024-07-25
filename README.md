@@ -70,9 +70,13 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 ```
 
   👋 Need some help with /quick?
+    • use `/quick` to get start
     • use `/quick create` to create a new quick reply
     • use `/quick list` to list all the quick replies
     • use `/quick config` to configure user language preference
+    • use `/quick help` to get help
+    • use `/qs <reply name>` to quickly search and send quick reply
+
 
 
 

@@ -2,6 +2,7 @@ import {
 	IModify,
 	IPersistence,
 	IRead,
+	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { TextObjectType, Block } from '@rocket.chat/ui-kit';
 
@@ -9,9 +10,11 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { inputElementComponent } from './common/inputElementComponent';
-import { ButtonStyle } from '@rocket.chat/apps-engine/definition/uikit';
+import {
+	ButtonStyle,
+	UIKitSurfaceType,
+} from '@rocket.chat/apps-engine/definition/uikit';
 import { IReply } from '../definition/reply/IReply';
-import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 import { EditModalEnum } from '../enum/modals/editModal';
 import { Language, t } from '../lib/Translation/translation';
 
@@ -24,7 +27,8 @@ export async function EditReplyModal(
 	room: IRoom,
 	reply: IReply,
 	language: Language,
-): Promise<IUIKitModalViewParam> {
+	body?: string,
+): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
@@ -57,7 +61,7 @@ export async function EditReplyModal(
 			label: labelReplyBody,
 			optional: false,
 			multiline: true,
-			initialValue: reply.body,
+			initialValue: body ? body : reply.body,
 		},
 		{
 			blockId: EditModalEnum.REPLY_BODY_BLOCK_ID,
@@ -83,7 +87,8 @@ export async function EditReplyModal(
 		},
 	);
 	return {
-		id: EditModalEnum.VIEW_ID,
+		id: `${EditModalEnum.VIEW_ID} --- ${reply.id}`,
+		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
 			text: t('Edit_Modal_Title', language),

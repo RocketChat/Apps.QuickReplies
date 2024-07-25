@@ -23,7 +23,7 @@ export const pt = {
 	Error_Reply_Name_Invalid: "Nome inválido: O nome deve ser uma string não vazia com um comprimento máximo de 100 caracteres.",
 	Error_Reply_Body_Invalid: "Corpo inválido: O corpo deve ser uma string não vazia com um comprimento máximo de 1000 caracteres.",
 	Error_Fail_Internal: "Erro interno. Por favor, tente novamente mais tarde.",
-	Helper_Commands: "Use `/quick create` para criar uma nova resposta rápida \n Use `/quick list` para listar todas as mensagens rápidas \n Use `/quick config` para configurar a preferência do usuário \n",
+	Helper_Commands: "Use `/quick` para começar \n Use `/quick create` para criar uma nova resposta rápida \n Use `/quick list` para listar todas as mensagens rápidas \n Use `/quick config` para configurar as preferências do usuário \n Use `/quick help` para obter ajuda \n Use `/qs <replyname>` para pesquisar e enviar uma resposta rápida \n",
 	Helper_Text: "Ei __name__, sou o Quick Bot 👋 Aqui estão algumas dicas rápidas para você começar!",
 	Default_Message: "Ei __name__, sou o Quick Bot 👋 Posso ajudá-lo a criar e enviar respostas rápidas. Como posso ajudar?",
 	Create_Reply: "Criar Resposta",
@@ -53,4 +53,11 @@ export const pt = {
 	Send_Reply_Body_Label: "Conteúdo da Mensagem de Resposta",
 	Send_Reply_Body_Placeholder: "Conteúdo da resposta que você está prestes a enviar",
 	Error_Reply_Not_Found: "Resposta não encontrada",
+	Search_Reply_Label: "Pesquisar",
+	Search_Reply_Placeholder: "Procure por uma resposta",
+	Message_Update_Language: "Preferência de idioma atualizada para *__language__* com sucesso",
+	Quick_Search_Command_Params: "<nomederesposta>",
+	Quick_Search_Command_Description: "Pesquisar Respostas Rápidas para enviar. Digite /qs <nomederesposta>.",
+	No_Quick_Replies_Found: "Nenhuma resposta rápida encontrada",
+
 };

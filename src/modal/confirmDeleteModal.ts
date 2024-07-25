@@ -2,14 +2,17 @@ import {
 	IModify,
 	IPersistence,
 	IRead,
+	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { TextObjectType, Block } from '@rocket.chat/ui-kit';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
-import { ButtonStyle } from '@rocket.chat/apps-engine/definition/uikit';
+import {
+	ButtonStyle,
+	UIKitSurfaceType,
+} from '@rocket.chat/apps-engine/definition/uikit';
 import { IReply } from '../definition/reply/IReply';
-import { IUIKitModalViewParam } from '@rocket.chat/apps-engine/definition/uikit/UIKitInteractionResponder';
 import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 import { Language, t } from '../lib/Translation/translation';
 
@@ -22,7 +25,7 @@ export async function confirmDeleteModal(
 	room: IRoom,
 	reply: IReply,
 	language: Language,
-): Promise<IUIKitModalViewParam> {
+): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
@@ -58,7 +61,8 @@ export async function confirmDeleteModal(
 		},
 	);
 	return {
-		id: ConfirmDeleteModalEnum.VIEW_ID,
+		id: `${ConfirmDeleteModalEnum.VIEW_ID} --- ${reply.id}`,
+		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
 			text: t('Confirm_Delete_Modal_Title', language),

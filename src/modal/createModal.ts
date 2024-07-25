@@ -81,7 +81,7 @@ export async function CreateReplyModal(
 		},
 	);
 	return {
-		id: CreateModalEnum.VIEW_ID,
+		id: `${CreateModalEnum.VIEW_ID}`,
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,

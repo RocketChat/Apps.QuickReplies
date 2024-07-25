@@ -12,13 +12,13 @@ import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { SendReplyModal } from '../modal/sendModal';
-import { CacheReplyStorage } from '../storage/ReplyCache';
 import { Handler } from './Handler';
 import { MessageActionButton } from '../enum/notification';
 import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { confirmDeleteModal } from '../modal/confirmDeleteModal';
 import { EditReplyModal } from '../modal/editModal';
+import { listReplyContextualBar } from '../modal/listContextualBar';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -50,7 +50,6 @@ export class ExecuteBlockActionHandler {
 		const roomPersistance = await this.read.getRoomReader().getById(roomId);
 
 		const language = await getUserPreferredLanguage(
-			this.app,
 			this.read.getPersistenceReader(),
 			this.persistence,
 			user.id,
@@ -73,8 +72,8 @@ export class ExecuteBlockActionHandler {
 			http: this.http,
 			persis: this.persistence,
 			triggerId,
+			language,
 		});
-		console.log(actionId);
 
 		switch (actionId) {
 			case ListContextualBarEnum.REPLY_OVERFLOW_ACTIONID: {
@@ -92,19 +91,12 @@ export class ExecuteBlockActionHandler {
 						replyId,
 					);
 
-					const replyCache = new CacheReplyStorage(
-						this.persistence,
-						this.read.getPersistenceReader(),
-					);
-
 					if (!reply) {
 						return this.context
 							.getInteractionResponder()
 							.errorResponse();
 					}
-					await replyCache.setCacheReply(user, reply);
 					const language = await getUserPreferredLanguage(
-						this.app,
 						this.read.getPersistenceReader(),
 						this.persistence,
 						user.id,
@@ -179,6 +171,42 @@ export class ExecuteBlockActionHandler {
 			case MessageActionButton.NEED_MORE_ACTION_ID:
 				await handler.Help();
 				break;
+			case ListContextualBarEnum.SEARCH_ACTION_ID:
+				const replyStorage = new ReplyStorage(
+					this.persistence,
+					persistenceRead,
+				);
+				const userReplies = await replyStorage.getReplyForUser(user);
+				if (value) {
+					const UpdatedListBar = await listReplyContextualBar(
+						this.app,
+						user,
+						this.read,
+						this.persistence,
+						this.modify,
+						room,
+						userReplies,
+						language,
+						value,
+					);
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(UpdatedListBar);
+				} else {
+					const UpdatedListBar = await listReplyContextualBar(
+						this.app,
+						user,
+						this.read,
+						this.persistence,
+						this.modify,
+						room,
+						userReplies,
+						language,
+					);
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(UpdatedListBar);
+				}
 		}
 
 		return this.context.getInteractionResponder().successResponse();

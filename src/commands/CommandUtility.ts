@@ -7,7 +7,6 @@ import {
 	IPersistence,
 	IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
-
 import { CommandParam } from '../enum/CommandParam';
 import { Handler } from '../handlers/Handler';
 import {
@@ -15,6 +14,7 @@ import {
 	ICommandUtilityParams,
 } from '../definition/command/ICommandUtility';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
+import { getUserPreferredLanguage } from '../helper/userPreference';
 
 export class CommandUtility implements ICommandUtility {
 	public app: QuickRepliesApp;
@@ -42,6 +42,18 @@ export class CommandUtility implements ICommandUtility {
 	}
 
 	public async resolveCommand(): Promise<void> {
+		const language = await getUserPreferredLanguage(
+			this.read.getPersistenceReader(),
+			this.persis,
+			this.sender.id,
+		);
+		const roomInteractionStorage = new RoomInteractionStorage(
+			this.persis,
+			this.read.getPersistenceReader(),
+			this.sender.id,
+		);
+		roomInteractionStorage.storeInteractionRoomId(this.room.id);
+
 		const handler = new Handler({
 			app: this.app,
 			sender: this.sender,
@@ -52,14 +64,9 @@ export class CommandUtility implements ICommandUtility {
 			persis: this.persis,
 			triggerId: this.triggerId,
 			threadId: this.threadId,
+			language,
 		});
 
-		const roomInteractionStorage = new RoomInteractionStorage(
-			this.persis,
-			this.read.getPersistenceReader(),
-			this.sender.id,
-		);
-		roomInteractionStorage.storeInteractionRoomId(this.room.id);
 		switch (this.params.length) {
 			case 0: {
 				await handler.sendDefault();
