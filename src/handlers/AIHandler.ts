@@ -63,7 +63,7 @@ class AIHandler {
 	}
 
 	private getPrompt(message: string, prompt: string): string {
-		return `Write a reply to this message: "${message}". Ensure the reply is simple. Use the following as a prompt or response reply: "${prompt}" and make sure you respond with a well-written reply only dont try to make it long make it short can to the point , nothing else.`;
+		return `Write a reply to this message: "${message}". Ensure the reply is simple. Use the following as a prompt or response reply: "${prompt}" and make sure you respond with a well-written message.`;
 	}
 
 	private async handleSelfHostedModel(

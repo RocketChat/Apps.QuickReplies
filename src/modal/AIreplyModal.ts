@@ -32,7 +32,7 @@ export async function ReplyAIModal(
 
 	const blocks: Block[] = [];
 
-	const messageText = message.trim().slice(0, 50);
+	const messageText = message.trim().slice(0, 60);
 	const messageblock = blockBuilder.createSectionBlock({
 		text: `${t('Message', language)}: ${messageText}`,
 	});
