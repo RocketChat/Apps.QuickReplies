@@ -253,8 +253,10 @@ export class ExecuteBlockActionHandler {
 
 				const Preference = await userPreference.getUserPreference();
 
-				const response = await new AIHandler(
-					this.app,
+				const response = await handleAIresponse(
+					user,
+					message,
+					prompt,
 					this.http,
 					Preference,
 				).handleResponse(user, message, prompt);
