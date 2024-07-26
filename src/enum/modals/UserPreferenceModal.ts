@@ -1,4 +1,4 @@
-export enum SetUserPreferenceModalEnum {
+export enum UserPreferenceModalEnum {
 	VIEW_ID = 'set-user-preference-language-modal-view-id',
 	TITLE = 'Configure your language preference',
 	CLOSE = 'Close',
@@ -8,9 +8,18 @@ export enum SetUserPreferenceModalEnum {
 	LANGUAGE_INPUT_DROPDOWN_ACTION_ID = 'Language-input-drop-down-action-id',
 	AI_PREFERENCE_DROPDOWN_ACTION_ID = 'AI-preference-drop-down-action-id',
 	AI_PREFERENCE_DROPDOWN_BLOCK_ID = 'AI-preference-drop-down-block-id',
-
+	AI_OPTION_DROPDOWN_BLOCK_ID = 'AI-options-drop-down-block-id',
+	AI_OPTION_DROPDOWN_ACTION_ID = 'AI-options-drop-down-action-id',
 	CLOSE_ACTION_ID = 'set-user-preference-language-modal-action-id',
 	CLOSE_BLOCK_ID = 'set-user-preference-language-modal-block-id',
+	OPEN_AI_API_KEY_ACTION_ID = 'open-ai-api-key-action-id',
+	OPEN_AI_API_KEY_BLOCK_ID = 'open-ai-api-key-block-id',
+	OPEN_AI_MODEL_ACTION_ID = 'open-ai-model-action-id',
+	OPEN_AI_MODEL_BLOCK_ID = 'open-ai-model-block-id',
+	GEMINI_API_KEY_ACTION_ID = 'gemini-api-key-action-id',
+	GEMINI_API_KEY_BLOCK_ID = 'gemini-api-key-block-id',
+	SELF_HOSTED_URL_ACTION_ID = 'self-hosted-url-action-id',
+	SELF_HOSTED_URL_BLOCK_ID = 'self-hosted-url-block-id',
 
 	SUBMIT_ACTION_ID = 'submit-set-user-preference-language-modal-action-id',
 	SUBMIT_BLOCK_ID = 'submit-set-user-preference-language-modal-block-id',

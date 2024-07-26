@@ -8,10 +8,7 @@ import {
 	t,
 } from '../lib/Translation/translation';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
-import {
-	AIpreferenceEnum,
-	AIPreferencetype,
-} from '../definition/helper/userPreference';
+import { AIusagePreferenceEnum } from '../definition/helper/userPreference';
 
 export const getUserPreferredLanguage = async (
 	read: IPersistenceRead,
@@ -60,17 +57,17 @@ export const getUserPreferredAI = async (
 	read: IPersistenceRead,
 	persistence: IPersistence,
 	userId: string,
-): Promise<AIPreferencetype> => {
+): Promise<AIusagePreferenceEnum> => {
 	if (!userId) {
-		return AIpreferenceEnum.Workspace;
+		return AIusagePreferenceEnum.Workspace;
 	}
 	const userPreference = new UserPreferenceStorage(persistence, read, userId);
 
 	const preference = await userPreference.getUserPreference();
 
 	if (preference != null) {
-		return preference.AIpreference;
+		return AIusagePreferenceEnum.Workspace;
 	}
 
-	return AIpreferenceEnum.Workspace;
+	return AIusagePreferenceEnum.Workspace;
 };

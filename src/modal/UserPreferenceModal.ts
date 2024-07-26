@@ -10,217 +10,232 @@ import {
 } from '@rocket.chat/apps-engine/definition/uikit';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { Modals } from '../enum/modals/common/Modal';
-import {
-	Language,
-	supportedLanguageList,
-	t,
-} from '../lib/Translation/translation';
-import { SetUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
+import { supportedLanguageList, t } from '../lib/Translation/translation';
+import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
 import { getLanguageDisplayTextFromCode } from '../helper/userPreference';
 import {
-	AIoptions,
-	AIpreferenceEnum,
-	AIPreferencetype,
+	AIProviderEnum,
+	AIusagePreferenceEnum,
+	IPreference,
 } from '../definition/helper/userPreference';
 import { inputElementComponent } from './common/inputElementComponent';
 
-export async function setUserPreferenceModal({
+export async function UserPreferenceModal({
 	app,
 	modify,
-	existingPreferencelanguage,
-	PreferedAI,
-	ChoosedAIoption,
+	existingPreference,
 }: {
 	app: QuickRepliesApp;
 	modify: IModify;
-	existingPreferencelanguage: Language;
-	PreferedAI: AIPreferencetype;
-	ChoosedAIoption?: AIoptions;
+	existingPreference: IPreference;
 }): Promise<IUIKitSurfaceViewParam> {
-	const viewId = SetUserPreferenceModalEnum.VIEW_ID;
+	const viewId = UserPreferenceModalEnum.VIEW_ID;
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: Block[] = [];
 
-	const LanguageOptions = supportedLanguageList.map((language) => ({
+	const languageOptions = supportedLanguageList.map((language) => ({
 		text: getLanguageDisplayTextFromCode(
 			language,
-			existingPreferencelanguage,
+			existingPreference.language,
 		),
 		value: language,
 	}));
 
-	const LanguageDropDownOption =
-		elementBuilder.createDropDownOptions(LanguageOptions);
+	const languageDropDownOption =
+		elementBuilder.createDropDownOptions(languageOptions);
 
-	const LanguageDropDown = elementBuilder.addDropDown(
+	const languageDropDown = elementBuilder.addDropDown(
 		{
-			placeholder: t('Language', existingPreferencelanguage),
-			options: LanguageDropDownOption,
-			initialOption: LanguageDropDownOption.find(
-				(option) => option.value === existingPreferencelanguage,
+			placeholder: t('Language', existingPreference.language),
+			options: languageDropDownOption,
+			initialOption: languageDropDownOption.find(
+				(option) => option.value === existingPreference.language,
 			),
 			dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
 		},
 		{
-			blockId:
-				SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID,
-			actionId:
-				SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID,
+			blockId: UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID,
+			actionId: UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID,
 		},
 	);
 
 	blocks.push(
 		blockBuilder.createInputBlock({
-			text: t('Language', existingPreferencelanguage),
-			element: LanguageDropDown,
+			text: t('Language', existingPreference.language),
+			element: languageDropDown,
 			optional: false,
 		}),
 	);
 
 	blocks.push(blockBuilder.createDividerBlock());
 
-	const AIPreferenceOptions = [
-		{ text: AIpreferenceEnum.Personal, value: AIpreferenceEnum.Personal },
-		{ text: AIpreferenceEnum.Workspace, value: AIpreferenceEnum.Workspace },
+	const AIusagePreferenceOptions = [
+		{
+			text: AIusagePreferenceEnum.Personal,
+			value: AIusagePreferenceEnum.Personal,
+		},
+		{
+			text: AIusagePreferenceEnum.Workspace,
+			value: AIusagePreferenceEnum.Workspace,
+		},
 	];
 
-	const AIPreferenceDropDownOption =
-		elementBuilder.createDropDownOptions(AIPreferenceOptions);
+	const AIusagePreferenceDropDownOption =
+		elementBuilder.createDropDownOptions(AIusagePreferenceOptions);
 
-	const AIPrefereneDropDown = elementBuilder.addDropDown(
+	const AIusagePreferenceDropDown = elementBuilder.addDropDown(
 		{
-			placeholder: 'Preferred AI',
-			options: AIPreferenceDropDownOption,
-			initialOption: AIPreferenceDropDownOption.find(
-				(option) => option.value === PreferedAI,
+			placeholder: 'Choose AI Preference',
+			options: AIusagePreferenceDropDownOption,
+			initialOption: AIusagePreferenceDropDownOption.find(
+				(option) =>
+					option.value === existingPreference.AIusagePreference,
 			),
 			dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
 		},
 		{
-			blockId: SetUserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_BLOCK_ID,
-			actionId:
-				SetUserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID,
+			blockId: UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_BLOCK_ID,
+			actionId: UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID,
 		},
 	);
 
 	blocks.push(
 		blockBuilder.createInputBlock({
-			text: 'AI Preference',
-			element: AIPrefereneDropDown,
+			text: 'AI Usage Preference',
+			element: AIusagePreferenceDropDown,
 			optional: false,
 		}),
 	);
 
-	if (PreferedAI === AIpreferenceEnum.Personal) {
-		const AIOptions = [
+	if (
+		existingPreference.AIusagePreference === AIusagePreferenceEnum.Personal
+	) {
+		const aiProviderOptions = [
 			{
-				text: AIoptions.OpenAI,
-				value: AIoptions.OpenAI,
+				text: AIProviderEnum.OpenAI,
+				value: AIProviderEnum.OpenAI,
 			},
 			{
-				text: AIoptions.Gemini,
-				value: AIoptions.Gemini,
+				text: AIProviderEnum.Gemini,
+				value: AIProviderEnum.Gemini,
 			},
 			{
-				text: AIoptions.SelfHosted,
-				value: AIoptions.SelfHosted,
+				text: AIProviderEnum.SelfHosted,
+				value: AIProviderEnum.SelfHosted,
 			},
 		];
 
-		const AIDropDownOption =
-			elementBuilder.createDropDownOptions(AIOptions);
+		const aiProviderDropDownOption =
+			elementBuilder.createDropDownOptions(aiProviderOptions);
 
-		const AIOptionsDropDown = elementBuilder.addDropDown(
+		const aiProviderDropDown = elementBuilder.addDropDown(
 			{
-				placeholder: 'Choose AI',
-				options: AIDropDownOption,
+				placeholder: 'Choose AI Provider',
+				options: aiProviderDropDownOption,
 				dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
+				initialOption: aiProviderDropDownOption.find(
+					(option) =>
+						option.value ===
+						existingPreference.AIconfiguration?.AIProvider,
+				),
 			},
 			{
-				blockId: 'AI_DROPDOWN_BLOCK_ID',
-				actionId: 'AI_DROPDOWN_ACTION_ID',
+				blockId: UserPreferenceModalEnum.AI_OPTION_DROPDOWN_BLOCK_ID,
+				actionId: UserPreferenceModalEnum.AI_OPTION_DROPDOWN_ACTION_ID,
 			},
 		);
 
 		blocks.push(
 			blockBuilder.createInputBlock({
-				text: 'AI Options',
-				element: AIOptionsDropDown,
+				text: 'AI Provider',
+				element: aiProviderDropDown,
 				optional: false,
 			}),
 		);
 
-		if (ChoosedAIoption) {
-			switch (ChoosedAIoption) {
-				case AIoptions.OpenAI:
-					// Handle OpenAI specific logic
-					console.log('OpenAI');
-
-					const OpenAIAPIKeyInput = inputElementComponent(
+		if (existingPreference.AIconfiguration?.AIProvider) {
+			switch (existingPreference.AIconfiguration?.AIProvider) {
+				case AIProviderEnum.OpenAI:
+					const openAIAPIKeyInput = inputElementComponent(
 						{
 							app,
 							placeholder: 'OpenAI API Key',
 							label: 'OpenAI API',
 							optional: false,
+							initialValue:
+								existingPreference?.AIconfiguration?.openAI
+									?.apiKey,
 						},
 						{
-							blockId: 'OPENAI_API_KEY_BLOCK_ID',
-							actionId: 'OPENAI_API_KEY_ACTION_ID',
+							blockId:
+								UserPreferenceModalEnum.OPEN_AI_API_KEY_BLOCK_ID,
+							actionId:
+								UserPreferenceModalEnum.OPEN_AI_API_KEY_ACTION_ID,
 						},
 					);
 
-					const OpenAIAPIModelInput = inputElementComponent(
+					const openAIModelInput = inputElementComponent(
 						{
 							app,
 							placeholder: 'OpenAI Model',
 							label: 'OpenAI Model',
 							optional: false,
+							initialValue:
+								existingPreference?.AIconfiguration?.openAI
+									?.model,
 						},
 						{
-							blockId: 'OPENAI_API_MODEL_BLOCK_ID',
-							actionId: 'OPENAI_API_MODEL_ACTION_ID',
+							blockId:
+								UserPreferenceModalEnum.OPEN_AI_MODEL_BLOCK_ID,
+							actionId:
+								UserPreferenceModalEnum.OPEN_AI_MODEL_ACTION_ID,
 						},
 					);
 
-					blocks.push(OpenAIAPIKeyInput, OpenAIAPIModelInput);
-
+					blocks.push(openAIAPIKeyInput, openAIModelInput);
 					break;
 
-				case AIoptions.Gemini:
-					// Handle Gemini specific logic
-					console.log('Gemini');
-
-					const GeminiAIAPIKeyInput = inputElementComponent(
+				case AIProviderEnum.Gemini:
+					const geminiAPIKeyInput = inputElementComponent(
 						{
 							app,
 							placeholder: 'Gemini API Key',
 							label: 'Gemini API',
 							optional: false,
+							initialValue:
+								existingPreference?.AIconfiguration?.gemini
+									?.apiKey,
 						},
 						{
-							blockId: 'GEMINI_API_KEY_BLOCK_ID',
-							actionId: 'GEMINI_API_KEY_ACTION_ID',
+							blockId:
+								UserPreferenceModalEnum.GEMINI_API_KEY_BLOCK_ID,
+							actionId:
+								UserPreferenceModalEnum.GEMINI_API_KEY_ACTION_ID,
 						},
 					);
-					blocks.push(GeminiAIAPIKeyInput);
+					blocks.push(geminiAPIKeyInput);
 					break;
-				case AIoptions.SelfHosted:
-					// Handle SelfHosted specific logic
-					console.log('SelfHosted');
-					const SelfHostedAIURLInput = inputElementComponent(
+
+				case AIProviderEnum.SelfHosted:
+					const selfHostedURLInput = inputElementComponent(
 						{
 							app,
 							placeholder: 'Enter Self Hosted AI URL',
-							label: ' Self Hosted AI URL',
+							label: 'Self Hosted AI URL',
 							optional: false,
+							initialValue:
+								existingPreference?.AIconfiguration?.selfHosted
+									?.url,
 						},
 						{
-							blockId: 'GEMINI_API_KEY_BLOCK_ID',
-							actionId: 'GEMINI_API_KEY_ACTION_ID',
+							blockId:
+								UserPreferenceModalEnum.SELF_HOSTED_URL_BLOCK_ID,
+							actionId:
+								UserPreferenceModalEnum.SELF_HOSTED_URL_ACTION_ID,
 						},
 					);
-					blocks.push(SelfHostedAIURLInput);
+					blocks.push(selfHostedURLInput);
 					break;
 
 				default:
@@ -229,25 +244,25 @@ export async function setUserPreferenceModal({
 		}
 	}
 
-	const submit = elementBuilder.addButton(
+	const submitButton = elementBuilder.addButton(
 		{
-			text: SetUserPreferenceModalEnum.UPDATE,
+			text: UserPreferenceModalEnum.UPDATE,
 			style: ButtonStyle.PRIMARY,
 		},
 		{
-			actionId: SetUserPreferenceModalEnum.SUBMIT_ACTION_ID,
-			blockId: SetUserPreferenceModalEnum.SUBMIT_BLOCK_ID,
+			actionId: UserPreferenceModalEnum.SUBMIT_ACTION_ID,
+			blockId: UserPreferenceModalEnum.SUBMIT_BLOCK_ID,
 		},
 	);
 
-	const close = elementBuilder.addButton(
+	const closeButton = elementBuilder.addButton(
 		{
-			text: SetUserPreferenceModalEnum.CLOSE,
+			text: UserPreferenceModalEnum.CLOSE,
 			style: ButtonStyle.DANGER,
 		},
 		{
-			actionId: SetUserPreferenceModalEnum.CLOSE_ACTION_ID,
-			blockId: SetUserPreferenceModalEnum.CLOSE_BLOCK_ID,
+			actionId: UserPreferenceModalEnum.CLOSE_ACTION_ID,
+			blockId: UserPreferenceModalEnum.CLOSE_BLOCK_ID,
 		},
 	);
 
@@ -256,13 +271,10 @@ export async function setUserPreferenceModal({
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: t(
-				'Set_User_Preference_Modal_Title',
-				existingPreferencelanguage,
-			),
+			text: 'Set User Preference Modal',
 		},
 		blocks: blocks,
-		close,
-		submit,
+		close: closeButton,
+		submit: submitButton,
 	};
 }

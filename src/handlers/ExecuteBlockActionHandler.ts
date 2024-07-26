@@ -23,11 +23,13 @@ import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import AIHandler from './AIHandler';
-import { setUserPreferenceModal } from '../modal/UserPreferenceModal';
+import { UserPreferenceModal } from '../modal/UserPreferenceModal';
 import {
-	AIoptions,
-	AIpreferenceEnum,
+	AIProviderEnum,
+	AIusagePreferenceEnum,
 } from '../definition/helper/userPreference';
+import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
+import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -63,6 +65,13 @@ export class ExecuteBlockActionHandler {
 
 		const roomId = await roomInteractionStorage.getInteractionRoomId();
 		const roomPersistance = await this.read.getRoomReader().getById(roomId);
+
+		const userPreference = new UserPreferenceStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+		const existingPreference = await userPreference.getUserPreference();
 
 		const language = await getUserPreferredLanguage(
 			this.read.getPersistenceReader(),
@@ -242,9 +251,12 @@ export class ExecuteBlockActionHandler {
 				const message = await aistorage1.getMessage();
 				const prompt = await aistorage1.getPrompt();
 
+				const Preference = await userPreference.getUserPreference();
+
 				const response = await new AIHandler(
 					this.app,
 					this.http,
+					Preference,
 				).handleResponse(user, message, prompt);
 
 				await aistorage1.updateResponse(response);
@@ -264,14 +276,38 @@ export class ExecuteBlockActionHandler {
 				return this.context
 					.getInteractionResponder()
 					.updateModalViewResponse(updatedModal);
-			case 'AI_PREFERENCE_DROPDOWN_ACTION_ID':
-				console.log(value);
-				if (value === AIpreferenceEnum.Personal) {
-					const updatedModal = await setUserPreferenceModal({
+			case UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID:
+				if (value === AIusagePreferenceEnum.Personal) {
+					existingPreference.AIusagePreference =
+						AIusagePreferenceEnum.Personal;
+					await userPreference.storeUserPreference(
+						existingPreference,
+					);
+					const updatedPreference =
+						await userPreference.getUserPreference();
+
+					const updatedModal = await UserPreferenceModal({
 						app: this.app,
 						modify: this.modify,
-						existingPreferencelanguage: language,
-						PreferedAI: AIpreferenceEnum.Personal,
+						existingPreference: updatedPreference,
+					});
+
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(updatedModal);
+				} else {
+					existingPreference.AIusagePreference =
+						AIusagePreferenceEnum.Workspace;
+					await userPreference.storeUserPreference(
+						existingPreference,
+					);
+					const updatedPreference =
+						await userPreference.getUserPreference();
+
+					const updatedModal = await UserPreferenceModal({
+						app: this.app,
+						modify: this.modify,
+						existingPreference: updatedPreference,
 					});
 
 					return this.context
@@ -279,41 +315,28 @@ export class ExecuteBlockActionHandler {
 						.updateModalViewResponse(updatedModal);
 				}
 				break;
-			case 'AI_DROPDOWN_ACTION_ID':
-				// console.log(value) as AIoptions;
-				const option = value as AIoptions;
-				// check if value is part of AIoptions enum
-				// if yes, update the user preference
-				// else return an error message
-
-				// if (value === AIoptions) {
-				// 	const updatedModal = await setUserPreferenceModal({
-				// 		app: this.app,
-				// 		modify: this.modify,
-				// 		existingPreferencelanguage: language,
-				// 		PreferedAI: AIpreferenceEnum.Personal,
-				// 	});
-
-				// 	return this.context
-				// 		.getInteractionResponder()
-				// 		.updateModalViewResponse(updatedModal);
-				// }
+			case UserPreferenceModalEnum.AI_OPTION_DROPDOWN_ACTION_ID:
+				const option = value as AIProviderEnum;
 				if (value) {
-					if (Object.values(AIoptions).includes(option)) {
-						console.log('value is part of AIoptions enum');
-						const updatedModal = await setUserPreferenceModal({
+					if (Object.values(AIProviderEnum).includes(option)) {
+						existingPreference.AIconfiguration.AIProvider = option;
+						await userPreference.storeUserPreference(
+							existingPreference,
+						);
+						const updatedPreference =
+							await userPreference.getUserPreference();
+
+						const updatedModal = await UserPreferenceModal({
 							app: this.app,
 							modify: this.modify,
-							existingPreferencelanguage: language,
-							PreferedAI: AIpreferenceEnum.Personal,
-							ChoosedAIoption: option,
+							existingPreference: updatedPreference,
 						});
 
 						return this.context
 							.getInteractionResponder()
 							.updateModalViewResponse(updatedModal);
 					} else {
-						console.log('value is not part of AIoptions enum');
+						console.log('value is not part of AIProviderEnum enum');
 					}
 				} else {
 					console.log('no value');

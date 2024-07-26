@@ -5,34 +5,65 @@ import {
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { SettingEnum } from '../config/settings';
+import {
+	AIProviderEnum,
+	AIusagePreferenceEnum,
+	IPreference,
+} from '../definition/helper/userPreference';
 
 class AIHandler {
-	constructor(private app: QuickRepliesApp, private http: IHttp) {}
+	constructor(
+		private app: QuickRepliesApp,
+		private http: IHttp,
+		private userPreference: IPreference,
+	) {}
 
 	public async handleResponse(
 		user: IUser,
 		message: string,
 		prompt: string,
 	): Promise<string> {
-		const option = await this.app
-			.getAccessors()
-			.environmentReader.getSettings()
-			.getValueById(SettingEnum.AI_OPTIONS_ID);
+		let option = '';
 
-		switch (option) {
-			case SettingEnum.SELF_HOSTED_MODEL:
-				return this.handleSelfHostedModel(user, message, prompt);
-			case SettingEnum.OPEN_AI:
-				return this.handleOpenAI(user, message, prompt);
-			// case SettingEnum.MISTRAL:
-			// 	return this.handleMistral(user, message, prompt);
-			case SettingEnum.GEMINI:
-				return this.handleGemini(user, message, prompt);
-			default:
-				this.app
-					.getLogger()
-					.log('AI not set up. Please contact your administrator');
-				return 'AI not set up. Please contact your administrator';
+		if (
+			this.userPreference.AIusagePreference ===
+			AIusagePreferenceEnum.Personal
+		) {
+			option = this.userPreference.AIconfiguration.AIProvider;
+			switch (option) {
+				case AIProviderEnum.SelfHosted:
+					return this.handleSelfHostedModel(user, message, prompt);
+				case AIProviderEnum.OpenAI:
+					return this.handleOpenAI(user, message, prompt);
+				case AIProviderEnum.Gemini:
+					return this.handleGemini(user, message, prompt);
+				default:
+					this.app
+						.getLogger()
+						.log('AI not set up. Please Check your configuration');
+					return 'AI not set up. Please Check your configuration';
+			}
+		} else {
+			option = await this.app
+				.getAccessors()
+				.environmentReader.getSettings()
+				.getValueById(SettingEnum.AI_OPTIONS_ID);
+
+			switch (option) {
+				case SettingEnum.SELF_HOSTED_MODEL:
+					return this.handleSelfHostedModel(user, message, prompt);
+				case SettingEnum.OPEN_AI:
+					return this.handleOpenAI(user, message, prompt);
+				case SettingEnum.GEMINI:
+					return this.handleGemini(user, message, prompt);
+				default:
+					this.app
+						.getLogger()
+						.log(
+							'AI not set up. Please contact your administrator',
+						);
+					return 'AI not set up. Please contact your administrator';
+			}
 		}
 	}
 
@@ -46,10 +77,20 @@ class AIHandler {
 		prompt: string,
 	): Promise<string> {
 		try {
-			const url = await this.app
-				.getAccessors()
-				.environmentReader.getSettings()
-				.getValueById(SettingEnum.MODEL_ADDRESS_ID);
+			let url = '';
+			if (
+				this.userPreference.AIusagePreference ===
+				AIusagePreferenceEnum.Personal
+			) {
+				url = this.userPreference.AIconfiguration.selfHosted.url;
+			} else {
+				url = await this.app
+					.getAccessors()
+					.environmentReader.getSettings()
+					.getValueById(SettingEnum.MODEL_ADDRESS_ID);
+			}
+
+			console.log('Handled AI using URL ', url);
 
 			if (!url) {
 				this.app
@@ -82,7 +123,7 @@ class AIHandler {
 
 			if (!response || !response.data) {
 				this.app.getLogger().log('No response data received from AI.');
-				return 'Something is wrong with AI. Please try again later';
+				return 'Something went wrong. Please try again later';
 			}
 
 			const data = response.data;
@@ -101,15 +142,26 @@ class AIHandler {
 		prompt: string,
 	): Promise<string> {
 		try {
-			const openaikey = await this.app
-				.getAccessors()
-				.environmentReader.getSettings()
-				.getValueById(SettingEnum.OPEN_AI_API_KEY_ID);
+			let openaikey = '';
+			let openaimodel = '';
+			if (
+				this.userPreference.AIusagePreference ===
+				AIusagePreferenceEnum.Personal
+			) {
+				openaikey = this.userPreference.AIconfiguration.openAI.apiKey;
+				openaimodel = this.userPreference.AIconfiguration.openAI.model;
+			} else {
+				openaikey = await this.app
+					.getAccessors()
+					.environmentReader.getSettings()
+					.getValueById(SettingEnum.OPEN_AI_API_KEY_ID);
+				openaimodel = await this.app
+					.getAccessors()
+					.environmentReader.getSettings()
+					.getValueById(SettingEnum.OPEN_AI_API_MODEL_ID);
+			}
 
-			const openaimodel = await this.app
-				.getAccessors()
-				.environmentReader.getSettings()
-				.getValueById(SettingEnum.OPEN_AI_API_MODEL_ID);
+			console.log('Handled AI using OpenAI ', openaikey, openaimodel);
 
 			if (!openaikey || !openaimodel) {
 				this.app
@@ -158,11 +210,22 @@ class AIHandler {
 		prompt: string,
 	): Promise<string> {
 		try {
-			const geminiAPIkey = await this.app
-				.getAccessors()
-				.environmentReader.getSettings()
-				.getValueById(SettingEnum.GEMINI_AI_API_KEY_ID);
+			let geminiAPIkey = '';
 
+			if (
+				this.userPreference.AIusagePreference ===
+				AIusagePreferenceEnum.Personal
+			) {
+				geminiAPIkey =
+					this.userPreference.AIconfiguration.gemini.apiKey;
+			} else {
+				geminiAPIkey = await this.app
+					.getAccessors()
+					.environmentReader.getSettings()
+					.getValueById(SettingEnum.GEMINI_AI_API_KEY_ID);
+			}
+
+			console.log('Handled AI using Gemini ', geminiAPIkey);
 			if (!geminiAPIkey) {
 				this.app
 					.getLogger()
@@ -204,57 +267,6 @@ class AIHandler {
 			return 'Something went wrong. Please try again later';
 		}
 	}
-	// private async handleMistral(
-	// 	user: IUser,
-	// 	message: string,
-	// 	prompt: string,
-	// ): Promise<string> {
-	// 	try {
-	// 		const mistralaikey = await this.app
-	// 			.getAccessors()
-	// 			.environmentReader.getSettings()
-	// 			.getValueById(SettingEnum.Mistral_AI_API_KEY_ID);
-
-	// 		const mistralmodel = await this.app
-	// 			.getAccessors()
-	// 			.environmentReader.getSettings()
-	// 			.getValueById(SettingEnum.Mistral_AI_API_MODEL_ID);
-
-	// 		const response = await this.http.post(
-	// 			'https://api.mistral.ai/v1/chat/completions',
-	// 			{
-	// 				headers: {
-	// 					'Content-Type': 'application/json',
-	// 					Authorization: `Bearer ${mistralaikey}`,
-	// 				},
-	// 				content: JSON.stringify({
-	// 					model: mistralmodel,
-	// 					messages: [
-	// 						{
-	// 							role: 'system',
-	// 							content: this.getPrompt(message, prompt),
-	// 						},
-	// 					],
-	// 				}),
-	// 			},
-	// 		);
-
-	// 		if (!response || !response.content) {
-	// 			this.app
-	// 				.getLogger()
-	// 				.log('No response content received from AI.');
-	// 			return 'Something is wrong with AI. Please try again later';
-	// 		}
-
-	// 		const data = response.data;
-	// 		return data.choices[0].message.content;
-	// 	} catch (error) {
-	// 		this.app
-	// 			.getLogger()
-	// 			.log(`Error in handleMistral: ${error.message}`);
-	// 		return 'Something went wrong. Please try again later';
-	// 	}
-	// }
 }
 
 export default AIHandler;

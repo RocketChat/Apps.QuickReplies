@@ -17,7 +17,7 @@ import {
 	sendDefaultNotification,
 	sendHelperNotification,
 } from '../helper/notification';
-import { setUserPreferenceModal } from '../modal/UserPreferenceModal';
+import { UserPreferenceModal } from '../modal/UserPreferenceModal';
 import {
 	getUserPreferredAI,
 	getUserPreferredLanguage,
@@ -26,6 +26,7 @@ import { Language } from '../lib/Translation/translation';
 import { IMessage } from '@rocket.chat/apps-engine/definition/messages';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
+import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -137,22 +138,17 @@ export class Handler implements IHandler {
 		);
 	}
 	public async Configure(): Promise<void> {
-		const existingPreference = await getUserPreferredLanguage(
-			this.read.getPersistenceReader(),
+		const userPreference = new UserPreferenceStorage(
 			this.persis,
+			this.read.getPersistenceReader(),
 			this.sender.id,
 		);
-		const existingAIpreference = await getUserPreferredAI(
-			this.read.getPersistenceReader(),
-			this.persis,
-			this.sender.id,
-		);
+		const existingPreference = await userPreference.getUserPreference();
 
-		const modal = await setUserPreferenceModal({
+		const modal = await UserPreferenceModal({
 			app: this.app,
 			modify: this.modify,
-			existingPreferencelanguage: existingPreference,
-			PreferedAI: existingAIpreference,
+			existingPreference: existingPreference,
 		});
 
 		if (modal instanceof Error) {

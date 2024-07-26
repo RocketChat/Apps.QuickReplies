@@ -12,9 +12,6 @@ export enum SettingEnum {
 	SELF_HOSTED_MODEL = 'self-hosted-model',
 	OPEN_AI = 'open-ai',
 	GEMINI = 'gemini',
-	// Mistral_AI_API_KEY_ID = 'mistral-ai-api-key-id',
-	// Mistral_AI_API_MODEL_ID = 'mistral-ai-model-id',
-	// MISTRAL = 'mistral',
 }
 
 export const settings: Array<ISetting> = [
@@ -39,7 +36,6 @@ export const settings: Array<ISetting> = [
 				key: SettingEnum.GEMINI,
 				i18nLabel: 'Gemini_AI',
 			},
-			// { key: SettingEnum.MISTRAL, i18nLabel: 'Mistral' },
 		],
 	},
 	{
@@ -78,22 +74,4 @@ export const settings: Array<ISetting> = [
 		i18nLabel: 'Gemini_API_Key_Label',
 		i18nPlaceholder: 'Gemini_API_Key_Placeholder',
 	},
-	// {
-	// 	id: SettingEnum.Mistral_AI_API_KEY_ID,
-	// 	type: SettingType.PASSWORD,
-	// 	packageValue: '',
-	// 	required: true,
-	// 	public: false,
-	// 	i18nLabel: 'Mistral AI API Key',
-	// 	i18nPlaceholder: 'Mistral AI API Key',
-	// },
-	// {
-	// 	id: SettingEnum.Mistral_AI_API_MODEL_ID,
-	// 	type: SettingType.STRING,
-	// 	packageValue: '',
-	// 	required: true,
-	// 	public: false,
-	// 	i18nLabel: 'Mistral AI Model',
-	// 	i18nPlaceholder: 'Mistral AI API Model',
-	// },
 ];

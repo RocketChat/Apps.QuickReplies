@@ -1,27 +1,40 @@
 import { Language } from '../../lib/Translation/translation';
 
-export interface IPreference {
-	userId: string;
-	language: Language;
-	AIpreference: AIPreferencetype;
-}
+export type AIusagePreference =
+	| AIusagePreferenceEnum.Personal
+	| AIusagePreferenceEnum.Workspace;
 
-export type AIPreferencetype =
-	| AIpreferenceEnum.Personal
-	| AIpreferenceEnum.Workspace;
-
-export enum AIpreferenceEnum {
+export enum AIusagePreferenceEnum {
 	Personal = 'Personal',
 	Workspace = 'Workspace',
 }
 
-export type AIoptionstype =
-	| AIoptions.OpenAI
-	| AIoptions.Gemini
-	| AIoptions.SelfHosted;
+export type AIProviderType =
+	| AIProviderEnum.OpenAI
+	| AIProviderEnum.Gemini
+	| AIProviderEnum.SelfHosted;
 
-export enum AIoptions {
+export enum AIProviderEnum {
 	OpenAI = 'OpenAI',
 	Gemini = 'Gemini',
 	SelfHosted = 'Self Hosted',
+}
+
+export interface IPreference {
+	userId: string;
+	language: Language;
+	AIusagePreference: AIusagePreference;
+	AIconfiguration: {
+		AIProvider: AIProviderType;
+		selfHosted: {
+			url: string;
+		};
+		openAI: {
+			apiKey: string;
+			model: string;
+		};
+		gemini: {
+			apiKey: string;
+		};
+	};
 }
