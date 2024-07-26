@@ -231,14 +231,6 @@ export class ExecuteViewSubmitHandler {
 			},
 		});
 
-		const UserPreferredLanguage = await getUserPreferredLanguage(
-			this.read.getPersistenceReader(),
-			this.persistence,
-			user.id,
-		);
-
-		console.log(UserPreferredLanguage, languageInput);
-
 		await sendNotification(this.read, this.modify, user, room, {
 			message: t('Config_Updated_Successfully', languageInput),
 		});
@@ -432,8 +424,6 @@ export class ExecuteViewSubmitHandler {
 		view: IUIKitSurface,
 		language: Language,
 	): Promise<IUIKitResponse> {
-		console.log('handler');
-
 		const AIStorage = new AIstorage(
 			this.persistence,
 			this.read.getPersistenceReader(),
