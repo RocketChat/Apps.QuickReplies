@@ -21,8 +21,8 @@ export const settings: Array<ISetting> = [
 		packageValue: SettingEnum.SELF_HOSTED_MODEL,
 		required: true,
 		public: false,
-		i18nLabel: 'Choose_AI_Model_Label',
-		i18nPlaceholder: 'Choose_AI_Model_Placeholder',
+		i18nLabel: 'Choose_AI_Provider_Label',
+		i18nPlaceholder: 'Choose_AI_Provider_Placeholder',
 		values: [
 			{
 				key: SettingEnum.SELF_HOSTED_MODEL,

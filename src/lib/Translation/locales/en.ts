@@ -6,8 +6,6 @@ export const en = {
 	Language_PL: "Polish",
 	Language_RU: "Russian",
 	Set_User_Preference_Modal_Title: "Configure your language preference",
-	Quick_Command_Params: "create, list, help",
-	Quick_Command_Description:"Create Quick replies. Type /quick help for more information.",
 	Reply_Name_Label: "Reply Name",
 	Reply_Name_Placeholder: "Enter the name of your reply",
 	Reply_Body_Label: "Reply Body",
@@ -56,7 +54,5 @@ export const en = {
 	Search_Reply_Label: "Search",
 	Search_Reply_Placeholder: "Search for a reply",
 	Message_Update_Language: "Language preference updated to *__language__* successfully",
-	Quick_Search_Command_Params: "<replyname>",
-	Quick_Search_Command_Description:"Search Quick Replies to send. Type /qs <replyname>.",	
 	No_Quick_Replies_Found: "No Quick Replies found",
 };
