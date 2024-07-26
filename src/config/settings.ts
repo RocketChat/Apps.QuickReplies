@@ -41,7 +41,7 @@ export const settings: Array<ISetting> = [
 	{
 		id: SettingEnum.SELF_HOSTED_MODEL_ADDRESS_ID,
 		type: SettingType.STRING,
-		packageValue: 'http://mistral-7b/v1',
+		packageValue: '',
 		required: true,
 		public: false,
 		i18nLabel: 'Self_Hosted_AI_Model_URL_Label',
