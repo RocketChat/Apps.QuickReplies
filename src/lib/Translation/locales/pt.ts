@@ -53,7 +53,20 @@ export const pt = {
     Error_Reply_Not_Found: "Resposta não encontrada",
     Search_Reply_Label: "Pesquisar",
     Search_Reply_Placeholder: "Pesquisar por uma resposta",
-    Message_Update_Language: "Preferência de idioma atualizada para *__language__* com sucesso",
-    No_Quick_Replies_Found: "Nenhuma resposta rápida encontrada"
+    No_Quick_Replies_Found: "Nenhuma resposta rápida encontrada",
+    Config_Updated_Successfully: "Preferência do usuário atualizada com sucesso",
+	Choose_AI_Usage_Preference_Placeholder: "Escolha sua preferência para o uso da IA",
+	Choose_AI_Usage_Preference_Label: "Preferência de Uso da IA",
+	Choose_AI_Provider_Placeholder: "Escolha o Provedor de IA",
+	Choose_AI_Provider_Label: "Provedor de IA",
+	Open_AI_API_Key_Placeholder: "Digite sua chave de API do OpenAI",
+	Open_AI_API_Key_Label: "API do OpenAI",
+	Open_AI_Model_Placeholder: "Digite seu modelo do OpenAI",
+	Open_AI_Model_Label: "Modelo do OpenAI",
+	Gemini_API_Key_Placeholder: "Digite sua chave de API do Gemini",
+	Gemini_API_Key_Label: "API do Gemini",
+	Self_Hosted_AI_Model_URL_Placeholder: "Digite a URL do seu modelo de IA auto-hospedado",
+	Self_Hosted_AI_Model_URL_Label: "Modelo de IA Auto-Hospedado",
+	User_Preference_Title: "Preferência do Usuário"
 }
 

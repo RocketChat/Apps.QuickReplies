@@ -10,7 +10,11 @@ import {
 } from '@rocket.chat/apps-engine/definition/uikit';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { Modals } from '../enum/modals/common/Modal';
-import { supportedLanguageList, t } from '../lib/Translation/translation';
+import {
+	Language,
+	supportedLanguageList,
+	t,
+} from '../lib/Translation/translation';
 import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
 import { getLanguageDisplayTextFromCode } from '../helper/userPreference';
 import {
@@ -31,7 +35,7 @@ export async function UserPreferenceModal({
 }): Promise<IUIKitSurfaceViewParam> {
 	const viewId = UserPreferenceModalEnum.VIEW_ID;
 	const { elementBuilder, blockBuilder } = app.getUtils();
-
+	const language = existingPreference.language as Language;
 	const blocks: Block[] = [];
 
 	const languageOptions = supportedLanguageList.map((language) => ({
@@ -86,7 +90,7 @@ export async function UserPreferenceModal({
 
 	const AIusagePreferenceDropDown = elementBuilder.addDropDown(
 		{
-			placeholder: 'Choose AI Preference',
+			placeholder: t('Choose_AI_Usage_Preference_Placeholder', language),
 			options: AIusagePreferenceDropDownOption,
 			initialOption: AIusagePreferenceDropDownOption.find(
 				(option) =>
@@ -102,7 +106,7 @@ export async function UserPreferenceModal({
 
 	blocks.push(
 		blockBuilder.createInputBlock({
-			text: 'AI Usage Preference',
+			text: t('Choose_AI_Usage_Preference_Label', language),
 			element: AIusagePreferenceDropDown,
 			optional: false,
 		}),
@@ -131,7 +135,7 @@ export async function UserPreferenceModal({
 
 		const aiProviderDropDown = elementBuilder.addDropDown(
 			{
-				placeholder: 'Choose AI Provider',
+				placeholder: t('Choose_AI_Provider_Placeholder', language),
 				options: aiProviderDropDownOption,
 				dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
 				initialOption: aiProviderDropDownOption.find(
@@ -148,7 +152,7 @@ export async function UserPreferenceModal({
 
 		blocks.push(
 			blockBuilder.createInputBlock({
-				text: 'AI Provider',
+				text: t('Choose_AI_Provider_Label', language),
 				element: aiProviderDropDown,
 				optional: false,
 			}),
@@ -160,8 +164,11 @@ export async function UserPreferenceModal({
 					const openAIAPIKeyInput = inputElementComponent(
 						{
 							app,
-							placeholder: 'OpenAI API Key',
-							label: 'OpenAI API',
+							placeholder: t(
+								'Open_AI_API_Key_Placeholder',
+								language,
+							),
+							label: t('Open_AI_API_Key_Label', language),
 							optional: false,
 							initialValue:
 								existingPreference?.AIconfiguration?.openAI
@@ -178,8 +185,11 @@ export async function UserPreferenceModal({
 					const openAIModelInput = inputElementComponent(
 						{
 							app,
-							placeholder: 'OpenAI Model',
-							label: 'OpenAI Model',
+							placeholder: t(
+								'Open_AI_Model_Placeholder',
+								language,
+							),
+							label: t('Open_AI_Model_Label', language),
 							optional: false,
 							initialValue:
 								existingPreference?.AIconfiguration?.openAI
@@ -200,8 +210,11 @@ export async function UserPreferenceModal({
 					const geminiAPIKeyInput = inputElementComponent(
 						{
 							app,
-							placeholder: 'Gemini API Key',
-							label: 'Gemini API',
+							placeholder: t(
+								'Gemini_API_Key_Placeholder',
+								language,
+							),
+							label: t('Gemini_API_Key_Label', language),
 							optional: false,
 							initialValue:
 								existingPreference?.AIconfiguration?.gemini
@@ -221,8 +234,14 @@ export async function UserPreferenceModal({
 					const selfHostedURLInput = inputElementComponent(
 						{
 							app,
-							placeholder: 'Enter Self Hosted AI URL',
-							label: 'Self Hosted AI URL',
+							placeholder: t(
+								'Self_Hosted_AI_Model_URL_Placeholder',
+								language,
+							),
+							label: t(
+								'Self_Hosted_AI_Model_URL_Label',
+								language,
+							),
 							optional: false,
 							initialValue:
 								existingPreference?.AIconfiguration?.selfHosted
@@ -271,7 +290,7 @@ export async function UserPreferenceModal({
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: 'Set User Preference Modal',
+			text: t('User_Preference_Title', language),
 		},
 		blocks: blocks,
 		close: closeButton,

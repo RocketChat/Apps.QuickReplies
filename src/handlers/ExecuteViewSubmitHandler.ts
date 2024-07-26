@@ -17,10 +17,7 @@ import { CreateModalEnum } from '../enum/modals/createModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
-import {
-	getLanguageDisplayTextFromCode,
-	getUserPreferredLanguage,
-} from '../helper/userPreference';
+import { getUserPreferredLanguage } from '../helper/userPreference';
 import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
 import { SendModalEnum } from '../enum/modals/sendModal';
@@ -234,13 +231,16 @@ export class ExecuteViewSubmitHandler {
 			},
 		});
 
+		const UserPreferredLanguage = await getUserPreferredLanguage(
+			this.read.getPersistenceReader(),
+			this.persistence,
+			user.id,
+		);
+
+		console.log(UserPreferredLanguage, languageInput);
+
 		await sendNotification(this.read, this.modify, user, room, {
-			message: t('Message_Update_Language', languageInput, {
-				language: getLanguageDisplayTextFromCode(
-					languageInput,
-					languageInput,
-				),
-			}),
+			message: t('Config_Updated_Successfully', languageInput),
 		});
 
 		return this.context.getInteractionResponder().successResponse();

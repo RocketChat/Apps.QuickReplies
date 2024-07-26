@@ -53,6 +53,19 @@ export const ru = {
     Error_Reply_Not_Found: "Ответ не найден",
     Search_Reply_Label: "Поиск",
     Search_Reply_Placeholder: "Искать ответ",
-    Message_Update_Language: "Предпочтения языка обновлены на *__language__* успешно",
-    No_Quick_Replies_Found: "Быстрые ответы не найдены"
+    No_Quick_Replies_Found: "Быстрые ответы не найдены",
+    Config_Updated_Successfully: "Предпочтения пользователя успешно обновлены",
+	Choose_AI_Usage_Preference_Placeholder: "Выберите предпочтения для использования ИИ",
+	Choose_AI_Usage_Preference_Label: "Предпочтения использования ИИ",
+	Choose_AI_Provider_Placeholder: "Выберите провайдера ИИ",
+	Choose_AI_Provider_Label: "Провайдер ИИ",
+	Open_AI_API_Key_Placeholder: "Введите ваш ключ API OpenAI",
+	Open_AI_API_Key_Label: "API OpenAI",
+	Open_AI_Model_Placeholder: "Введите вашу модель OpenAI",
+	Open_AI_Model_Label: "Модель OpenAI",
+	Gemini_API_Key_Placeholder: "Введите ваш ключ API Gemini",
+	Gemini_API_Key_Label: "API Gemini",
+	Self_Hosted_AI_Model_URL_Placeholder: "Введите URL вашей саморазвёртываемой модели ИИ",
+	Self_Hosted_AI_Model_URL_Label: "Саморазвёртываемая модель ИИ",
+	User_Preference_Title: "Предпочтения пользователя"
 }

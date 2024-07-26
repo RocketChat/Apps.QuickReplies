@@ -53,6 +53,19 @@ export const de = {
     Error_Reply_Not_Found: "Antwort nicht gefunden",
     Search_Reply_Label: "Suchen",
     Search_Reply_Placeholder: "Antwort suchen",
-    Message_Update_Language: "Spracheinstellungen erfolgreich auf *__language__* aktualisiert",
-    No_Quick_Replies_Found: "Keine schnellen Antworten gefunden"
+    No_Quick_Replies_Found: "Keine schnellen Antworten gefunden",
+    Config_Updated_Successfully: "Benutzereinstellungen erfolgreich aktualisiert",
+    Choose_AI_Usage_Preference_Placeholder: "Wählen Sie Ihre Präferenz für die KI-Nutzung",
+    Choose_AI_Usage_Preference_Label: "KI-Nutzungseinstellungen",
+    Choose_AI_Provider_Placeholder: "Wählen Sie KI-Anbieter",
+    Choose_AI_Provider_Label: "KI-Anbieter",
+    Open_AI_API_Key_Placeholder: "Geben Sie Ihren OpenAI API-Schlüssel ein",
+    Open_AI_API_Key_Label: "OpenAI API",
+    Open_AI_Model_Placeholder: "Geben Sie Ihr OpenAI-Modell ein",
+    Open_AI_Model_Label: "OpenAI-Modell",
+    Gemini_API_Key_Placeholder: "Geben Sie Ihren Gemini API-Schlüssel ein",
+    Gemini_API_Key_Label: "Gemini API",
+    Self_Hosted_AI_Model_URL_Placeholder: "Geben Sie die URL Ihres selbst gehosteten KI-Modells ein",
+    Self_Hosted_AI_Model_URL_Label: "Selbst gehostetes KI-Modell",
+    User_Preference_Title: "Benutzereinstellungen"
 }
