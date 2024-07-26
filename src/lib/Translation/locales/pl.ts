@@ -67,6 +67,15 @@ export const pl = {
 	Gemini_API_Key_Label: "Gemini API",
 	Self_Hosted_AI_Model_URL_Placeholder: "Wprowadź URL swojego samodzielnie hostowanego modelu AI",
 	Self_Hosted_AI_Model_URL_Label: "Samodzielnie hostowany model AI",
-	User_Preference_Title: "Preferencje użytkownika"
+	User_Preference_Title: "Preferencje użytkownika",
+    Message: "Wiadomość",
+	Prompt_Input_Placeholder: "Wprowadź prompt",
+	Prompt_Input_Label: "Prompt",
+	Generate_Button_Text: "Generuj",
+	Regenerate_Button_Text: "Regeneruj",
+	Generated_Response_Placeholder: "Wygenerowana odpowiedź AI",
+	Generated_Response_Label: "Odpowiedź AI",
+	Generate_Modal_Title: "Generuj odpowiedź AI",
+	Send_This_Text: "Wyślij tę odpowiedź"
 }
 

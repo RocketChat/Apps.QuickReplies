@@ -67,5 +67,14 @@ export const ru = {
 	Gemini_API_Key_Label: "API Gemini",
 	Self_Hosted_AI_Model_URL_Placeholder: "Введите URL вашей саморазвёртываемой модели ИИ",
 	Self_Hosted_AI_Model_URL_Label: "Саморазвёртываемая модель ИИ",
-	User_Preference_Title: "Предпочтения пользователя"
+	User_Preference_Title: "Предпочтения пользователя",
+    Message: "Сообщение",
+	Prompt_Input_Placeholder: "Введите запрос",
+	Prompt_Input_Label: "Запрос",
+	Generate_Button_Text: "Сгенерировать",
+	Regenerate_Button_Text: "Сгенерировать заново",
+	Generated_Response_Placeholder: "Сгенерированный ответ ИИ",
+	Generated_Response_Label: "Ответ ИИ",
+	Generate_Modal_Title: "Сгенерировать ответ ИИ",
+	Send_This_Text: "Отправить этот ответ"
 }

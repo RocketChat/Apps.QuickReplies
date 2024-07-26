@@ -32,16 +32,16 @@ export async function ReplyAIModal(
 
 	const blocks: Block[] = [];
 
-	const messageText = message.trim().slice(0, 40);
+	const messageText = message.trim().slice(0, 50);
 	const messageblock = blockBuilder.createSectionBlock({
-		text: `Message: ${messageText}`,
+		text: `${t('Message', language)}: ${messageText}`,
 	});
 
 	const promptInput = inputElementComponent(
 		{
 			app,
-			placeholder: 'Enter the prompt',
-			label: 'Prompt',
+			placeholder: t('Prompt_Input_Placeholder', language),
+			label: t('Prompt_Input_Label', language),
 			optional: false,
 			dispatchActionConfigOnInput: true,
 		},
@@ -53,7 +53,9 @@ export async function ReplyAIModal(
 
 	const GenerateButton = elementBuilder.addButton(
 		{
-			text: response ? 'Regenerate' : 'Generate',
+			text: response
+				? t('Regenerate_Button_Text', language)
+				: t('Generate_Button_Text', language),
 			style: ButtonStyle.PRIMARY,
 		},
 		{
@@ -69,14 +71,11 @@ export async function ReplyAIModal(
 	blocks.push(messageblock, promptInput, GenerateButton, secitonBlock);
 
 	if (response) {
-		const labelReplyBody = 'Response';
-		const placeholderReplyBody = 'Response';
-
 		const inputReplyBody = inputElementComponent(
 			{
 				app,
-				placeholder: placeholderReplyBody,
-				label: labelReplyBody,
+				placeholder: t('Generated_Response_Placeholder', language),
+				label: t('Generated_Response_Label', language),
 				optional: false,
 				multiline: true,
 				initialValue: response,
@@ -90,7 +89,7 @@ export async function ReplyAIModal(
 	}
 
 	const submit = elementBuilder.addButton(
-		{ text: 'Send this reply', style: ButtonStyle.PRIMARY },
+		{ text: t('Send_This_Text', language), style: ButtonStyle.PRIMARY },
 		{
 			actionId: ReplyAIModalEnum.SUBMIT_ACTION_ID,
 			blockId: ReplyAIModalEnum.SUBMIT_BLOCK_ID,
@@ -109,7 +108,7 @@ export async function ReplyAIModal(
 		type: UIKitSurfaceType.MODAL,
 		title: {
 			type: TextObjectType.MRKDWN,
-			text: 'Generate Reply',
+			text: t('Generate_Modal_Title', language),
 		},
 		blocks,
 		close,

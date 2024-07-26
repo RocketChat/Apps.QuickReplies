@@ -68,4 +68,15 @@ export const en = {
 	Self_Hosted_AI_Model_URL_Placeholder: "Enter your Self Hosted AI Model URL",
 	Self_Hosted_AI_Model_URL_Label: "Self Hosted AI Model",
 	User_Preference_Title: "User Preference",
+
+	Message: "Message",
+	Prompt_Input_Placeholder: "Enter the prompt",
+	Prompt_Input_Label: "Prompt",
+	Generate_Button_Text: "Generate",
+	Regenerate_Button_Text: "Regenerate",
+	Generated_Response_Placeholder: "Generated AI Response",
+	Generated_Response_Label: "AI Response",
+	Generate_Modal_Title: "Generate AI Response",
+	Send_This_Text: "Send this reply",
+
 };

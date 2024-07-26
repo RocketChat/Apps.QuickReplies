@@ -71,7 +71,6 @@ export class ExecuteViewSubmitHandler {
 				case CreateModalEnum.VIEW_ID:
 					return this.handleCreate(room, user, view, language);
 				case ReplyAIModalEnum.VIEW_ID:
-					console.log('hitt submit');
 					return this.handleAIresponse(room, user, view, language);
 			}
 		} else if (ViewLegnth === 2) {
