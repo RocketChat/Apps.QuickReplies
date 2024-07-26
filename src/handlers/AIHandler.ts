@@ -23,47 +23,42 @@ class AIHandler {
 		message: string,
 		prompt: string,
 	): Promise<string> {
-		let option = '';
+		let aiProvider: string;
 
 		if (
 			this.userPreference.AIusagePreference ===
 			AIusagePreferenceEnum.Personal
 		) {
-			option = this.userPreference.AIconfiguration.AIProvider;
-			switch (option) {
-				case AIProviderEnum.SelfHosted:
-					return this.handleSelfHostedModel(user, message, prompt);
-				case AIProviderEnum.OpenAI:
-					return this.handleOpenAI(user, message, prompt);
-				case AIProviderEnum.Gemini:
-					return this.handleGemini(user, message, prompt);
-				default:
-					this.app
-						.getLogger()
-						.log('AI not set up. Please Check your configuration');
-					return 'AI not set up. Please Check your configuration';
-			}
+			aiProvider = this.userPreference.AIconfiguration.AIProvider;
 		} else {
-			option = await this.app
+			aiProvider = await this.app
 				.getAccessors()
 				.environmentReader.getSettings()
-				.getValueById(SettingEnum.AI_OPTIONS_ID);
+				.getValueById(SettingEnum.AI_PROVIDER_OPTOIN_ID);
+		}
 
-			switch (option) {
-				case SettingEnum.SELF_HOSTED_MODEL:
-					return this.handleSelfHostedModel(user, message, prompt);
-				case SettingEnum.OPEN_AI:
-					return this.handleOpenAI(user, message, prompt);
-				case SettingEnum.GEMINI:
-					return this.handleGemini(user, message, prompt);
-				default:
-					this.app
-						.getLogger()
-						.log(
-							'AI not set up. Please contact your administrator',
-						);
-					return 'AI not set up. Please contact your administrator';
-			}
+		switch (aiProvider) {
+			case AIProviderEnum.SelfHosted:
+			case SettingEnum.SELF_HOSTED_MODEL:
+				return this.handleSelfHostedModel(user, message, prompt);
+
+			case AIProviderEnum.OpenAI:
+			case SettingEnum.OPEN_AI:
+				return this.handleOpenAI(user, message, prompt);
+
+			case AIProviderEnum.Gemini:
+			case SettingEnum.GEMINI:
+				return this.handleGemini(user, message, prompt);
+
+			default:
+				const errorMsg =
+					this.userPreference.AIusagePreference ===
+					AIusagePreferenceEnum.Personal
+						? 'AI not set up. Please Check your configuration'
+						: 'AI not set up. Please contact your administrator';
+
+				this.app.getLogger().log(errorMsg);
+				return errorMsg;
 		}
 	}
 
@@ -77,31 +72,20 @@ class AIHandler {
 		prompt: string,
 	): Promise<string> {
 		try {
-			let url = '';
-			if (
-				this.userPreference.AIusagePreference ===
-				AIusagePreferenceEnum.Personal
-			) {
-				url = this.userPreference.AIconfiguration.selfHosted.url;
-			} else {
-				url = await this.app
-					.getAccessors()
-					.environmentReader.getSettings()
-					.getValueById(SettingEnum.MODEL_ADDRESS_ID);
-			}
-
-			console.log('Handled AI using URL ', url);
+			const url = await this.getSelfHostedModelUrl();
 
 			if (!url) {
+				const errorMsg =
+					'Your Workspace AI is not set up properly. Please contact your administrator';
 				this.app
 					.getLogger()
 					.log(
 						'Model address not set. Please contact your administrator',
 					);
-				return 'Your Workspace AI is not setup properly. Please contact your administrator';
+				return errorMsg;
 			}
 
-			const body = {
+			const requestBody = {
 				messages: [
 					{
 						role: 'system',
@@ -117,7 +101,7 @@ class AIHandler {
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					content: JSON.stringify(body),
+					content: JSON.stringify(requestBody),
 				},
 			);
 
@@ -126,13 +110,26 @@ class AIHandler {
 				return 'Something went wrong. Please try again later';
 			}
 
-			const data = response.data;
-			return data.choices[0].message.content;
+			return response.data.choices[0].message.content;
 		} catch (error) {
 			this.app
 				.getLogger()
 				.log(`Error in handleSelfHostedModel: ${error.message}`);
 			return 'Something went wrong. Please try again later';
+		}
+	}
+
+	private async getSelfHostedModelUrl(): Promise<string> {
+		if (
+			this.userPreference.AIusagePreference ===
+			AIusagePreferenceEnum.Personal
+		) {
+			return this.userPreference.AIconfiguration.selfHosted.url;
+		} else {
+			return await this.app
+				.getAccessors()
+				.environmentReader.getSettings()
+				.getValueById(SettingEnum.SELF_HOSTED_MODEL_ADDRESS_ID);
 		}
 	}
 
@@ -142,37 +139,20 @@ class AIHandler {
 		prompt: string,
 	): Promise<string> {
 		try {
-			let openaikey = '';
-			let openaimodel = '';
-			if (
-				this.userPreference.AIusagePreference ===
-				AIusagePreferenceEnum.Personal
-			) {
-				openaikey = this.userPreference.AIconfiguration.openAI.apiKey;
-				openaimodel = this.userPreference.AIconfiguration.openAI.model;
-			} else {
-				openaikey = await this.app
-					.getAccessors()
-					.environmentReader.getSettings()
-					.getValueById(SettingEnum.OPEN_AI_API_KEY_ID);
-				openaimodel = await this.app
-					.getAccessors()
-					.environmentReader.getSettings()
-					.getValueById(SettingEnum.OPEN_AI_API_MODEL_ID);
-			}
-
-			console.log('Handled AI using OpenAI ', openaikey, openaimodel);
+			const { openaikey, openaimodel } = await this.getOpenAIConfig();
 
 			if (!openaikey || !openaimodel) {
+				const errorMsg =
+					'Your Workspace AI is not set up properly. Please contact your administrator';
 				this.app
 					.getLogger()
 					.log(
 						'OpenAI settings not set. Please contact your administrator',
 					);
-				return 'Your Workspace AI is not setup properly. Please contact your administrator';
+				return errorMsg;
 			}
 
-			const response = await this.http.post(
+			const response: IHttpResponse = await this.http.post(
 				'https://api.openai.com/v1/chat/completions',
 				{
 					headers: {
@@ -204,38 +184,52 @@ class AIHandler {
 		}
 	}
 
+	private async getOpenAIConfig(): Promise<{
+		openaikey: string;
+		openaimodel: string;
+	}> {
+		if (
+			this.userPreference.AIusagePreference ===
+			AIusagePreferenceEnum.Personal
+		) {
+			return {
+				openaikey: this.userPreference.AIconfiguration.openAI.apiKey,
+				openaimodel: this.userPreference.AIconfiguration.openAI.model,
+			};
+		} else {
+			const [apikey, model] = await Promise.all([
+				this.app
+					.getAccessors()
+					.environmentReader.getSettings()
+					.getValueById(SettingEnum.OPEN_AI_API_KEY_ID),
+				this.app
+					.getAccessors()
+					.environmentReader.getSettings()
+					.getValueById(SettingEnum.OPEN_AI_API_MODEL_ID),
+			]);
+			return { openaikey: apikey, openaimodel: model };
+		}
+	}
 	private async handleGemini(
 		user: IUser,
 		message: string,
 		prompt: string,
 	): Promise<string> {
 		try {
-			let geminiAPIkey = '';
+			const geminiAPIkey = await this.getGeminiAPIKey();
 
-			if (
-				this.userPreference.AIusagePreference ===
-				AIusagePreferenceEnum.Personal
-			) {
-				geminiAPIkey =
-					this.userPreference.AIconfiguration.gemini.apiKey;
-			} else {
-				geminiAPIkey = await this.app
-					.getAccessors()
-					.environmentReader.getSettings()
-					.getValueById(SettingEnum.GEMINI_AI_API_KEY_ID);
-			}
-
-			console.log('Handled AI using Gemini ', geminiAPIkey);
 			if (!geminiAPIkey) {
+				const errorMsg =
+					'Your Workspace AI is not set up properly. Please contact your administrator';
 				this.app
 					.getLogger()
 					.log(
 						'Gemini API key not set. Please contact your administrator',
 					);
-				return 'Your Workspace AI is not setup properly. Please contact your administrator';
+				return errorMsg;
 			}
 
-			const response = await this.http.post(
+			const response: IHttpResponse = await this.http.post(
 				`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiAPIkey}`,
 				{
 					headers: {
@@ -265,6 +259,20 @@ class AIHandler {
 		} catch (error) {
 			this.app.getLogger().log(`Error in handleGemini: ${error.message}`);
 			return 'Something went wrong. Please try again later';
+		}
+	}
+
+	private async getGeminiAPIKey(): Promise<string> {
+		if (
+			this.userPreference.AIusagePreference ===
+			AIusagePreferenceEnum.Personal
+		) {
+			return this.userPreference.AIconfiguration.gemini.apiKey;
+		} else {
+			return await this.app
+				.getAccessors()
+				.environmentReader.getSettings()
+				.getValueById(SettingEnum.GEMINI_AI_API_KEY_ID);
 		}
 	}
 }
