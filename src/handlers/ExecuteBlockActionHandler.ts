@@ -243,13 +243,13 @@ export class ExecuteBlockActionHandler {
 				break;
 
 			case ReplyAIModalEnum.GENERATE_BUTTON_ACTION_ID:
-				const aistorage1 = new AIstorage(
+				const aiStorage = new AIstorage(
 					this.persistence,
 					this.read.getPersistenceReader(),
 					user.id,
 				);
-				const message = await aistorage1.getMessage();
-				const prompt = await aistorage1.getPrompt();
+				const message = await aiStorage.getMessage();
+				const prompt = await aiStorage.getPrompt();
 
 				const Preference = await userPreference.getUserPreference();
 
@@ -259,7 +259,7 @@ export class ExecuteBlockActionHandler {
 					Preference,
 				).handleResponse(user, message, prompt);
 
-				await aistorage1.updateResponse(response);
+				await aiStorage.updateResponse(response);
 
 				const updatedModal = await ReplyAIModal(
 					this.app,

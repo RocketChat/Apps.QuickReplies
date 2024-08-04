@@ -25,6 +25,7 @@ export interface IPreference {
 	language: Language;
 	AIusagePreference: AIusagePreference;
 	AIconfiguration: {
+		AIPrompt: string;
 		AIProvider: AIProviderType;
 		selfHosted: {
 			url: string;

@@ -32,9 +32,9 @@ export async function ReplyAIModal(
 
 	const blocks: Block[] = [];
 
-	const messageText = message.trim().slice(0, 60);
+	const messageText = message.trim();
 	const messageblock = blockBuilder.createSectionBlock({
-		text: `${t('Message', language)}: ${messageText}`,
+		text: `*${t('Message', language)}*: ${messageText}`,
 	});
 
 	const promptInput = inputElementComponent(

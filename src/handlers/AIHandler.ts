@@ -24,7 +24,6 @@ class AIHandler {
 		prompt: string,
 	): Promise<string> {
 		let aiProvider: string;
-
 		if (
 			this.userPreference.AIusagePreference ===
 			AIusagePreferenceEnum.Personal
@@ -63,7 +62,7 @@ class AIHandler {
 	}
 
 	private getPrompt(message: string, prompt: string): string {
-		return `Write a reply to this message: "${message}". Ensure the reply is simple. Use the following as a prompt or response reply: "${prompt}" and make sure you respond with a well-written message.`;
+		return `Write a reply to this message: "${message}". ${this.userPreference.AIconfiguration.AIPrompt} and Use the following as a prompt or response reply: "${prompt}" and make sure you respond with just the reply.`;
 	}
 
 	private async handleSelfHostedModel(
