@@ -64,7 +64,7 @@ export class QuickRepliesApp extends App {
 		};
 
 		const ReplyUsingAI: IUIActionButtonDescriptor = {
-			actionId: ActionButton.REPLY_USING_AI,
+			actionId: ActionButton.REPLY_USING_AI_ACTION,
 			labelI18n: ActionButton.REPLY_USING_AI_LABEL,
 			context: UIActionButtonContext.MESSAGE_ACTION,
 		};

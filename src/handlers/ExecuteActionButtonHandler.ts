@@ -69,7 +69,7 @@ export class ExecuteActionButtonHandler {
 		}
 		if (message && actionId) {
 			switch (actionId) {
-				case ActionButton.REPLY_USING_AI: {
+				case ActionButton.REPLY_USING_AI_ACTION: {
 					await handler.replyUsingAI(message);
 					break;
 				}
