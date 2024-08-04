@@ -3,6 +3,7 @@ export enum CommandParam {
 	LIST = 'list',
 	HELP = 'help',
 	CONFIG = 'config',
+	AI = 'ai',
 	DELETE = 'delete',
 	EDIT = 'edit',
 	SEND = 'send',

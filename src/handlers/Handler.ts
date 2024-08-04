@@ -18,12 +18,7 @@ import {
 	sendHelperNotification,
 } from '../helper/notification';
 import { UserPreferenceModal } from '../modal/UserPreferenceModal';
-import {
-	getUserPreferredAI,
-	getUserPreferredLanguage,
-} from '../helper/userPreference';
 import { Language } from '../lib/Translation/translation';
-import { IMessage } from '@rocket.chat/apps-engine/definition/messages';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
@@ -164,14 +159,22 @@ export class Handler implements IHandler {
 		}
 		return;
 	}
-	public async replyUsingAI(message: IMessage): Promise<void> {
-		if (message.text) {
+
+	public async replyUsingAI(message?: string): Promise<void> {
+		const roomId = this.room.id;
+		const roomMessages = await this.read
+			.getRoomReader()
+			.getMessages(roomId);
+		const lastMessage = roomMessages.pop();
+
+		const Message = message ? message : lastMessage?.text;
+		if (Message) {
 			const aistorage = new AIstorage(
 				this.persis,
 				this.read.getPersistenceReader(),
 				this.sender.id,
 			);
-			aistorage.updateMessage(message.text);
+			aistorage.updateMessage(Message);
 			const modal = await ReplyAIModal(
 				this.app,
 				this.sender,
@@ -180,7 +183,7 @@ export class Handler implements IHandler {
 				this.modify,
 				this.room,
 				this.language,
-				message?.text,
+				Message,
 			);
 
 			if (modal instanceof Error) {

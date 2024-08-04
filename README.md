@@ -67,20 +67,15 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 
 ## :rocket: Usage :
 
-```
+👋 Need some help with /quick or /qs?
 
-  👋 Need some help with /quick?
-    • use `/quick` to get start
-    • use `/quick create` to create a new quick reply
-    • use `/quick list` to list all the quick replies
-    • use `/quick config` to configure user language preference
-    • use `/quick help` to get help
-    • use `/qs <reply name>` to quickly search and send quick reply
-
-
-
-
-```
+-   **`/quick`**: Get started with Quick Reply
+-   **`/quick create`**: Create a new quick reply
+-   **`/quick list`**: List all your quick replies
+-   **`/quick config`**: Configure your preferences and AI settings
+-   **`/quick ai`**: Use AI to generate replies
+-   **`/quick help`**: Get help with Quick Reply
+-   **`/qs <reply name>`**: Quickly search and send a reply by name
 
 <!-- CONTRIBUTING -->
 

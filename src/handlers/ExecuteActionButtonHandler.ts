@@ -67,10 +67,10 @@ export class ExecuteActionButtonHandler {
 				break;
 			}
 		}
-		if (message && actionId) {
+		if (message?.text && actionId) {
 			switch (actionId) {
 				case ActionButton.REPLY_USING_AI_ACTION: {
-					await handler.replyUsingAI(message);
+					await handler.replyUsingAI(message.text);
 					break;
 				}
 			}
