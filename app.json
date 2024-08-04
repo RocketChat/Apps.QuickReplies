@@ -1,7 +1,7 @@
 {
     "id": "e664d2cb-7beb-413a-837a-80fd840c387b",
     "version": "0.0.1",
-    "requiredApiVersion": "^1.29.1",
+    "requiredApiVersion": "1.44.0",
     "iconFile": "icon.png",
     "author": {
         "name": "Vipin Chaudhary",

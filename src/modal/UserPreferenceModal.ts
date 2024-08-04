@@ -2,7 +2,7 @@ import {
 	IModify,
 	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { TextObjectType, Block } from '@rocket.chat/ui-kit';
+import { TextObjectType, InputBlock, DividerBlock } from '@rocket.chat/ui-kit';
 
 import {
 	ButtonStyle,
@@ -36,7 +36,7 @@ export async function UserPreferenceModal({
 	const viewId = UserPreferenceModalEnum.VIEW_ID;
 	const { elementBuilder, blockBuilder } = app.getUtils();
 	const language = existingPreference.language as Language;
-	const blocks: Block[] = [];
+	const blocks: (InputBlock | DividerBlock)[] = [];
 
 	const languageOptions = supportedLanguageList.map((language) => ({
 		text: getLanguageDisplayTextFromCode(

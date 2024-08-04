@@ -2,7 +2,6 @@ import { IRead, IModify } from '@rocket.chat/apps-engine/definition/accessors';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { MessageActionButton } from '../enum/notification';
-import { Block } from '@rocket.chat/ui-kit';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { Language, t } from '../lib/Translation/translation';
 
@@ -104,10 +103,10 @@ export async function sendNotification(
 	modify: IModify,
 	user: IUser,
 	room: IRoom,
-	content: { message?: string; blocks?: Array<Block> },
+	content: { message?: string },
 ): Promise<void> {
 	const appUser = (await read.getUserReader().getAppUser()) as IUser;
-	const { message, blocks } = content;
+	const { message } = content;
 	const messageBuilder = modify
 		.getCreator()
 		.startMessage()
@@ -117,8 +116,7 @@ export async function sendNotification(
 
 	if (message) {
 		messageBuilder.setText(message);
-	} else if (blocks) {
-		messageBuilder.setBlocks(blocks);
 	}
+
 	return read.getNotifier().notifyUser(user, messageBuilder.getMessage());
 }

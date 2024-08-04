@@ -4,7 +4,7 @@ import {
 	IRead,
 	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { TextObjectType, Block } from '@rocket.chat/ui-kit';
+import { TextObjectType, SectionBlock, InputBlock } from '@rocket.chat/ui-kit';
 
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
@@ -30,7 +30,7 @@ export async function ReplyAIModal(
 ): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
-	const blocks: Block[] = [];
+	const blocks: (SectionBlock | InputBlock)[] = [];
 
 	const messageText = message.trim();
 	const messageblock = blockBuilder.createSectionBlock({
@@ -68,7 +68,7 @@ export async function ReplyAIModal(
 		accessory: GenerateButton,
 	});
 
-	blocks.push(messageblock, promptInput, GenerateButton, secitonBlock);
+	blocks.push(messageblock, promptInput, secitonBlock);
 
 	if (response) {
 		const inputReplyBody = inputElementComponent(
