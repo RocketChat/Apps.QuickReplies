@@ -68,7 +68,6 @@ export const en = {
 	Self_Hosted_AI_Model_URL_Placeholder: "Enter your Self Hosted AI Model URL",
 	Self_Hosted_AI_Model_URL_Label: "Self Hosted AI Model",
 	User_Preference_Title: "User Preference",
-
 	Message: "Message",
 	Prompt_Input_Placeholder: "Enter the prompt",
 	Prompt_Input_Label: "Prompt",
@@ -78,5 +77,13 @@ export const en = {
 	Generated_Response_Label: "AI Response",
 	Generate_Modal_Title: "Generate AI Response",
 	Send_This_Text: "Send this reply",
-
+	AI_Prompt_Input_Label : "AI Configuration Prompt",
+	AI_Prompt_Input_Placeholder : "Enter the AI Configuration Prompt",
+	AI_Not_Configured_Personal: "AI is not configured. Please Check your configuration to use this feature.",
+	AI_Not_Configured_Admin: "AI is not configured. Please contact your administrator to use this feature.",
+	AI_Self_Hosted_Model_Not_Configured: "Your Self Hosted Model is not set up properly. Please check your configuration",
+	AI_OpenAI_Model_Not_Configured: "Your OpenAI Model is not set up properly. Please check your configuration",
+	AI_Gemini_Model_Not_Configured: "Your Gemini Model is not set up properly. Please check your configuration",
+	AI_Workspace_Model_Not_Configured: "Your Workspace AI is not set up properly. Please contact your administrator",
+	AI_Something_Went_Wrong: "Something went wrong. Please try again later.",
 };

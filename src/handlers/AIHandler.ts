@@ -10,6 +10,7 @@ import {
 	AIusagePreferenceEnum,
 	IPreference,
 } from '../definition/helper/userPreference';
+import { t } from '../lib/Translation/translation';
 
 class AIHandler {
 	constructor(
@@ -17,6 +18,7 @@ class AIHandler {
 		private http: IHttp,
 		private userPreference: IPreference,
 	) {}
+	private language = this.userPreference.language;
 
 	public async handleResponse(
 		user: IUser,
@@ -53,8 +55,8 @@ class AIHandler {
 				const errorMsg =
 					this.userPreference.AIusagePreference ===
 					AIusagePreferenceEnum.Personal
-						? 'AI not set up. Please Check your configuration'
-						: 'AI not set up. Please contact your administrator';
+						? t('AI_Not_Configured_Personal', this.language)
+						: t('AI_Not_Configured_Admin', this.language);
 
 				this.app.getLogger().log(errorMsg);
 				return errorMsg;
@@ -62,7 +64,7 @@ class AIHandler {
 	}
 
 	private getPrompt(message: string, prompt: string): string {
-		return `Write a reply to this message: "${message}". ${this.userPreference.AIconfiguration.AIPrompt} and Use the following as a prompt or response reply: "${prompt}" and make sure you respond with just the reply.`;
+		return `Write a reply to this message: "${message}". ${this.userPreference.AIconfiguration.AIPrompt} and Use the following as a prompt or response reply: "${prompt}" and make sure you respond with just the reply without quotes.`;
 	}
 
 	private async handleSelfHostedModel(
@@ -74,14 +76,21 @@ class AIHandler {
 			const url = await this.getSelfHostedModelUrl();
 
 			if (!url) {
-				const errorMsg =
-					'Your Workspace AI is not set up properly. Please contact your administrator';
-				this.app
-					.getLogger()
-					.log(
-						'Model address not set. Please contact your administrator',
+				this.app.getLogger().log('Self Hosted Model address not set.');
+				if (
+					this.userPreference.AIusagePreference ===
+					AIusagePreferenceEnum.Personal
+				) {
+					return t(
+						'AI_Self_Hosted_Model_Not_Configured',
+						this.language,
 					);
-				return errorMsg;
+				} else {
+					return t(
+						'AI_Workspace_Model_Not_Configured',
+						this.language,
+					);
+				}
 			}
 
 			const requestBody = {
@@ -106,7 +115,7 @@ class AIHandler {
 
 			if (!response || !response.data) {
 				this.app.getLogger().log('No response data received from AI.');
-				return 'Something went wrong. Please try again later';
+				return t('AI_Something_Went_Wrong', this.language);
 			}
 
 			return response.data.choices[0].message.content;
@@ -114,7 +123,7 @@ class AIHandler {
 			this.app
 				.getLogger()
 				.log(`Error in handleSelfHostedModel: ${error.message}`);
-			return 'Something went wrong. Please try again later';
+			return t('AI_Something_Went_Wrong', this.language);
 		}
 	}
 
@@ -141,13 +150,13 @@ class AIHandler {
 			const { openaikey, openaimodel } = await this.getOpenAIConfig();
 
 			if (!openaikey || !openaimodel) {
+				this.app.getLogger().log('OpenAI settings not set properly.');
 				const errorMsg =
-					'Your Workspace AI is not set up properly. Please contact your administrator';
-				this.app
-					.getLogger()
-					.log(
-						'OpenAI settings not set. Please contact your administrator',
-					);
+					this.userPreference.AIusagePreference ===
+					AIusagePreferenceEnum.Personal
+						? t('AI_OpenAI_Model_Not_Configured', this.language)
+						: t('AI_Not_Configured_Admin', this.language);
+
 				return errorMsg;
 			}
 
@@ -172,14 +181,14 @@ class AIHandler {
 
 			if (!response || !response.data) {
 				this.app.getLogger().log('No response data received from AI.');
-				return 'Something is wrong with AI. Please try again later';
+				return t('AI_Something_Went_Wrong', this.language);
 			}
 
 			const { choices } = response.data;
 			return choices[0].message.content;
 		} catch (error) {
 			this.app.getLogger().log(`Error in handleOpenAI: ${error.message}`);
-			return 'Something went wrong. Please try again later';
+			return t('AI_Something_Went_Wrong', this.language);
 		}
 	}
 
@@ -218,13 +227,14 @@ class AIHandler {
 			const geminiAPIkey = await this.getGeminiAPIKey();
 
 			if (!geminiAPIkey) {
+				this.app.getLogger().log('Gemini API key not set Properly');
+
 				const errorMsg =
-					'Your Workspace AI is not set up properly. Please contact your administrator';
-				this.app
-					.getLogger()
-					.log(
-						'Gemini API key not set. Please contact your administrator',
-					);
+					this.userPreference.AIusagePreference ===
+					AIusagePreferenceEnum.Personal
+						? t('AI_Gemini_Model_Not_Configured', this.language)
+						: t('AI_Not_Configured_Admin', this.language);
+
 				return errorMsg;
 			}
 
@@ -250,14 +260,14 @@ class AIHandler {
 				this.app
 					.getLogger()
 					.log('No response content received from AI.');
-				return 'Something is wrong with AI. Please try again later';
+				return t('AI_Something_Went_Wrong', this.language);
 			}
 
 			const data = response.data;
 			return data.candidates[0].content.parts[0].text;
 		} catch (error) {
 			this.app.getLogger().log(`Error in handleGemini: ${error.message}`);
-			return 'Something went wrong. Please try again later';
+			return t('AI_Something_Went_Wrong', this.language);
 		}
 	}
 

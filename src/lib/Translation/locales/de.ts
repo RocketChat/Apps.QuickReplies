@@ -76,5 +76,15 @@ export const de = {
     Generated_Response_Placeholder: "Generierte KI-Antwort",
     Generated_Response_Label: "KI-Antwort",
     Generate_Modal_Title: "KI-Antwort generieren",
-    Send_This_Text: "Diese Antwort senden"
+    Send_This_Text: "Diese Antwort senden",
+    AI_Prompt_Input_Label: "AI-Konfigurationsaufforderung",
+    AI_Prompt_Input_Placeholder: "Geben Sie die AI-Konfigurationsaufforderung ein",
+    AI_Not_Configured_Personal: "AI ist nicht konfiguriert. Bitte überprüfen Sie Ihre Konfiguration, um diese Funktion zu nutzen.",
+    AI_Not_Configured_Admin: "AI ist nicht konfiguriert. Bitte kontaktieren Sie Ihren Administrator, um diese Funktion zu nutzen.",
+    AI_Self_Hosted_Model_Not_Configured: "Ihr selbst gehostetes Modell ist nicht richtig eingerichtet. Bitte überprüfen Sie Ihre Konfiguration",
+    AI_OpenAI_Model_Not_Configured: "Ihr OpenAI-Modell ist nicht richtig eingerichtet. Bitte überprüfen Sie Ihre Konfiguration",
+    AI_Gemini_Model_Not_Configured: "Ihr Gemini-Modell ist nicht richtig eingerichtet. Bitte überprüfen Sie Ihre Konfiguration",
+    AI_Workspace_Model_Not_Configured: "Ihre Workspace-AI ist nicht richtig eingerichtet. Bitte kontaktieren Sie Ihren Administrator",
+    AI_Something_Went_Wrong: "Etwas ist schiefgelaufen. Bitte versuchen Sie es später noch einmal."
+
 }

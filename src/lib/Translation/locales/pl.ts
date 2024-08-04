@@ -76,6 +76,16 @@ export const pl = {
 	Generated_Response_Placeholder: "Wygenerowana odpowiedź AI",
 	Generated_Response_Label: "Odpowiedź AI",
 	Generate_Modal_Title: "Generuj odpowiedź AI",
-	Send_This_Text: "Wyślij tę odpowiedź"
+	Send_This_Text: "Wyślij tę odpowiedź",
+    AI_Prompt_Input_Label: "Prompt konfiguracji AI",
+    AI_Prompt_Input_Placeholder: "Wprowadź prompt konfiguracji AI",
+    AI_Not_Configured_Personal: "AI nie jest skonfigurowane. Proszę sprawdzić swoją konfigurację, aby skorzystać z tej funkcji.",
+    AI_Not_Configured_Admin: "AI nie jest skonfigurowane. Proszę skontaktować się z administratorem, aby skorzystać z tej funkcji.",
+    AI_Self_Hosted_Model_Not_Configured: "Twój model hostowany lokalnie nie jest poprawnie skonfigurowany. Proszę sprawdzić swoją konfigurację",
+    AI_OpenAI_Model_Not_Configured: "Twój model OpenAI nie jest poprawnie skonfigurowany. Proszę sprawdzić swoją konfigurację",
+    AI_Gemini_Model_Not_Configured: "Twój model Gemini nie jest poprawnie skonfigurowany. Proszę sprawdzić swoją konfigurację",
+    AI_Workspace_Model_Not_Configured: "Twoja AI w Workspace nie jest poprawnie skonfigurowana. Proszę skontaktować się z administratorem",
+    AI_Something_Went_Wrong: "Coś poszło nie tak. Proszę spróbować ponownie później."
+ 
 }
 

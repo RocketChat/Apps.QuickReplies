@@ -76,6 +76,16 @@ export const pt = {
 	Generated_Response_Placeholder: "Resposta da IA Gerada",
 	Generated_Response_Label: "Resposta da IA",
 	Generate_Modal_Title: "Gerar Resposta da IA",
-	Send_This_Text: "Enviar esta resposta"
+	Send_This_Text: "Enviar esta resposta",
+    AI_Prompt_Input_Label: "Prompt de Configuração de IA",
+    AI_Prompt_Input_Placeholder: "Digite o Prompt de Configuração de IA",
+    AI_Not_Configured_Personal: "IA não está configurada. Por favor, verifique sua configuração para usar este recurso.",
+    AI_Not_Configured_Admin: "IA não está configurada. Por favor, entre em contato com o administrador para usar este recurso.",
+    AI_Self_Hosted_Model_Not_Configured: "Seu Modelo Auto-Hospedado não está configurado corretamente. Por favor, verifique sua configuração",
+    AI_OpenAI_Model_Not_Configured: "Seu Modelo OpenAI não está configurado corretamente. Por favor, verifique sua configuração",
+    AI_Gemini_Model_Not_Configured: "Seu Modelo Gemini não está configurado corretamente. Por favor, verifique sua configuração",
+    AI_Workspace_Model_Not_Configured: "Sua IA do Workspace não está configurada corretamente. Por favor, entre em contato com o administrador",
+    AI_Something_Went_Wrong: "Algo deu errado. Por favor, tente novamente mais tarde."
+ 
 }
 

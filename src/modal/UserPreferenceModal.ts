@@ -73,13 +73,11 @@ export async function UserPreferenceModal({
 	);
 
 	blocks.push(blockBuilder.createDividerBlock());
-	const FinituneModal = inputElementComponent(
+	const PromptInput = inputElementComponent(
 		{
 			app,
-			// placeholder: t('Open_AI_Model_Placeholder', language),
-			placeholder: '',
-			// label: t('Open_AI_Model_Label', language),
-			label: 'Prompt Configuration',
+			label: t('AI_Prompt_Input_Label', language),
+			placeholder: t('AI_Prompt_Input_Placeholder', language),
 			optional: false,
 			initialValue: existingPreference?.AIconfiguration?.AIPrompt,
 		},
@@ -89,7 +87,7 @@ export async function UserPreferenceModal({
 		},
 	);
 
-	blocks.push(FinituneModal);
+	blocks.push(PromptInput);
 
 	const AIusagePreferenceOptions = [
 		{

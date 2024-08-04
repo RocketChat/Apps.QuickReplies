@@ -76,5 +76,15 @@ export const ru = {
 	Generated_Response_Placeholder: "Сгенерированный ответ ИИ",
 	Generated_Response_Label: "Ответ ИИ",
 	Generate_Modal_Title: "Сгенерировать ответ ИИ",
-	Send_This_Text: "Отправить этот ответ"
+	Send_This_Text: "Отправить этот ответ",
+    AI_Prompt_Input_Label: "Запрос конфигурации ИИ",
+    AI_Prompt_Input_Placeholder: "Введите запрос конфигурации ИИ",
+    AI_Not_Configured_Personal: "ИИ не настроен. Пожалуйста, проверьте свою конфигурацию, чтобы использовать эту функцию.",
+    AI_Not_Configured_Admin: "ИИ не настроен. Пожалуйста, свяжитесь с администратором, чтобы использовать эту функцию.",
+    AI_Self_Hosted_Model_Not_Configured: "Ваша собственная модель не настроена должным образом. Пожалуйста, проверьте свою конфигурацию",
+    AI_OpenAI_Model_Not_Configured: "Ваша модель OpenAI не настроена должным образом. Пожалуйста, проверьте свою конфигурацию",
+    AI_Gemini_Model_Not_Configured: "Ваша модель Gemini не настроена должным образом. Пожалуйста, проверьте свою конфигурацию",
+    AI_Workspace_Model_Not_Configured: "Ваша AI в Workspace не настроена должным образом. Пожалуйста, свяжитесь с администратором",
+    AI_Something_Went_Wrong: "Что-то пошло не так. Пожалуйста, попробуйте позже."
+ 
 }
