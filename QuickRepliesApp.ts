@@ -13,6 +13,7 @@ import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
 import { QuickCommand } from './src/commands/QuickCommand';
 import {
 	IUIKitResponse,
+	UIKitActionButtonInteractionContext,
 	UIKitBlockInteractionContext,
 	UIKitViewCloseInteractionContext,
 	UIKitViewSubmitInteractionContext,
@@ -24,6 +25,13 @@ import { BlockBuilder } from './src/lib/BlockBuilder';
 import { ExecuteViewClosedHandler } from './src/handlers/ExecuteViewClosedHandler';
 import { ExecuteBlockActionHandler } from './src/handlers/ExecuteBlockActionHandler';
 import { QsCommand } from './src/commands/QsCommand';
+import {
+	IUIActionButtonDescriptor,
+	UIActionButtonContext,
+} from '@rocket.chat/apps-engine/definition/ui';
+import { ActionButton } from './src/enum/modals/common/ActionButtons';
+import { ExecuteActionButtonHandler } from './src/handlers/ExecuteActionButtonHandler';
+import { settings } from './src/config/settings';
 
 export class QuickRepliesApp extends App {
 	private elementBuilder: ElementBuilder;
@@ -43,6 +51,33 @@ export class QuickRepliesApp extends App {
 		);
 		this.elementBuilder = new ElementBuilder(this.getID());
 		this.blockBuilder = new BlockBuilder(this.getID());
+
+		const listReplyButton: IUIActionButtonDescriptor = {
+			actionId: ActionButton.LIST_QUICK_REPLY_ACTION,
+			labelI18n: ActionButton.LIST_QUICK_REPLY_ACTION_LABEL,
+			context: UIActionButtonContext.MESSAGE_BOX_ACTION,
+		};
+		const createReplyButton: IUIActionButtonDescriptor = {
+			actionId: ActionButton.CREATE_QUICK_REPLY_ACTION,
+			labelI18n: ActionButton.CREATE_QUICK_REPLY_ACTION_LABEL,
+			context: UIActionButtonContext.MESSAGE_BOX_ACTION,
+		};
+
+		const ReplyUsingAI: IUIActionButtonDescriptor = {
+			actionId: ActionButton.REPLY_USING_AI_ACTION,
+			labelI18n: ActionButton.REPLY_USING_AI_LABEL,
+			context: UIActionButtonContext.MESSAGE_ACTION,
+		};
+
+		configuration.ui.registerButton(listReplyButton);
+		configuration.ui.registerButton(createReplyButton);
+		configuration.ui.registerButton(ReplyUsingAI);
+
+		await Promise.all(
+			settings.map((setting) => {
+				configuration.settings.provideSetting(setting);
+			}),
+		);
 	}
 	public getUtils(): IAppUtils {
 		return {
@@ -95,6 +130,25 @@ export class QuickRepliesApp extends App {
 		modify: IModify,
 	): Promise<IUIKitResponse> {
 		const handler = new ExecuteBlockActionHandler(
+			this,
+			read,
+			http,
+			persistence,
+			modify,
+			context,
+		);
+
+		return await handler.handleActions();
+	}
+
+	public async executeActionButtonHandler(
+		context: UIKitActionButtonInteractionContext,
+		read: IRead,
+		http: IHttp,
+		persistence: IPersistence,
+		modify: IModify,
+	): Promise<IUIKitResponse> {
+		const handler = new ExecuteActionButtonHandler(
 			this,
 			read,
 			http,

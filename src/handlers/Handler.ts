@@ -17,9 +17,11 @@ import {
 	sendDefaultNotification,
 	sendHelperNotification,
 } from '../helper/notification';
-import { setUserPreferenceLanguageModal } from '../modal/setUserPreferenceModal';
-import { getUserPreferredLanguage } from '../helper/userPreference';
+import { UserPreferenceModal } from '../modal/UserPreferenceModal';
 import { Language } from '../lib/Translation/translation';
+import { ReplyAIModal } from '../modal/AIreplyModal';
+import { AIstorage } from '../storage/AIStorage';
+import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -131,16 +133,17 @@ export class Handler implements IHandler {
 		);
 	}
 	public async Configure(): Promise<void> {
-		const existingPreference = await getUserPreferredLanguage(
-			this.read.getPersistenceReader(),
+		const userPreference = new UserPreferenceStorage(
 			this.persis,
+			this.read.getPersistenceReader(),
 			this.sender.id,
 		);
+		const existingPreference = await userPreference.getUserPreference();
 
-		const modal = await setUserPreferenceLanguageModal({
+		const modal = await UserPreferenceModal({
 			app: this.app,
 			modify: this.modify,
-			existingPreferencelanguage: existingPreference,
+			existingPreference: existingPreference,
 		});
 
 		if (modal instanceof Error) {
@@ -155,5 +158,47 @@ export class Handler implements IHandler {
 				.openSurfaceView(modal, { triggerId }, this.sender);
 		}
 		return;
+	}
+
+	public async replyUsingAI(message?: string): Promise<void> {
+		const roomId = this.room.id;
+		const roomMessages = await this.read
+			.getRoomReader()
+			.getMessages(roomId);
+		const lastMessage = roomMessages.pop();
+
+		const Message = message ? message : lastMessage?.text;
+		if (Message) {
+			const aistorage = new AIstorage(
+				this.persis,
+				this.read.getPersistenceReader(),
+				this.sender.id,
+			);
+			aistorage.updateMessage(Message);
+			const modal = await ReplyAIModal(
+				this.app,
+				this.sender,
+				this.read,
+				this.persis,
+				this.modify,
+				this.room,
+				this.language,
+				Message,
+			);
+
+			if (modal instanceof Error) {
+				this.app.getLogger().error(modal.message);
+				return;
+			}
+
+			const triggerId = this.triggerId;
+
+			if (triggerId) {
+				await this.modify
+					.getUiController()
+					.openSurfaceView(modal, { triggerId }, this.sender);
+			}
+			return;
+		}
 	}
 }

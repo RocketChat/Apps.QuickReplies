@@ -1,0 +1,81 @@
+import {
+	IHttp,
+	IModify,
+	IPersistence,
+	IRead,
+} from '@rocket.chat/apps-engine/definition/accessors';
+import {
+	IUIKitResponse,
+	UIKitActionButtonInteractionContext,
+} from '@rocket.chat/apps-engine/definition/uikit';
+
+import { Handler } from './Handler';
+import { QuickRepliesApp } from '../../QuickRepliesApp';
+import { ActionButton } from '../enum/modals/common/ActionButtons';
+import { getUserPreferredLanguage } from '../helper/userPreference';
+import { RoomInteractionStorage } from '../storage/RoomInteraction';
+
+export class ExecuteActionButtonHandler {
+	private context: UIKitActionButtonInteractionContext;
+	constructor(
+		protected readonly app: QuickRepliesApp,
+		protected readonly read: IRead,
+		protected readonly http: IHttp,
+		protected readonly persistence: IPersistence,
+		protected readonly modify: IModify,
+		context: UIKitActionButtonInteractionContext,
+	) {
+		this.context = context;
+	}
+
+	public async handleActions(): Promise<IUIKitResponse> {
+		const { actionId, user, room, triggerId, message } =
+			this.context.getInteractionData();
+
+		const language = await getUserPreferredLanguage(
+			this.read.getPersistenceReader(),
+			this.persistence,
+			user.id,
+		);
+
+		const roomInteractionStorage = new RoomInteractionStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+		roomInteractionStorage.storeInteractionRoomId(room.id);
+
+		const handler = new Handler({
+			app: this.app,
+			sender: user,
+			room: room,
+			read: this.read,
+			modify: this.modify,
+			http: this.http,
+			persis: this.persistence,
+			triggerId,
+			language,
+		});
+
+		switch (actionId) {
+			case ActionButton.LIST_QUICK_REPLY_ACTION: {
+				await handler.ListReply();
+				break;
+			}
+			case ActionButton.CREATE_QUICK_REPLY_ACTION: {
+				await handler.CreateReply();
+				break;
+			}
+		}
+		if (message?.text && actionId) {
+			switch (actionId) {
+				case ActionButton.REPLY_USING_AI_ACTION: {
+					await handler.replyUsingAI(message.text);
+					break;
+				}
+			}
+		}
+
+		return this.context.getInteractionResponder().successResponse();
+	}
+}

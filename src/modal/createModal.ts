@@ -4,7 +4,7 @@ import {
 	IRead,
 	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { TextObjectType, Block } from '@rocket.chat/ui-kit';
+import { TextObjectType, InputBlock } from '@rocket.chat/ui-kit';
 
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
@@ -28,7 +28,7 @@ export async function CreateReplyModal(
 ): Promise<IUIKitSurfaceViewParam | Error> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
-	const blocks: Block[] = [];
+	const blocks: InputBlock[] = [];
 
 	const labelReplyName = t('Reply_Name_Label', language);
 	const placeholderReplyName = t('Reply_Name_Placeholder', language);

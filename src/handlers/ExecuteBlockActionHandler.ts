@@ -19,6 +19,17 @@ import { getUserPreferredLanguage } from '../helper/userPreference';
 import { confirmDeleteModal } from '../modal/confirmDeleteModal';
 import { EditReplyModal } from '../modal/editModal';
 import { listReplyContextualBar } from '../modal/listContextualBar';
+import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
+import { AIstorage } from '../storage/AIStorage';
+import { ReplyAIModal } from '../modal/AIreplyModal';
+import AIHandler from './AIHandler';
+import { UserPreferenceModal } from '../modal/UserPreferenceModal';
+import {
+	AIProviderEnum,
+	AIusagePreferenceEnum,
+} from '../definition/helper/userPreference';
+import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
+import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -34,10 +45,16 @@ export class ExecuteBlockActionHandler {
 	}
 
 	public async handleActions(): Promise<IUIKitResponse> {
-		const { actionId, user, container, blockId, value, triggerId } =
-			this.context.getInteractionData();
+		const {
+			actionId,
+			user,
+			container,
+			blockId,
+			value,
+			triggerId,
+			message,
+		} = this.context.getInteractionData();
 		let { room } = this.context.getInteractionData();
-
 		const persistenceRead = this.read.getPersistenceReader();
 
 		const roomInteractionStorage = new RoomInteractionStorage(
@@ -49,17 +66,24 @@ export class ExecuteBlockActionHandler {
 		const roomId = await roomInteractionStorage.getInteractionRoomId();
 		const roomPersistance = await this.read.getRoomReader().getById(roomId);
 
+		const userPreference = new UserPreferenceStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+		const existingPreference = await userPreference.getUserPreference();
+
 		const language = await getUserPreferredLanguage(
 			this.read.getPersistenceReader(),
 			this.persistence,
 			user.id,
 		);
 
-		if (!room) {
+		if (room === undefined) {
 			if (roomPersistance) {
 				room = roomPersistance;
 			} else {
-				console.log("Room doesn't exist");
+				console.error("Room doesn't exist");
 				return this.context.getInteractionResponder().errorResponse();
 			}
 		}
@@ -191,7 +215,7 @@ export class ExecuteBlockActionHandler {
 					);
 					return this.context
 						.getInteractionResponder()
-						.updateModalViewResponse(UpdatedListBar);
+						.updateContextualBarViewResponse(UpdatedListBar);
 				} else {
 					const UpdatedListBar = await listReplyContextualBar(
 						this.app,
@@ -205,8 +229,119 @@ export class ExecuteBlockActionHandler {
 					);
 					return this.context
 						.getInteractionResponder()
-						.updateModalViewResponse(UpdatedListBar);
+						.updateContextualBarViewResponse(UpdatedListBar);
 				}
+			case ReplyAIModalEnum.PROMPT_INPUT_ACTION_ID:
+				const aistorage = new AIstorage(
+					this.persistence,
+					this.read.getPersistenceReader(),
+					user.id,
+				);
+				if (value) {
+					await aistorage.updatePrompt(value);
+				}
+				break;
+
+			case ReplyAIModalEnum.GENERATE_BUTTON_ACTION_ID:
+				const aiStorage = new AIstorage(
+					this.persistence,
+					this.read.getPersistenceReader(),
+					user.id,
+				);
+				const message = await aiStorage.getMessage();
+				const prompt = await aiStorage.getPrompt();
+
+				const Preference = await userPreference.getUserPreference();
+
+				const response = await new AIHandler(
+					this.app,
+					this.http,
+					Preference,
+				).handleResponse(user, message, prompt);
+
+				await aiStorage.updateResponse(response);
+
+				const updatedModal = await ReplyAIModal(
+					this.app,
+					user,
+					this.read,
+					this.persistence,
+					this.modify,
+					room,
+					language,
+					message,
+					response,
+				);
+
+				return this.context
+					.getInteractionResponder()
+					.updateModalViewResponse(updatedModal);
+			case UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID:
+				if (value === AIusagePreferenceEnum.Personal) {
+					existingPreference.AIusagePreference =
+						AIusagePreferenceEnum.Personal;
+					await userPreference.storeUserPreference(
+						existingPreference,
+					);
+					const updatedPreference =
+						await userPreference.getUserPreference();
+
+					const updatedModal = await UserPreferenceModal({
+						app: this.app,
+						modify: this.modify,
+						existingPreference: updatedPreference,
+					});
+
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(updatedModal);
+				} else {
+					existingPreference.AIusagePreference =
+						AIusagePreferenceEnum.Workspace;
+					await userPreference.storeUserPreference(
+						existingPreference,
+					);
+					const updatedPreference =
+						await userPreference.getUserPreference();
+
+					const updatedModal = await UserPreferenceModal({
+						app: this.app,
+						modify: this.modify,
+						existingPreference: updatedPreference,
+					});
+
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(updatedModal);
+				}
+				break;
+			case UserPreferenceModalEnum.AI_OPTION_DROPDOWN_ACTION_ID:
+				const option = value as AIProviderEnum;
+				if (value) {
+					if (Object.values(AIProviderEnum).includes(option)) {
+						existingPreference.AIconfiguration.AIProvider = option;
+						await userPreference.storeUserPreference(
+							existingPreference,
+						);
+						const updatedPreference =
+							await userPreference.getUserPreference();
+
+						const updatedModal = await UserPreferenceModal({
+							app: this.app,
+							modify: this.modify,
+							existingPreference: updatedPreference,
+						});
+
+						return this.context
+							.getInteractionResponder()
+							.updateModalViewResponse(updatedModal);
+					} else {
+						console.log('value is not part of AIProviderEnum enum');
+					}
+				} else {
+					console.log('no value');
+				}
+				break;
 		}
 
 		return this.context.getInteractionResponder().successResponse();

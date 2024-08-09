@@ -13,6 +13,8 @@ import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
 import { CreateModalEnum } from '../enum/modals/createModal';
 import { SendModalEnum } from '../enum/modals/sendModal';
+import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
+import { AIstorage } from '../storage/AIStorage';
 
 export class ExecuteViewClosedHandler {
 	private context: UIKitViewCloseInteractionContext;
@@ -43,6 +45,16 @@ export class ExecuteViewClosedHandler {
 			}
 			case SendModalEnum.VIEW_ID: {
 				RoomInteraction.clearInteractionRoomId();
+				break;
+			}
+			case ReplyAIModalEnum.VIEW_ID: {
+				const aistorage = new AIstorage(
+					this.persistence,
+					this.read.getPersistenceReader(),
+					user.id,
+				);
+				aistorage.clearAIInteraction();
+				break;
 			}
 		}
 

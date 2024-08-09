@@ -17,12 +17,8 @@ import { CreateModalEnum } from '../enum/modals/createModal';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
-import {
-	getLanguageDisplayTextFromCode,
-	getUserPreferredLanguage,
-	isSupportedLanguage,
-} from '../helper/userPreference';
-import { SetUserPreferenceModalEnum } from '../enum/modals/setUserPreferenceModal';
+import { getUserPreferredLanguage } from '../helper/userPreference';
+import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
 import { SendModalEnum } from '../enum/modals/sendModal';
 import { sendMessage } from '../helper/message';
@@ -30,6 +26,9 @@ import { IReply } from '../definition/reply/IReply';
 import { listReplyContextualBar } from '../modal/listContextualBar';
 import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 import { EditModalEnum } from '../enum/modals/editModal';
+import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
+import { AIstorage } from '../storage/AIStorage';
+import { AIusagePreference } from '../definition/helper/userPreference';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -67,10 +66,12 @@ export class ExecuteViewSubmitHandler {
 
 		if (ViewLegnth === 1) {
 			switch (viewId) {
-				case SetUserPreferenceModalEnum.VIEW_ID:
+				case UserPreferenceModalEnum.VIEW_ID:
 					return this.handleSetUserPreference(room, user, view);
 				case CreateModalEnum.VIEW_ID:
 					return this.handleCreate(room, user, view, language);
+				case ReplyAIModalEnum.VIEW_ID:
+					return this.handleAIresponse(room, user, view, language);
 			}
 		} else if (ViewLegnth === 2) {
 			const replyId = ViewData[1].trim();
@@ -170,14 +171,44 @@ export class ExecuteViewSubmitHandler {
 		user: IUser,
 		view: IUIKitSurface,
 	): Promise<IUIKitResponse> {
-		const languageInput =
-			view.state?.[
-				SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
-			]?.[SetUserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID];
+		const languageInput = view.state?.[
+			UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
+		]?.[
+			UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID
+		] as Language;
 
-		if (!languageInput || !isSupportedLanguage(languageInput)) {
-			return this.context.getInteractionResponder().errorResponse();
-		}
+		const AIpreferenceInput = view.state?.[
+			UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_BLOCK_ID
+		]?.[
+			UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID
+		] as AIusagePreference;
+
+		const AIoptionInput =
+			view.state?.[UserPreferenceModalEnum.AI_OPTION_DROPDOWN_BLOCK_ID]?.[
+				UserPreferenceModalEnum.AI_OPTION_DROPDOWN_ACTION_ID
+			];
+
+		const OpenAIAPIKeyInput =
+			view.state?.[UserPreferenceModalEnum.OPEN_AI_API_KEY_BLOCK_ID]?.[
+				UserPreferenceModalEnum.OPEN_AI_API_KEY_ACTION_ID
+			];
+		const OpenAImodelInput =
+			view.state?.[UserPreferenceModalEnum.OPEN_AI_MODEL_BLOCK_ID]?.[
+				UserPreferenceModalEnum.OPEN_AI_MODEL_ACTION_ID
+			];
+		const GeminiAPIKeyInput =
+			view.state?.[UserPreferenceModalEnum.GEMINI_API_KEY_BLOCK_ID]?.[
+				UserPreferenceModalEnum.GEMINI_API_KEY_ACTION_ID
+			];
+		const SelfHostedURLInput =
+			view.state?.[UserPreferenceModalEnum.SELF_HOSTED_URL_BLOCK_ID]?.[
+				UserPreferenceModalEnum.SELF_HOSTED_URL_ACTION_ID
+			];
+
+		const PromptConfigurationInput =
+			view.state?.[
+				UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_BLOCK_ID
+			]?.[UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_ACTION_ID];
 
 		const userPreference = new UserPreferenceStorage(
 			this.persistence,
@@ -188,15 +219,25 @@ export class ExecuteViewSubmitHandler {
 		await userPreference.storeUserPreference({
 			userId: user.id,
 			language: languageInput,
+			AIusagePreference: AIpreferenceInput,
+			AIconfiguration: {
+				AIPrompt: PromptConfigurationInput,
+				AIProvider: AIoptionInput,
+				openAI: {
+					apiKey: OpenAIAPIKeyInput,
+					model: OpenAImodelInput,
+				},
+				gemini: {
+					apiKey: GeminiAPIKeyInput,
+				},
+				selfHosted: {
+					url: SelfHostedURLInput,
+				},
+			},
 		});
 
 		await sendNotification(this.read, this.modify, user, room, {
-			message: t('Message_Update_Language', languageInput, {
-				language: getLanguageDisplayTextFromCode(
-					languageInput,
-					languageInput,
-				),
-			}),
+			message: t('Config_Updated_Successfully', languageInput),
 		});
 
 		return this.context.getInteractionResponder().successResponse();
@@ -317,16 +358,11 @@ export class ExecuteViewSubmitHandler {
 			view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
 				EditModalEnum.REPLY_NAME_ACTION_ID
 			];
-		view.state?.[EditModalEnum.REPLY_NAME_BLOCK_ID]?.[
-			EditModalEnum.REPLY_NAME_ACTION_ID
-		];
+
 		const bodyStateValue =
 			view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
 				EditModalEnum.REPLY_BODY_ACTION_ID
 			];
-		view.state?.[EditModalEnum.REPLY_BODY_BLOCK_ID]?.[
-			EditModalEnum.REPLY_BODY_ACTION_ID
-		];
 
 		const name = nameStateValue
 			? nameStateValue.trim()
@@ -385,5 +421,32 @@ export class ExecuteViewSubmitHandler {
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
+	}
+
+	private async handleAIresponse(
+		room: IRoom,
+		user: IUser,
+		view: IUIKitSurface,
+		language: Language,
+	): Promise<IUIKitResponse> {
+		const AIStorage = new AIstorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+
+		const response = await AIStorage.getResponse();
+		let message = '';
+		const bodyStateValue =
+			view.state?.[
+				`${ReplyAIModalEnum.RESPONSE_BODY_BLOCK_ID} --- ${response}`
+			]?.[`${ReplyAIModalEnum.RESPONSE_BODY_ACTION_ID} --- ${response}`];
+
+		message = bodyStateValue ? bodyStateValue.trim() : response;
+		await sendMessage(this.modify, user, room, message);
+
+		await AIStorage.clearAIInteraction();
+
+		return this.context.getInteractionResponder().successResponse();
 	}
 }

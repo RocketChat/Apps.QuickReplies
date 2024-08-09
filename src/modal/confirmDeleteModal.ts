@@ -4,7 +4,11 @@ import {
 	IRead,
 	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { TextObjectType, Block } from '@rocket.chat/ui-kit';
+import {
+	TextObjectType,
+	SectionBlock,
+	ContextBlock,
+} from '@rocket.chat/ui-kit';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
@@ -28,7 +32,7 @@ export async function confirmDeleteModal(
 ): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
-	const blocks: Block[] = [];
+	const blocks: (SectionBlock | ContextBlock)[] = [];
 
 	const confirmDelete = blockBuilder.createSectionBlock({
 		text: `### ${t('Confirm_Delete_Message', language)}`,

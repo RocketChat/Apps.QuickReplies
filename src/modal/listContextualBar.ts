@@ -4,7 +4,13 @@ import {
 	IRead,
 	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { Block, TextObjectType } from '@rocket.chat/ui-kit';
+import {
+	InputBlock,
+	TextObjectType,
+	DividerBlock,
+	SectionBlock,
+	ContextBlock,
+} from '@rocket.chat/ui-kit';
 import {
 	ButtonStyle,
 	UIKitSurfaceType,
@@ -30,7 +36,8 @@ export async function listReplyContextualBar(
 	searchValue?: string,
 ): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
-	const blocks: Block[] = [];
+	const blocks: (InputBlock | DividerBlock | SectionBlock | ContextBlock)[] =
+		[];
 	const divider = blockBuilder.createDividerBlock();
 
 	let Replies = userReplies;
