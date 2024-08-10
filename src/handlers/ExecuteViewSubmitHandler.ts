@@ -442,7 +442,13 @@ export class ExecuteViewSubmitHandler {
 				`${ReplyAIModalEnum.RESPONSE_BODY_BLOCK_ID} --- ${response}`
 			]?.[`${ReplyAIModalEnum.RESPONSE_BODY_ACTION_ID} --- ${response}`];
 
-		message = bodyStateValue ? bodyStateValue.trim() : response;
+		message = bodyStateValue ? bodyStateValue.trim() : response.trim();
+
+		if (message === '') {
+			await AIStorage.clearAIInteraction();
+			return this.context.getInteractionResponder().errorResponse();
+		}
+
 		await sendMessage(this.modify, user, room, message);
 
 		await AIStorage.clearAIInteraction();
