@@ -22,8 +22,6 @@ import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
 import { SendModalEnum } from '../enum/modals/sendModal';
 import { sendMessage } from '../helper/message';
-import { IReply } from '../definition/reply/IReply';
-import { listReplyContextualBar } from '../modal/listContextualBar';
 import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 import { EditModalEnum } from '../enum/modals/editModal';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
@@ -93,7 +91,6 @@ export class ExecuteViewSubmitHandler {
 		}
 		return this.context.getInteractionResponder().errorResponse();
 	}
-
 	private async handleCreate(
 		room: IRoom,
 		user: IUser,
@@ -118,6 +115,7 @@ export class ExecuteViewSubmitHandler {
 			});
 			return this.context.getInteractionResponder().errorResponse();
 		}
+
 		const replyStorage = new ReplyStorage(
 			this.persistence,
 			this.read.getPersistenceReader(),
@@ -138,22 +136,7 @@ export class ExecuteViewSubmitHandler {
 				message: successMessage,
 			});
 
-			const userReplies: IReply[] = await replyStorage.getReplyForUser(
-				user,
-			);
-			const UpdatedListBar = await listReplyContextualBar(
-				this.app,
-				user,
-				this.read,
-				this.persistence,
-				this.modify,
-				room,
-				userReplies,
-				language,
-			);
-			return this.context
-				.getInteractionResponder()
-				.updateModalViewResponse(UpdatedListBar);
+			return this.context.getInteractionResponder().successResponse(); // close modal
 		} else {
 			const errorMessage = `${t('Fail_Create_Reply', language, {
 				name: user.name,
@@ -312,23 +295,7 @@ export class ExecuteViewSubmitHandler {
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
-			const userReplies: IReply[] = await replyStorage.getReplyForUser(
-				user,
-			);
-
-			const UpdatedListBar = await listReplyContextualBar(
-				this.app,
-				user,
-				this.read,
-				this.persistence,
-				this.modify,
-				room,
-				userReplies,
-				language,
-			);
-			return this.context
-				.getInteractionResponder()
-				.updateModalViewResponse(UpdatedListBar);
+			return this.context.getInteractionResponder().successResponse();
 		} else {
 			const errorMessage = `${t('Fail_Delete_Reply', language)} \n\n ${
 				result.error
@@ -393,23 +360,7 @@ export class ExecuteViewSubmitHandler {
 				message: successMessage,
 			});
 
-			const userReplies: IReply[] = await replyStorage.getReplyForUser(
-				user,
-			);
-
-			const UpdatedListBar = await listReplyContextualBar(
-				this.app,
-				user,
-				this.read,
-				this.persistence,
-				this.modify,
-				room,
-				userReplies,
-				language,
-			);
-			return this.context
-				.getInteractionResponder()
-				.updateModalViewResponse(UpdatedListBar);
+			return this.context.getInteractionResponder().successResponse();
 		} else {
 			const errorMessage = `${t('Fail_Edit_Reply', language, {
 				replyname: storedReply?.name,

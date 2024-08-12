@@ -85,7 +85,8 @@ export const pt = {
     AI_OpenAI_Model_Not_Configured: "Seu Modelo OpenAI não está configurado corretamente. Por favor, verifique sua configuração",
     AI_Gemini_Model_Not_Configured: "Seu Modelo Gemini não está configurado corretamente. Por favor, verifique sua configuração",
     AI_Workspace_Model_Not_Configured: "Sua IA do Workspace não está configurada corretamente. Por favor, entre em contato com o administrador",
-    AI_Something_Went_Wrong: "Algo deu errado. Por favor, tente novamente mais tarde."
+    AI_Something_Went_Wrong: "Algo deu errado. Por favor, tente novamente mais tarde.",
+    Refresh_Button_Text: "Atualizar"
  
 }
 
