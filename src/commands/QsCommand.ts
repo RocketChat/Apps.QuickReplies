@@ -88,8 +88,8 @@ export class QsCommand implements ISlashCommand {
 		matchedReplies.forEach((reply) => {
 			const messagePreview = `${reply.name}:${reply.body}`;
 			const trimmedPreview =
-				messagePreview.length > 40
-					? messagePreview.slice(0, 40) + '...'
+				messagePreview.length > 35
+					? messagePreview.slice(0, 35) + '...'
 					: messagePreview;
 			items.push({
 				id: reply.id,

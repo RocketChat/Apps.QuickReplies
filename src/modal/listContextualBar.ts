@@ -134,7 +134,7 @@ export async function listReplyContextualBar(
 			},
 		);
 
-		const name = reply.name;
+		const name = reply.name.slice(0, 40);
 		const body = reply.body.slice(0, 60);
 		const replySection = blockBuilder.createSectionBlock({
 			text: name,
