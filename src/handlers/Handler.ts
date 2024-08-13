@@ -166,8 +166,6 @@ export class Handler implements IHandler {
 			.getRoomReader()
 			.getMessages(roomId);
 		const lastMessage = roomMessages.pop();
-
-		console.log('lastMessage', lastMessage);
 		const Message =
 			message ||
 			lastMessage?.text ||
