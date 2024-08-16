@@ -76,14 +76,7 @@ export async function listReplyContextualBar(
 		},
 	);
 
-	const ButtonRefresh = elementBuilder.addButton(
-		{ text: t('Refresh_Button_Text', language) },
-		{
-			actionId: ListContextualBarEnum.REFRESH_BUTTON_ACTIONID,
-			blockId: ListContextualBarEnum.REFRESH_BUTTON_BLOCKID,
-		},
-	);
-	const buttonElement = elementBuilder.addButton(
+	const createButton = elementBuilder.addButton(
 		{ text: t('Create_Reply', language), style: 'primary' },
 
 		{
@@ -92,11 +85,10 @@ export async function listReplyContextualBar(
 		},
 	);
 
-	const buttonAction = blockBuilder.createActionBlock({
-		elements: [ButtonRefresh, buttonElement],
+	const ButtonContext = blockBuilder.createSectionBlock({
+		accessory: createButton,
 	});
-
-	blocks.push(searchInput, buttonAction, divider);
+	blocks.push(searchInput, ButtonContext, divider);
 
 	sortedReplies.forEach((reply) => {
 		const accessoryElement = elementBuilder.createOverflow(

@@ -342,20 +342,6 @@ export class ExecuteBlockActionHandler {
 					console.log('no value');
 				}
 				break;
-			case ListContextualBarEnum.REFRESH_BUTTON_ACTIONID:
-				const listBar = await listReplyContextualBar(
-					this.app,
-					user,
-					this.read,
-					this.persistence,
-					this.modify,
-					room,
-					userReplies,
-					language,
-				);
-				return this.context
-					.getInteractionResponder()
-					.updateContextualBarViewResponse(listBar);
 		}
 
 		return this.context.getInteractionResponder().successResponse();
