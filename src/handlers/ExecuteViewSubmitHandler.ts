@@ -21,13 +21,18 @@ import { getUserPreferredLanguage } from '../helper/userPreference';
 import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
 import { SendModalEnum } from '../enum/modals/sendModal';
-import { sendMessage } from '../helper/message';
+import {
+	getReplacementValues,
+	replacePlaceholders,
+	sendMessage,
+} from '../helper/message';
 import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 import { EditModalEnum } from '../enum/modals/editModal';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { AIusagePreference } from '../definition/helper/userPreference';
 import { listReplyContextualBar } from '../modal/listContextualBar';
+import { Receiverstorage } from '../storage/ReceiverStorage';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -249,7 +254,6 @@ export class ExecuteViewSubmitHandler {
 		replyId: string,
 	): Promise<IUIKitResponse> {
 		try {
-			let body = '';
 			const replyStorage = new ReplyStorage(
 				this.persistence,
 				this.read.getPersistenceReader(),
@@ -260,19 +264,47 @@ export class ExecuteViewSubmitHandler {
 				SendModalEnum.REPLY_BODY_BLOCK_ID
 			]?.[SendModalEnum.REPLY_BODY_ACTION_ID] as string;
 
-			body = bodyStateValue
-				? bodyStateValue
-				: storedReply
-				? storedReply.body
-				: '';
+			const ReceiverStorage = new Receiverstorage(
+				this.persistence,
+				this.read.getPersistenceReader(),
+				user.id,
+			);
 
-			const message = body.trim();
-			if (!message) {
+			const receiverInfo = await ReceiverStorage.getReceiverRecord();
+
+			let Placeholders = {};
+			if (receiverInfo) {
+				Placeholders = receiverInfo;
+			} else {
+				Placeholders = await getReplacementValues(
+					room,
+					user,
+					this.read,
+				);
+			}
+			if (storedReply) {
+				const updateStoredMessage = replacePlaceholders(
+					storedReply?.body,
+					Placeholders,
+				);
+
+				const message = bodyStateValue
+					? bodyStateValue
+					: storedReply
+					? updateStoredMessage
+					: '';
+
+				if (!message) {
+					return this.context
+						.getInteractionResponder()
+						.errorResponse();
+				}
+
+				await sendMessage(this.modify, user, room, message);
+				return this.context.getInteractionResponder().successResponse();
+			} else {
 				return this.context.getInteractionResponder().errorResponse();
 			}
-
-			await sendMessage(this.modify, user, room, body);
-			return this.context.getInteractionResponder().successResponse();
 		} catch (error) {
 			console.error('Error handling send:', error);
 			return this.context.getInteractionResponder().errorResponse();
