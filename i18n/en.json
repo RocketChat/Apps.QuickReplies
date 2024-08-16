@@ -19,5 +19,6 @@
 	"Quick_Search_Command_Preview_Title": "Quick Search Command Preview",
 	"Create_Quick_Reply_Action_Button_Label": "Create a new Quick Reply",
 	"List_Quick_Reply_Action_Button_Label": "List all Quick Reply",
-	"Reply_Using_AI_Label": "🤖 Reply using AI"
+	"Reply_Using_AI_Label": "🤖 Reply using AI",
+	"Send_Reply_Label": "⚡ Send Quick reply"
 }

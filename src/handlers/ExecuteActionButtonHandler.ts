@@ -14,6 +14,7 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ActionButton } from '../enum/modals/common/ActionButtons';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
+import { Receiverstorage } from '../storage/ReceiverStorage';
 
 export class ExecuteActionButtonHandler {
 	private context: UIKitActionButtonInteractionContext;
@@ -82,6 +83,23 @@ export class ExecuteActionButtonHandler {
 			switch (actionId) {
 				case ActionButton.REPLY_USING_AI_ACTION: {
 					await handler.replyUsingAI(textMessage.trim());
+					break;
+				}
+				case ActionButton.SEND_REPLY_ACTION: {
+					const PlaceHolderValues = {
+						room: message.room.slugifiedName,
+						username: message.sender.username,
+						name: message.sender.name,
+						email: message.sender?.emails[0]?.address,
+					};
+					const ReceiverStorage = new Receiverstorage(
+						this.persistence,
+						this.read.getPersistenceReader(),
+						user.id,
+					);
+					await ReceiverStorage.setReceiverRecord(PlaceHolderValues);
+
+					await handler.ListReply();
 					break;
 				}
 				default: {
