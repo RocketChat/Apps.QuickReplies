@@ -21,6 +21,7 @@ import {
 import { t } from '../lib/Translation/translation';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
+import { Replacements } from '../definition/helper/message';
 
 export class QsCommand implements ISlashCommand {
 	constructor(private readonly app: QuickRepliesApp) {}
@@ -110,7 +111,11 @@ export class QsCommand implements ISlashCommand {
 
 		const room = context.getRoom();
 		const user = context.getSender();
-		const replacements = await getReplacementValues(room, user, read);
+		const replacements = (await getReplacementValues(
+			room,
+			user,
+			read,
+		)) as Replacements;
 
 		const message = replacePlaceholders(reply.body.trim(), replacements);
 		await sendMessage(modify, context.getSender(), room, message);

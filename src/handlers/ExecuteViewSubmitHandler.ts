@@ -33,6 +33,7 @@ import { AIstorage } from '../storage/AIStorage';
 import { AIusagePreference } from '../definition/helper/userPreference';
 import { listReplyContextualBar } from '../modal/listContextualBar';
 import { Receiverstorage } from '../storage/ReceiverStorage';
+import { Replacements } from '../definition/helper/message';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -272,7 +273,7 @@ export class ExecuteViewSubmitHandler {
 
 			const receiverInfo = await ReceiverStorage.getReceiverRecord();
 
-			let Placeholders = {};
+			let Placeholders = {} as Replacements;
 			if (receiverInfo) {
 				Placeholders = receiverInfo;
 			} else {

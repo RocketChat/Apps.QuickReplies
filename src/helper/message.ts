@@ -1,7 +1,8 @@
 import { IModify, IRead } from '@rocket.chat/apps-engine/definition/accessors';
 import { IMessageRaw } from '@rocket.chat/apps-engine/definition/messages';
-import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
+import { IRoom, RoomType } from '@rocket.chat/apps-engine/definition/rooms';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
+import { IRoomWithVisitor, Replacements } from '../definition/helper/message';
 
 export async function sendMessage(
 	modify: IModify,
@@ -29,12 +30,6 @@ export async function sendMessage(
 	await modify.getCreator().finish(messageBuilder);
 	return;
 }
-type Replacements = {
-	username?: string;
-	name?: string;
-	room?: string;
-	email?: string;
-};
 
 export function replacePlaceholders(
 	message: string,
@@ -52,12 +47,17 @@ export async function getReplacementValues(
 	room: IRoom,
 	user: IUser,
 	read: IRead,
-) {
-	const replacements =
-		room.userIds && room.userIds.length === 2 && !room.creator
-			? await buildDirectMessageReplacements(user, room, read)
-			: await buildChannelMessageReplacements(user, room, read);
-	return replacements;
+): Promise<Replacements> {
+	switch (room.type) {
+		case RoomType.CHANNEL:
+			return await buildChannelMessageReplacements(user, room, read);
+		case RoomType.DIRECT_MESSAGE:
+			return await buildDirectMessageReplacements(user, room, read);
+		case RoomType.LIVE_CHAT:
+			return await buildLiveChatMessageReplacements(user, room, read);
+		case RoomType.PRIVATE_GROUP:
+			return await buildPrivateMessageReplacements(user, room, read);
+	}
 }
 
 async function buildDirectMessageReplacements(
@@ -82,6 +82,51 @@ async function buildDirectMessageReplacements(
 }
 
 async function buildChannelMessageReplacements(
+	user: IUser,
+	room: IRoom,
+	read: IRead,
+) {
+	const prevMessages = await getSortedMessages(room.id, read);
+	const receiverUser = await getFirstNonSender(prevMessages, user, read);
+	if (!receiverUser) {
+		return {};
+	}
+
+	return {
+		...(receiverUser?.name && { name: receiverUser.name }),
+		...(receiverUser?.username && { username: receiverUser.username }),
+		...(receiverUser?.emails?.[0]?.address && {
+			email: receiverUser.emails[0].address,
+		}),
+		...(room.slugifiedName && { room: room.slugifiedName }),
+	};
+}
+
+async function buildLiveChatMessageReplacements(
+	user: IUser,
+	room: IRoom,
+	read: IRead,
+) {
+	const roomWithVisitor = room as IRoomWithVisitor;
+
+	if (roomWithVisitor.visitor) {
+		return {
+			...(roomWithVisitor.visitor.name && {
+				name: roomWithVisitor.visitor.name,
+			}),
+			...(roomWithVisitor.visitor.username && {
+				username: roomWithVisitor.visitor.username,
+			}),
+			...(roomWithVisitor.visitor.visitorEmails?.[0]?.address && {
+				email: roomWithVisitor.visitor.visitorEmails[0].address,
+			}),
+		};
+	} else {
+		return {};
+	}
+}
+
+async function buildPrivateMessageReplacements(
 	user: IUser,
 	room: IRoom,
 	read: IRead,
