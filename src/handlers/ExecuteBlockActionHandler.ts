@@ -253,29 +253,35 @@ export class ExecuteBlockActionHandler {
 
 				const Preference = await userPreference.getUserPreference();
 
-				const response = await new AIHandler(
+				const data = await new AIHandler(
 					this.app,
 					this.http,
 					Preference,
-				).handleResponse(user, message, prompt);
+				).handleResponse(message, prompt);
+				if (data.success) {
+					await aiStorage.updateResponse(data.response);
 
-				await aiStorage.updateResponse(response);
+					const updatedModal = await ReplyAIModal(
+						this.app,
+						user,
+						this.read,
+						this.persistence,
+						this.modify,
+						room,
+						language,
+						message,
+						data.response,
+					);
 
-				const updatedModal = await ReplyAIModal(
-					this.app,
-					user,
-					this.read,
-					this.persistence,
-					this.modify,
-					room,
-					language,
-					message,
-					response,
-				);
+					return this.context
+						.getInteractionResponder()
+						.updateModalViewResponse(updatedModal);
+				} else {
+					return this.context
+						.getInteractionResponder()
+						.errorResponse();
+				}
 
-				return this.context
-					.getInteractionResponder()
-					.updateModalViewResponse(updatedModal);
 			case UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID:
 				if (value === AIusagePreferenceEnum.Personal) {
 					existingPreference.AIusagePreference =

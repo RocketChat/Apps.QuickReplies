@@ -89,7 +89,7 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 				language: Language.en,
 				AIusagePreference: AIusagePreferenceEnum.Workspace,
 				AIconfiguration: {
-					AIPrompt: `Keep the  comprehensive clear and concise reply, and ensure it's well-articulated and helpfull`,
+					AIPrompt: `Keep it clear and concise`,
 					AIProvider: AIProviderEnum.SelfHosted,
 					gemini: {
 						apiKey: '',
