@@ -85,6 +85,7 @@ export const de = {
     AI_OpenAI_Model_Not_Configured: "Ihr OpenAI-Modell ist nicht richtig eingerichtet. Bitte überprüfen Sie Ihre Konfiguration",
     AI_Gemini_Model_Not_Configured: "Ihr Gemini-Modell ist nicht richtig eingerichtet. Bitte überprüfen Sie Ihre Konfiguration",
     AI_Workspace_Model_Not_Configured: "Ihre Workspace-AI ist nicht richtig eingerichtet. Bitte kontaktieren Sie Ihren Administrator",
-    AI_Something_Went_Wrong: "Etwas ist schiefgelaufen. Bitte versuchen Sie es später noch einmal."
+    AI_Something_Went_Wrong: "Etwas ist schiefgelaufen. Bitte versuchen Sie es später noch einmal.",
+    Refresh_Button_Text: "Aktualisieren"
 
 }

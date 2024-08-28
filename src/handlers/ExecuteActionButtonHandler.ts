@@ -67,11 +67,25 @@ export class ExecuteActionButtonHandler {
 				break;
 			}
 		}
-		if (message?.text && actionId) {
+
+		const hasTextOrAttachments =
+			(message?.text || message?.attachments) && actionId;
+
+		if (hasTextOrAttachments) {
+			const textMessage =
+				message?.text || message?.attachments?.[0]?.description || '';
+
+			if (!textMessage.trim()) {
+				return this.context.getInteractionResponder().errorResponse();
+			}
+
 			switch (actionId) {
 				case ActionButton.REPLY_USING_AI_ACTION: {
-					await handler.replyUsingAI(message.text);
+					await handler.replyUsingAI(textMessage.trim());
 					break;
+				}
+				default: {
+					console.log('Unhandled actionId:', actionId);
 				}
 			}
 		}

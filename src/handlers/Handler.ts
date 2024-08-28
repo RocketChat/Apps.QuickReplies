@@ -166,15 +166,20 @@ export class Handler implements IHandler {
 			.getRoomReader()
 			.getMessages(roomId);
 		const lastMessage = roomMessages.pop();
+		const Message =
+			message ||
+			lastMessage?.text ||
+			lastMessage?.attachments?.[0]?.description ||
+			'';
+		const textMessage = Message.trim();
 
-		const Message = message ? message : lastMessage?.text;
-		if (Message) {
+		if (textMessage) {
 			const aistorage = new AIstorage(
 				this.persis,
 				this.read.getPersistenceReader(),
 				this.sender.id,
 			);
-			aistorage.updateMessage(Message);
+			aistorage.updateMessage(textMessage);
 			const modal = await ReplyAIModal(
 				this.app,
 				this.sender,
@@ -183,7 +188,7 @@ export class Handler implements IHandler {
 				this.modify,
 				this.room,
 				this.language,
-				Message,
+				textMessage,
 			);
 
 			if (modal instanceof Error) {

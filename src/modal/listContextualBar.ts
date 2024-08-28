@@ -10,6 +10,7 @@ import {
 	DividerBlock,
 	SectionBlock,
 	ContextBlock,
+	ActionsBlock,
 } from '@rocket.chat/ui-kit';
 import {
 	ButtonStyle,
@@ -23,6 +24,7 @@ import { IReply } from '../definition/reply/IReply';
 import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
 import { Language, t } from '../lib/Translation/translation';
 import { inputElementComponent } from './common/inputElementComponent';
+import { MessageActionButton } from '../enum/notification';
 
 export async function listReplyContextualBar(
 	app: QuickRepliesApp,
@@ -36,10 +38,14 @@ export async function listReplyContextualBar(
 	searchValue?: string,
 ): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
-	const blocks: (InputBlock | DividerBlock | SectionBlock | ContextBlock)[] =
-		[];
+	const blocks: (
+		| InputBlock
+		| DividerBlock
+		| SectionBlock
+		| ContextBlock
+		| ActionsBlock
+	)[] = [];
 	const divider = blockBuilder.createDividerBlock();
-
 	let Replies = userReplies;
 
 	const searchValueLowerCase = searchValue?.toLowerCase();
@@ -70,7 +76,27 @@ export async function listReplyContextualBar(
 		},
 	);
 
-	blocks.push(searchInput, divider);
+	const ButtonRefresh = elementBuilder.addButton(
+		{ text: t('Refresh_Button_Text', language) },
+		{
+			actionId: ListContextualBarEnum.REFRESH_BUTTON_ACTIONID,
+			blockId: ListContextualBarEnum.REFRESH_BUTTON_BLOCKID,
+		},
+	);
+	const buttonElement = elementBuilder.addButton(
+		{ text: t('Create_Reply', language), style: 'primary' },
+
+		{
+			actionId: MessageActionButton.CREATE_REPLY_ACTION_ID,
+			blockId: MessageActionButton.CREATE_REPLY_BLOCK_ID,
+		},
+	);
+
+	const buttonAction = blockBuilder.createActionBlock({
+		elements: [ButtonRefresh, buttonElement],
+	});
+
+	blocks.push(searchInput, buttonAction, divider);
 
 	sortedReplies.forEach((reply) => {
 		const accessoryElement = elementBuilder.createOverflow(
@@ -108,7 +134,7 @@ export async function listReplyContextualBar(
 			},
 		);
 
-		const name = reply.name.slice(0, 30);
+		const name = reply.name.slice(0, 40);
 		const body = reply.body.slice(0, 60);
 		const replySection = blockBuilder.createSectionBlock({
 			text: name,

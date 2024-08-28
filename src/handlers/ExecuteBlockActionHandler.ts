@@ -78,6 +78,11 @@ export class ExecuteBlockActionHandler {
 			this.persistence,
 			user.id,
 		);
+		const replyStorage = new ReplyStorage(
+			this.persistence,
+			persistenceRead,
+		);
+		const userReplies = await replyStorage.getReplyForUser(user);
 
 		if (room === undefined) {
 			if (roomPersistance) {
@@ -196,11 +201,6 @@ export class ExecuteBlockActionHandler {
 				await handler.Help();
 				break;
 			case ListContextualBarEnum.SEARCH_ACTION_ID:
-				const replyStorage = new ReplyStorage(
-					this.persistence,
-					persistenceRead,
-				);
-				const userReplies = await replyStorage.getReplyForUser(user);
 				if (value) {
 					const UpdatedListBar = await listReplyContextualBar(
 						this.app,
@@ -342,6 +342,20 @@ export class ExecuteBlockActionHandler {
 					console.log('no value');
 				}
 				break;
+			case ListContextualBarEnum.REFRESH_BUTTON_ACTIONID:
+				const listBar = await listReplyContextualBar(
+					this.app,
+					user,
+					this.read,
+					this.persistence,
+					this.modify,
+					room,
+					userReplies,
+					language,
+				);
+				return this.context
+					.getInteractionResponder()
+					.updateContextualBarViewResponse(listBar);
 		}
 
 		return this.context.getInteractionResponder().successResponse();
