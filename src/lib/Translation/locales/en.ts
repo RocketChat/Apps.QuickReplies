@@ -9,7 +9,7 @@ export const en = {
 	Reply_Name_Label: "Reply Name",
 	Reply_Name_Placeholder: "Enter the name of your reply",
 	Reply_Body_Label: "Reply Body",
-	Reply_Body_Placeholder: "Enter the content of your reply",
+	Reply_Body_Placeholder: "Enter the content of your reply (you can use placeholders like [name], [username], [email], which will be replaced based on the recipient).",
 	Close_Button: "Close",
 	Create_Button: "Create",
 	Create_Modal_Title: "Create a new reply",

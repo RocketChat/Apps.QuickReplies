@@ -9,7 +9,7 @@ export const pt = {
     Reply_Name_Label: "Nome da resposta",
     Reply_Name_Placeholder: "Digite o nome da sua resposta",
     Reply_Body_Label: "Conteúdo da resposta",
-    Reply_Body_Placeholder: "Digite o conteúdo da sua resposta",
+    Reply_Body_Placeholder: "Insira o conteúdo da sua resposta (você pode usar placeholders como [name], [username], [email], que serão substituídos com base no destinatário).",
     Close_Button: "Fechar",
     Create_Button: "Criar",
     Create_Modal_Title: "Criar uma nova resposta",
