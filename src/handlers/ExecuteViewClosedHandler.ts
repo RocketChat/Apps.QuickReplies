@@ -11,10 +11,10 @@ import {
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
 import { RoomInteractionStorage } from '../storage/RoomInteraction';
-import { CreateModalEnum } from '../enum/modals/createModal';
 import { SendModalEnum } from '../enum/modals/sendModal';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
+import { Receiverstorage } from '../storage/ReceiverStorage';
 
 export class ExecuteViewClosedHandler {
 	private context: UIKitViewCloseInteractionContext;
@@ -36,25 +36,39 @@ export class ExecuteViewClosedHandler {
 			this.read.getPersistenceReader(),
 			user.id,
 		);
-		switch (view.id) {
-			case ListContextualBarEnum.VIEW_ID: {
-				break;
+		const aistorage = new AIstorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+		const receiverStorage = new Receiverstorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+			user.id,
+		);
+
+		const ViewData = view.id.split('---');
+		const ViewLegnth = ViewData.length;
+		const viewId = ViewData[0].trim();
+		if (ViewLegnth === 1) {
+			switch (viewId) {
+				case ListContextualBarEnum.VIEW_ID: {
+					await receiverStorage.removeReceiverRecord();
+					await RoomInteraction.clearInteractionRoomId();
+
+					break;
+				}
+
+				case ReplyAIModalEnum.VIEW_ID: {
+					await aistorage.clearAIInteraction();
+					break;
+				}
 			}
-			case CreateModalEnum.VIEW_ID: {
-				break;
-			}
-			case SendModalEnum.VIEW_ID: {
-				RoomInteraction.clearInteractionRoomId();
-				break;
-			}
-			case ReplyAIModalEnum.VIEW_ID: {
-				const aistorage = new AIstorage(
-					this.persistence,
-					this.read.getPersistenceReader(),
-					user.id,
-				);
-				aistorage.clearAIInteraction();
-				break;
+		} else if (ViewLegnth === 2) {
+			switch (viewId) {
+				case SendModalEnum.VIEW_ID: {
+					break;
+				}
 			}
 		}
 

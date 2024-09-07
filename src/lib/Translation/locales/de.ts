@@ -9,7 +9,7 @@ export const de = {
     Reply_Name_Label: "Antwortname",
     Reply_Name_Placeholder: "Geben Sie den Namen Ihrer Antwort ein",
     Reply_Body_Label: "Antwortinhalt",
-    Reply_Body_Placeholder: "Geben Sie den Inhalt Ihrer Antwort ein",
+    Reply_Body_Placeholder: "Geben Sie den Inhalt Ihrer Antwort ein (Sie können Platzhalter wie [name], [username], [email] verwenden, die basierend auf dem Empfänger ersetzt werden).",
     Close_Button: "Schließen",
     Create_Button: "Erstellen",
     Create_Modal_Title: "Erstellen Sie eine neue Antwort",

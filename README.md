@@ -72,10 +72,14 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 -   **`/quick`**: Get started with Quick Reply
 -   **`/quick create`**: Create a new quick reply
 -   **`/quick list`**: List all your quick replies
--   **`/quick config`**: Configure your preferences and AI settings
+-   **`/quick config`**: Configure your language preferences and AI settings
 -   **`/quick ai`**: Use AI to generate replies
 -   **`/quick help`**: Get help with Quick Reply
 -   **`/qs <reply name>`**: Quickly search and send a reply by name
+
+### Using Placeholders:
+
+When creating or configuring a reply, you can use placeholders like `[name]`, `[username]`, and `[email]` in the reply content. These placeholders will automatically be replaced based on the recipient's information when the message is sent.
 
 <!-- CONTRIBUTING -->
 

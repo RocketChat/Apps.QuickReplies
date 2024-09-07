@@ -17,6 +17,8 @@ import {
 import { SendModalEnum } from '../enum/modals/sendModal';
 import { IReply } from '../definition/reply/IReply';
 import { Language, t } from '../lib/Translation/translation';
+import { getReplacementValues, replacePlaceholders } from '../helper/message';
+import { Receiverstorage } from '../storage/ReceiverStorage';
 
 export async function SendReplyModal(
 	app: QuickRepliesApp,
@@ -31,9 +33,25 @@ export async function SendReplyModal(
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: InputBlock[] = [];
-
+	let message = reply.body;
 	const labelReplyBody = t('Send_Reply_Body_Label', language);
 	const placeholderReplyBody = t('Send_Reply_Body_Placeholder', language);
+
+	const ReceiverStorage = new Receiverstorage(
+		persistence,
+		read.getPersistenceReader(),
+		user.id,
+	);
+
+	const receiverInfo = await ReceiverStorage.getReceiverRecord();
+
+	let Placeholders = {};
+	if (receiverInfo) {
+		Placeholders = receiverInfo;
+	} else {
+		Placeholders = await getReplacementValues(room, user, read);
+	}
+	message = replacePlaceholders(message, Placeholders);
 
 	const inputReplyBody = inputElementComponent(
 		{
@@ -42,7 +60,7 @@ export async function SendReplyModal(
 			label: labelReplyBody,
 			optional: false,
 			multiline: true,
-			initialValue: reply.body,
+			initialValue: message,
 		},
 		{
 			blockId: SendModalEnum.REPLY_BODY_BLOCK_ID,

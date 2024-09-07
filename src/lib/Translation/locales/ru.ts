@@ -9,7 +9,7 @@ export const ru = {
     Reply_Name_Label: "Название ответа",
     Reply_Name_Placeholder: "Введите название вашего ответа",
     Reply_Body_Label: "Содержание ответа",
-    Reply_Body_Placeholder: "Введите содержание вашего ответа",
+    Reply_Body_Placeholder: "Введите текст вашего ответа (вы можете использовать заполнители, такие как [name], [username], [email], которые будут заменены в зависимости от получателя).",
     Close_Button: "Закрыть",
     Create_Button: "Создать",
     Create_Modal_Title: "Создать новый ответ",
