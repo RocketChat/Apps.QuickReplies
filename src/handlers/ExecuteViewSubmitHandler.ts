@@ -21,12 +21,19 @@ import { getUserPreferredLanguage } from '../helper/userPreference';
 import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
 import { SendModalEnum } from '../enum/modals/sendModal';
-import { sendMessage } from '../helper/message';
+import {
+	getReplacementValues,
+	replacePlaceholders,
+	sendMessage,
+} from '../helper/message';
 import { ConfirmDeleteModalEnum } from '../enum/modals/confirmDeleteModal';
 import { EditModalEnum } from '../enum/modals/editModal';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { AIusagePreference } from '../definition/helper/userPreference';
+import { listReplyContextualBar } from '../modal/listContextualBar';
+import { Receiverstorage } from '../storage/ReceiverStorage';
+import { Replacements } from '../definition/helper/message';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -43,7 +50,7 @@ export class ExecuteViewSubmitHandler {
 	}
 
 	public async handleActions(): Promise<IUIKitResponse> {
-		const { view, user } = this.context.getInteractionData();
+		const { view, user, triggerId } = this.context.getInteractionData();
 		const persistenceRead = this.read.getPersistenceReader();
 		const roomInteractionStorage = new RoomInteractionStorage(
 			this.persistence,
@@ -67,7 +74,13 @@ export class ExecuteViewSubmitHandler {
 				case UserPreferenceModalEnum.VIEW_ID:
 					return this.handleSetUserPreference(room, user, view);
 				case CreateModalEnum.VIEW_ID:
-					return this.handleCreate(room, user, view, language);
+					return this.handleCreate(
+						room,
+						user,
+						view,
+						language,
+						triggerId,
+					);
 				case ReplyAIModalEnum.VIEW_ID:
 					return this.handleAIresponse(room, user, view, language);
 			}
@@ -84,9 +97,17 @@ export class ExecuteViewSubmitHandler {
 						view,
 						language,
 						replyId,
+						triggerId,
 					);
 				case EditModalEnum.VIEW_ID:
-					return this.handleEdit(room, user, view, language, replyId);
+					return this.handleEdit(
+						room,
+						user,
+						view,
+						language,
+						replyId,
+						triggerId,
+					);
 			}
 		}
 		return this.context.getInteractionResponder().errorResponse();
@@ -96,6 +117,7 @@ export class ExecuteViewSubmitHandler {
 		user: IUser,
 		view: IUIKitSurface,
 		language: Language,
+		triggerId: string,
 	): Promise<IUIKitResponse> {
 		const nameStateValue =
 			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
@@ -135,8 +157,8 @@ export class ExecuteViewSubmitHandler {
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
-
-			return this.context.getInteractionResponder().successResponse(); // close modal
+			this.updateList(user, room, language, triggerId);
+			return this.context.getInteractionResponder().successResponse();
 		} else {
 			const errorMessage = `${t('Fail_Create_Reply', language, {
 				name: user.name,
@@ -233,7 +255,6 @@ export class ExecuteViewSubmitHandler {
 		replyId: string,
 	): Promise<IUIKitResponse> {
 		try {
-			let body = '';
 			const replyStorage = new ReplyStorage(
 				this.persistence,
 				this.read.getPersistenceReader(),
@@ -244,19 +265,47 @@ export class ExecuteViewSubmitHandler {
 				SendModalEnum.REPLY_BODY_BLOCK_ID
 			]?.[SendModalEnum.REPLY_BODY_ACTION_ID] as string;
 
-			body = bodyStateValue
-				? bodyStateValue
-				: storedReply
-				? storedReply.body
-				: '';
+			const ReceiverStorage = new Receiverstorage(
+				this.persistence,
+				this.read.getPersistenceReader(),
+				user.id,
+			);
 
-			const message = body.trim();
-			if (!message) {
+			const receiverInfo = await ReceiverStorage.getReceiverRecord();
+
+			let Placeholders = {} as Replacements;
+			if (receiverInfo) {
+				Placeholders = receiverInfo;
+			} else {
+				Placeholders = await getReplacementValues(
+					room,
+					user,
+					this.read,
+				);
+			}
+			if (storedReply) {
+				const updateStoredMessage = replacePlaceholders(
+					storedReply?.body,
+					Placeholders,
+				);
+
+				const message = bodyStateValue
+					? bodyStateValue
+					: storedReply
+					? updateStoredMessage
+					: '';
+
+				if (!message) {
+					return this.context
+						.getInteractionResponder()
+						.errorResponse();
+				}
+
+				await sendMessage(this.modify, user, room, message);
+				return this.context.getInteractionResponder().successResponse();
+			} else {
 				return this.context.getInteractionResponder().errorResponse();
 			}
-
-			await sendMessage(this.modify, user, room, body);
-			return this.context.getInteractionResponder().successResponse();
 		} catch (error) {
 			console.error('Error handling send:', error);
 			return this.context.getInteractionResponder().errorResponse();
@@ -269,6 +318,7 @@ export class ExecuteViewSubmitHandler {
 		view: IUIKitSurface,
 		language: Language,
 		replyId: string,
+		triggerId: string,
 	): Promise<IUIKitResponse> {
 		const persistenceRead = this.read.getPersistenceReader();
 		const replyStorage = new ReplyStorage(
@@ -295,6 +345,8 @@ export class ExecuteViewSubmitHandler {
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
+			this.updateList(user, room, language, triggerId);
+
 			return this.context.getInteractionResponder().successResponse();
 		} else {
 			const errorMessage = `${t('Fail_Delete_Reply', language)} \n\n ${
@@ -313,6 +365,7 @@ export class ExecuteViewSubmitHandler {
 		view: IUIKitSurface,
 		language,
 		replyId: string,
+		triggerId: string,
 	): Promise<IUIKitResponse> {
 		const persistenceRead = this.read.getPersistenceReader();
 		const replyStorage = new ReplyStorage(
@@ -359,6 +412,7 @@ export class ExecuteViewSubmitHandler {
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
+			this.updateList(user, room, language, triggerId);
 
 			return this.context.getInteractionResponder().successResponse();
 		} else {
@@ -405,5 +459,31 @@ export class ExecuteViewSubmitHandler {
 		await AIStorage.clearAIInteraction();
 
 		return this.context.getInteractionResponder().successResponse();
+	}
+	private async updateList(
+		user: IUser,
+		room: IRoom,
+		language: Language,
+		triggerId: string,
+	) {
+		const replyStorage = new ReplyStorage(
+			this.persistence,
+			this.read.getPersistenceReader(),
+		);
+		const userReplies = await replyStorage.getReplyForUser(user);
+		const listbar = await listReplyContextualBar(
+			this.app,
+			user,
+			this.read,
+			this.persistence,
+			this.modify,
+			room,
+			userReplies,
+			language,
+		);
+
+		this.modify
+			.getUiController()
+			.updateSurfaceView(listbar, { triggerId: triggerId }, user);
 	}
 }

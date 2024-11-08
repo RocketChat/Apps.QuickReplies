@@ -9,7 +9,7 @@ export const en = {
 	Reply_Name_Label: "Reply Name",
 	Reply_Name_Placeholder: "Enter the name of your reply",
 	Reply_Body_Label: "Reply Body",
-	Reply_Body_Placeholder: "Enter the content of your reply",
+	Reply_Body_Placeholder: "Enter the content of your reply (you can use placeholders like [name], [username], [email], which will be replaced based on the recipient).",
 	Close_Button: "Close",
 	Create_Button: "Create",
 	Create_Modal_Title: "Create a new reply",
@@ -86,5 +86,4 @@ export const en = {
 	AI_Gemini_Model_Not_Configured: "Your Gemini Model is not set up properly. Please check your configuration",
 	AI_Workspace_Model_Not_Configured: "Your Workspace AI is not set up properly. Please contact your administrator",
 	AI_Something_Went_Wrong: "Something went wrong. Please try again later.",
-	Refresh_Button_Text: "Refresh",
-};
+	Refresh_Button_Text: "Refresh"};

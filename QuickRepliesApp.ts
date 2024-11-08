@@ -68,10 +68,16 @@ export class QuickRepliesApp extends App {
 			labelI18n: ActionButton.REPLY_USING_AI_LABEL,
 			context: UIActionButtonContext.MESSAGE_ACTION,
 		};
+		const sendReplyButton: IUIActionButtonDescriptor = {
+			actionId: ActionButton.SEND_REPLY_ACTION,
+			labelI18n: ActionButton.SEND_REPLY_LABEL,
+			context: UIActionButtonContext.MESSAGE_ACTION,
+		};
 
 		configuration.ui.registerButton(listReplyButton);
 		configuration.ui.registerButton(createReplyButton);
 		configuration.ui.registerButton(ReplyUsingAI);
+		configuration.ui.registerButton(sendReplyButton);
 
 		await Promise.all(
 			settings.map((setting) => {

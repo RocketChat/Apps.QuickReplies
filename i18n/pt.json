@@ -19,5 +19,6 @@
 	"Quick_Search_Command_Preview_Title": "Pré-visualização do Comando de Pesquisa Rápida",
 	"Create_Quick_Reply_Action_Button_Label": "Criar uma nova resposta rápida",
 	"List_Quick_Reply_Action_Button_Label": "Listar todas as respostas rápidas",
-	"Reply_Using_AI_Label": "🤖 Responder usando IA"
+	"Reply_Using_AI_Label": "🤖 Responder usando IA",
+	"Send_Reply_Label": "⚡ Enviar Resposta Rápida"
 }

@@ -13,9 +13,15 @@ import {
 	IPersistence,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { ReplyStorage } from '../storage/ReplyStorage';
-import { sendMessage } from '../helper/message';
+import {
+	getReplacementValues,
+	replacePlaceholders,
+	sendMessage,
+} from '../helper/message';
 import { t } from '../lib/Translation/translation';
 import { getUserPreferredLanguage } from '../helper/userPreference';
+import { IUser } from '@rocket.chat/apps-engine/definition/users';
+import { Replacements } from '../definition/helper/message';
 
 export class QsCommand implements ISlashCommand {
 	constructor(private readonly app: QuickRepliesApp) {}
@@ -32,7 +38,7 @@ export class QsCommand implements ISlashCommand {
 		http: IHttp,
 		persis: IPersistence,
 	): Promise<void> {
-		// This will not get executed
+		// Placeholder for command execution logic
 	}
 
 	public async previewer(
@@ -42,20 +48,19 @@ export class QsCommand implements ISlashCommand {
 		http: IHttp,
 		persis: IPersistence,
 	): Promise<ISlashCommandPreview> {
-		const items: ISlashCommandPreviewItem[] = [];
-		const searchTerm = context.getArguments().join(' ');
-		const user = context.getSender();
-		const replyStorage = new ReplyStorage(
+		const searchTerm = context.getArguments().join(' ').toLowerCase();
+		const userReplies = await this.getUserReplies(
+			context.getSender(),
+			read,
 			persis,
-			read.getPersistenceReader(),
 		);
-		const userReplies = await replyStorage.getReplyForUser(user);
 		const language = await getUserPreferredLanguage(
 			read.getPersistenceReader(),
 			persis,
-			user.id,
+			context.getSender().id,
 		);
-		if (!userReplies || userReplies.length === 0) {
+
+		if (!userReplies?.length) {
 			return {
 				i18nTitle: 'Quick_Search_Command_Preview_Title',
 				items: [
@@ -69,39 +74,23 @@ export class QsCommand implements ISlashCommand {
 		}
 
 		const matchedReplies = userReplies
-			.filter((reply) =>
-				reply.name.toLowerCase().includes(searchTerm.toLowerCase()),
-			)
-			.sort((a, b) => {
-				const aNameMatch = a.name
-					.toLowerCase()
-					.includes(searchTerm.toLowerCase());
-				const bNameMatch = b.name
-					.toLowerCase()
-					.includes(searchTerm.toLowerCase());
-				if (aNameMatch && !bNameMatch) return -1;
-				if (!aNameMatch && bNameMatch) return 1;
-				return a.name.localeCompare(b.name);
-			})
+			.filter((reply) => reply.name.toLowerCase().includes(searchTerm))
+			.sort((a, b) => this.compareReplies(a, b, searchTerm))
 			.slice(0, 5);
 
-		matchedReplies.forEach((reply) => {
-			const messagePreview = `${reply.name}:${reply.body}`;
-			const trimmedPreview =
-				messagePreview.length > 35
-					? messagePreview.slice(0, 35) + '...'
-					: messagePreview;
-			items.push({
-				id: reply.id,
-				type: SlashCommandPreviewItemType.TEXT,
-				value: trimmedPreview,
-			});
-		});
+		const items = matchedReplies.map((reply) => ({
+			id: reply.id,
+			type: SlashCommandPreviewItemType.TEXT,
+			value:
+				reply.name.length + reply.body.length > 35
+					? `${reply.name
+							.concat(' : ')
+							.concat(reply.body)
+							.slice(0, 35)}...`
+					: `${reply.name.concat(' : ').concat(reply.body)}`,
+		}));
 
-		return {
-			i18nTitle: 'Quick_Search_Command_Preview_Title',
-			items,
-		};
+		return { i18nTitle: 'Quick_Search_Command_Preview_Title', items };
 	}
 
 	public async executePreviewItem(
@@ -112,14 +101,55 @@ export class QsCommand implements ISlashCommand {
 		http: IHttp,
 		persis: IPersistence,
 	): Promise<void> {
+		const reply = await this.getReplyById(
+			context.getSender(),
+			item.id,
+			read,
+			persis,
+		);
+		if (!reply) return;
+
+		const room = context.getRoom();
 		const user = context.getSender();
-		const replyStorage = new ReplyStorage(
+		const replacements = (await getReplacementValues(
+			room,
+			user,
+			read,
+		)) as Replacements;
+
+		const message = replacePlaceholders(reply.body.trim(), replacements);
+		await sendMessage(modify, context.getSender(), room, message);
+	}
+
+	private async getUserReplies(
+		user: IUser,
+		read: IRead,
+		persis: IPersistence,
+	) {
+		return await new ReplyStorage(
 			persis,
 			read.getPersistenceReader(),
-		);
-		const reply = await replyStorage.getReplyById(user, item.id);
-		if (reply) {
-			await sendMessage(modify, user, context.getRoom(), reply.body);
-		}
+		).getReplyForUser(user);
+	}
+
+	private compareReplies(a, b, searchTerm) {
+		const aNameMatch = a.name.toLowerCase().includes(searchTerm);
+		const bNameMatch = b.name.toLowerCase().includes(searchTerm);
+
+		if (aNameMatch && !bNameMatch) return -1;
+		if (!aNameMatch && bNameMatch) return 1;
+		return a.name.localeCompare(b.name);
+	}
+
+	private async getReplyById(
+		user,
+		replyId: string,
+		read: IRead,
+		persis: IPersistence,
+	) {
+		return await new ReplyStorage(
+			persis,
+			read.getPersistenceReader(),
+		).getReplyById(user, replyId);
 	}
 }
