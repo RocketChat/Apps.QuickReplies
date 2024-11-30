@@ -36,6 +36,7 @@ import { settings } from './src/config/settings';
 export class QuickRepliesApp extends App {
 	private elementBuilder: ElementBuilder;
 	private blockBuilder: BlockBuilder;
+	public params: Array<string>; 
 	constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
 		super(info, logger, accessors);
 	}
@@ -141,6 +142,7 @@ export class QuickRepliesApp extends App {
 			http,
 			persistence,
 			modify,
+			this.params,
 			context,
 		);
 
@@ -160,6 +162,7 @@ export class QuickRepliesApp extends App {
 			http,
 			persistence,
 			modify,
+			this.params,
 			context,
 		);
 

@@ -16,6 +16,8 @@ import {
 } from '@rocket.chat/apps-engine/definition/uikit';
 import { CreateModalEnum } from '../enum/modals/createModal';
 import { Language, t } from '../lib/Translation/translation';
+import { ReplyStorage } from '../storage/ReplyStorage';
+import { sendNotification } from '../helper/notification';
 
 export async function CreateReplyModal(
 	app: QuickRepliesApp,
@@ -23,9 +25,36 @@ export async function CreateReplyModal(
 	read: IRead,
 	persistence: IPersistence,
 	modify: IModify,
+	sender : IUser,
 	room: IRoom,
 	language: Language,
-): Promise<IUIKitSurfaceViewParam | Error> {
+	args: string[],
+): Promise<IUIKitSurfaceViewParam | Error | void> {
+	if (args.length > 1) {
+		const replyName = args[1];
+		const replyBody = args.slice(2).join(' ');
+
+		const replyStorage = new ReplyStorage(persistence, read.getPersistenceReader());
+
+		const result = await replyStorage.createReply(sender, replyName, replyBody, language); 
+
+		if (!result.success) {
+			const errorMessage = `${t('Fail_Create_Reply', language, {
+				name: sender.name,
+			})} \n\n ${result.error}`;
+			await sendNotification(read, modify, sender, room, { message: errorMessage });
+			return;
+		}
+
+		const successMessage = `${t('Success_Create_Reply', language, {
+			name: sender.name,
+			replyname: replyName,
+		})}`; 
+		await sendNotification(read, modify, sender, room, { message: successMessage });
+		return;
+	}
+
+
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: InputBlock[] = [];

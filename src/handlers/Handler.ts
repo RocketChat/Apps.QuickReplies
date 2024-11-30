@@ -35,6 +35,7 @@ export class Handler implements IHandler {
 	public triggerId?: string;
 	public threadId?: string;
 	public language: Language;
+	public args? : string[];
 
 	constructor(params: IHanderParams) {
 		this.app = params.app;
@@ -47,6 +48,8 @@ export class Handler implements IHandler {
 		this.triggerId = params.triggerId;
 		this.threadId = params.threadId;
 		this.language = params.language;
+		this.args = params.args;
+
 		const persistenceRead = params.read.getPersistenceReader();
 		this.roomInteractionStorage = new RoomInteractionStorage(
 			params.persis,
@@ -62,8 +65,10 @@ export class Handler implements IHandler {
 			this.read,
 			this.persis,
 			this.modify,
+			this.sender,
 			this.room,
 			this.language,
+			this.args ?? [],
 		);
 
 		if (modal instanceof Error) {
@@ -71,6 +76,11 @@ export class Handler implements IHandler {
 			return;
 		}
 
+		if (!modal) {
+			this.app.getLogger().error('Modal is undefined. Cannot open surface view.');
+			return;
+		}
+	  
 		const triggerId = this.triggerId;
 
 		if (triggerId) {
