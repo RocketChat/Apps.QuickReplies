@@ -76,6 +76,7 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 -   **`/quick ai`**: Use AI to generate replies
 -   **`/quick help`**: Get help with Quick Reply
 -   **`/qs <reply name>`**: Quickly search and send a reply by name
+-   **`/quick create <name> <message>`**:  Create a quick reply directly from the input box with a name and message
 
 ### Using Placeholders:
 
