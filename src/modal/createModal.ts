@@ -31,14 +31,14 @@ export async function CreateReplyModal(
 	args: string[],
 ): Promise<IUIKitSurfaceViewParam | Error | void> {
 	if (args.length > 1) {
-		const replyName = args[1]; // Get the name of the reply
-		const replyBody = args.slice(2).join(' '); // Get the body of the reply
+		const replyName = args[1];
+		const replyBody = args.slice(2).join(' ');
 
-		const replyStorage = new ReplyStorage(persistence, read.getPersistenceReader()); // Initialize ReplyStorage
+		const replyStorage = new ReplyStorage(persistence, read.getPersistenceReader());
 
-		const result = await replyStorage.createReply(sender, replyName, replyBody, language); // Attempt to create reply
+		const result = await replyStorage.createReply(sender, replyName, replyBody, language); 
 
-		if (!result.success) { // If creation fails, send failure notification
+		if (!result.success) {
 			const errorMessage = `${t('Fail_Create_Reply', language, {
 				name: sender.name,
 			})} \n\n ${result.error}`;
@@ -49,7 +49,7 @@ export async function CreateReplyModal(
 		const successMessage = `${t('Success_Create_Reply', language, {
 			name: sender.name,
 			replyname: replyName,
-		})}`; // Success message to notify user
+		})}`; 
 		await sendNotification(read, modify, sender, room, { message: successMessage });
 		return;
 	}
