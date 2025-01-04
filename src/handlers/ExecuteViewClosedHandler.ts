@@ -54,8 +54,6 @@ export class ExecuteViewClosedHandler {
 			switch (viewId) {
 				case ListContextualBarEnum.VIEW_ID: {
 					await receiverStorage.removeReceiverRecord();
-					await RoomInteraction.clearInteractionRoomId();
-
 					break;
 				}
 
