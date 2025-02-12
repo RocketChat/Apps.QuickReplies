@@ -50,7 +50,6 @@ export async function CreateReplyModal(
 		return;
 	}
 
-
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: InputBlock[] = [];

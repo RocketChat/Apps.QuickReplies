@@ -68,7 +68,7 @@ export class CommandUtility implements ICommandUtility {
 			args: this.params,
 		});
 
-		if(this.params.length && this.params.length > 2){
+		if(this.params.length && this.params.length > 1){
 			const subCommand = this.params[0].toLowerCase();
 			if(subCommand === CommandParam.CREATE){
 				await this.handleSingleParam(handler)

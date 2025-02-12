@@ -78,6 +78,12 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 -   **`/qs <reply name>`**: Quickly search and send a reply by name
 -   **`/quick create <name> <message>`**:  Create a quick reply directly from the input box with a name and message
 
+#### Example:
+```sh
+/quick create greeting Hello! How have you been?
+```
+This will create a quick reply named **`greeting`**, which can be used later by typing **`/qs greeting`**
+
 ### Using Placeholders:
 
 When creating or configuring a reply, you can use placeholders like `[name]`, `[username]`, and `[email]` in the reply content. These placeholders will automatically be replaced based on the recipient's information when the message is sent.
