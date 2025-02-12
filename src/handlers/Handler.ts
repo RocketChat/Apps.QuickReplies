@@ -65,7 +65,6 @@ export class Handler implements IHandler {
 			this.read,
 			this.persis,
 			this.modify,
-			this.sender,
 			this.room,
 			this.language,
 			this.args ?? [],

@@ -39,7 +39,6 @@ export class ExecuteBlockActionHandler {
 		protected readonly http: IHttp,
 		protected readonly persistence: IPersistence,
 		protected readonly modify: IModify,
-		protected readonly params: string[] = [],
 		context: UIKitBlockInteractionContext,
 	) {
 		this.context = context;
@@ -103,7 +102,6 @@ export class ExecuteBlockActionHandler {
 			persis: this.persistence,
 			triggerId,
 			language,
-			args: this.params,
 		});
 
 		switch (actionId) {

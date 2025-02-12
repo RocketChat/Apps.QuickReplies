@@ -25,7 +25,6 @@ export async function CreateReplyModal(
 	read: IRead,
 	persistence: IPersistence,
 	modify: IModify,
-	sender : IUser,
 	room: IRoom,
 	language: Language,
 	args: string[],
@@ -36,21 +35,18 @@ export async function CreateReplyModal(
 
 		const replyStorage = new ReplyStorage(persistence, read.getPersistenceReader());
 
-		const result = await replyStorage.createReply(sender, replyName, replyBody, language); 
+		const result = await replyStorage.createReply(user, replyName, replyBody, language); 
 
-		if (!result.success) {
-			const errorMessage = `${t('Fail_Create_Reply', language, {
-				name: sender.name,
+		const message = result.success
+			? t('Success_Create_Reply', language, {
+				name: user.name,
+				replyname: replyName,
+			})
+			: `${t('Fail_Create_Reply', language, {
+				name: user.name,
 			})} \n\n ${result.error}`;
-			await sendNotification(read, modify, sender, room, { message: errorMessage });
-			return;
-		}
 
-		const successMessage = `${t('Success_Create_Reply', language, {
-			name: sender.name,
-			replyname: replyName,
-		})}`; 
-		await sendNotification(read, modify, sender, room, { message: successMessage });
+		await sendNotification(read, modify, user, room, { message });
 		return;
 	}
 

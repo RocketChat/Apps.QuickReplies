@@ -68,6 +68,14 @@ export class CommandUtility implements ICommandUtility {
 			args: this.params,
 		});
 
+		if(this.params.length && this.params.length > 2){
+			const subCommand = this.params[0].toLowerCase();
+			if(subCommand === CommandParam.CREATE){
+				await this.handleSingleParam(handler)
+				return;
+			}
+		}
+
 		switch (this.params.length) {
 			case 0: {
 				await handler.sendDefault();
@@ -77,12 +85,7 @@ export class CommandUtility implements ICommandUtility {
 				await this.handleSingleParam(handler);
 				break;
 			}
-			default: {
-				const subCommand = this.params[0].toLowerCase();
-				if (subCommand === CommandParam.CREATE){
-					await this.handleSingleParam(handler)
-					break;
-				}
+			default: {				
 				await handler.sendDefault();
 			}
 		}

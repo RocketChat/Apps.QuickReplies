@@ -24,7 +24,6 @@ export class ExecuteActionButtonHandler {
 		protected readonly http: IHttp,
 		protected readonly persistence: IPersistence,
 		protected readonly modify: IModify,
-		protected readonly params: string[] = [],
 		context: UIKitActionButtonInteractionContext,
 	) {
 		this.context = context;
@@ -57,7 +56,6 @@ export class ExecuteActionButtonHandler {
 			persis: this.persistence,
 			triggerId,
 			language,
-			args: this.params,
 		});
 
 		switch (actionId) {
