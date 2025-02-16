@@ -65,7 +65,16 @@ export class CommandUtility implements ICommandUtility {
 			triggerId: this.triggerId,
 			threadId: this.threadId,
 			language,
+			args: this.params,
 		});
+
+		if(this.params.length && this.params.length > 1){
+			const subCommand = this.params[0].toLowerCase();
+			if(subCommand === CommandParam.CREATE){
+				await this.handleSingleParam(handler)
+				return;
+			}
+		}
 
 		switch (this.params.length) {
 			case 0: {
@@ -76,7 +85,7 @@ export class CommandUtility implements ICommandUtility {
 				await this.handleSingleParam(handler);
 				break;
 			}
-			default: {
+			default: {				
 				await handler.sendDefault();
 			}
 		}
