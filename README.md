@@ -5,7 +5,7 @@
   <h3 align="center">Quick Replies Feature for RocketChat</h3>
 
   <p align="center">
-    <a href="https://github.com/RocketChat/Apps.QuickReplies">View Demo</a>
+    <a href="https://www.youtube.com/watch?v=a6DpSaHqnU4&t=688s">View Demo</a>
     ·
     <a href="https://github.com/RocketChat/Apps.QuickReplies/issues">Report Bug</a>
     ·
