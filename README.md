@@ -1,3 +1,7 @@
+<div align="center">
+<img width=30% src="https://github.com/user-attachments/assets/a92f27b9-5101-4725-8311-a0e6ada0edc7" alt="rocket-chat">
+</div>
+
 # Quick Replies with Rocket.Chat
 
 <br />
@@ -20,6 +24,8 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+
+<img width=30% src="https://github.com/user-attachments/assets/e358bf9c-a781-4b3d-916c-4330c7b81592" alt="quickreplies">
 
 </div>
 
@@ -111,6 +117,9 @@ Here are some links to examples and documentation:
     -   [Top View of Both Categories](https://forums.rocket.chat/c/rocket-chat-apps)
 -   [#rocketchat-apps on Open.Rocket.Chat](https://open.rocket.chat/channel/rocketchat-apps)
 
+<h2>Support us ❤️</h2>
+
+If you like this project, please leave a star ⭐️. This helps more people to know this project.
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
