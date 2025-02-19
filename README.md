@@ -32,7 +32,7 @@
 
 ## 📜 Getting Started
 
-![RC QUICKREPLIES (70 × 36in) (70 × 20in)](https://github.com/user-attachments/assets/7b49af36-987f-47c3-b955-f53e2292af60)
+![RC QUICKREPLIESs (70 × 36in) (70 × 20in)](https://github.com/user-attachments/assets/0e3c26df-d5eb-44f4-8f2a-d8992250233f)
 
 
 ### Prerequisites
@@ -95,11 +95,6 @@ When creating or configuring a reply, you can use placeholders like `[name]`, `[
 
 ## 🧑‍💻 Contributing
 
-<div align='center' width='100%'>
-<a href="https://github.com/monoclehq">
-<img src="https://open-source-assets.middlewarehq.com/svgs/RocketChat-Apps.QuickReplies-contributor-metrics-dark-widget-premium.svg"></img>
-</a>
-</div>
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
