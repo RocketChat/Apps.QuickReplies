@@ -32,6 +32,9 @@
 
 ## 📜 Getting Started
 
+![RC QUICKREPLIES (70 × 36in) (70 × 20in)](https://github.com/user-attachments/assets/7b49af36-987f-47c3-b955-f53e2292af60)
+
+
 ### Prerequisites
 
 -   You need a Rocket.Chat Server Setup
@@ -91,6 +94,12 @@ When creating or configuring a reply, you can use placeholders like `[name]`, `[
 <!-- CONTRIBUTING -->
 
 ## 🧑‍💻 Contributing
+
+<div align='center' width='100%'>
+<a href="https://github.com/monoclehq">
+<img src="https://open-source-assets.middlewarehq.com/svgs/RocketChat-Apps.QuickReplies-contributor-metrics-dark-widget-premium.svg"></img>
+</a>
+</div>
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
