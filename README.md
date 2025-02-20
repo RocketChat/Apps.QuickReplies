@@ -32,9 +32,6 @@
 
 ## 📜 Getting Started
 
-![RC QUICKREPLIESs (70 × 36in) (70 × 20in)](https://github.com/user-attachments/assets/0e3c26df-d5eb-44f4-8f2a-d8992250233f)
-
-
 ### Prerequisites
 
 -   You need a Rocket.Chat Server Setup
