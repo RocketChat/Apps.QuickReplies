@@ -13,7 +13,7 @@ import {
 	ButtonStyle,
 	UIKitSurfaceType,
 } from '@rocket.chat/apps-engine/definition/uikit';
-import { Language, t } from '../lib/Translation/translation';
+import { ErrorKeys, Language, t } from '../lib/Translation/translation';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { inputElementComponent } from './common/inputElementComponent';
 
@@ -70,20 +70,6 @@ export async function ReplyAIModal(
 
 	blocks.push(messageblock, promptInput, secitonBlock);
 
-	const ERROR_KEYS = [
-		'AI_Not_Configured_Personal',
-		'AI_Not_Configured_Admin',
-		'AI_Self_Hosted_Model_Not_Configured',
-		'AI_OpenAI_Model_Not_Configured',
-		'AI_Gemini_Model_Not_Configured',
-		'AI_Workspace_Model_Not_Configured',
-		'AI_Something_Went_Wrong'
-	] as const;
-
-	const isError = response && ERROR_KEYS.some(key =>
-		response.includes(t(key, language))
-	);
-
 	if (response) {
 		const inputReplyBody = inputElementComponent(
 			{
@@ -102,13 +88,17 @@ export async function ReplyAIModal(
 		blocks.push(inputReplyBody);
 	}
 
-	const submit = !isError && response?.trim() ? elementBuilder.addButton(
+    const isError = response && ErrorKeys.some(key =>
+		response.includes(t(key, language))
+	);
+
+	const submit = !isError && response ? elementBuilder.addButton(
 		{ text: t('Send_This_Text', language), style: ButtonStyle.PRIMARY },
 		{
 			actionId: ReplyAIModalEnum.SUBMIT_ACTION_ID,
 			blockId: ReplyAIModalEnum.SUBMIT_BLOCK_ID,
 		},
-	) : undefined;
+	) : null;
 
 	const close = elementBuilder.addButton(
 		{ text: t('Close_Button', language), style: ButtonStyle.DANGER },
