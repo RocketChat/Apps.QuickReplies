@@ -92,13 +92,20 @@ export async function ReplyAIModal(
 		response.includes(t(key, language))
 	);
 
-	const submit = !isError && response ? elementBuilder.addButton(
-		{ text: t('Send_This_Text', language), style: ButtonStyle.PRIMARY },
-		{
-			actionId: ReplyAIModalEnum.SUBMIT_ACTION_ID,
-			blockId: ReplyAIModalEnum.SUBMIT_BLOCK_ID,
-		},
-	) : null;
+	const SubmitButton = () => {
+		if (!isError && response) {
+			return {
+				submit: elementBuilder.addButton(
+					{ text: t('Send_This_Text', language), style: ButtonStyle.PRIMARY },
+					{
+						actionId: ReplyAIModalEnum.SUBMIT_ACTION_ID,
+						blockId: ReplyAIModalEnum.SUBMIT_BLOCK_ID,
+					}
+				)
+			};
+		}
+		return {};
+	};
 
 	const close = elementBuilder.addButton(
 		{ text: t('Close_Button', language), style: ButtonStyle.DANGER },
@@ -116,6 +123,6 @@ export async function ReplyAIModal(
 		},
 		blocks,
 		close,
-		submit,
+		...SubmitButton()
 	};
 }
