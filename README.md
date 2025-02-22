@@ -63,7 +63,7 @@
     ```sh
     rc-apps deploy --url <url> --username <username> --password <password>
     ```
-         **Where:**
+    Where:
     - `<url>` is your local server URL (if you are running in another port, change the 3000 to the appropriate port)
     - `<username>` is the username of your admin user.
     - `<password>` is the password of your admin user.
