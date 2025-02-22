@@ -59,6 +59,8 @@ export class Handler implements IHandler {
 	}
 
 	public async CreateReply(): Promise<void> {
+		const cliName = this.args?.[1] || '';
+		const cliBody = this.args?.slice(2).join(' ') || '';
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -67,19 +69,15 @@ export class Handler implements IHandler {
 			this.modify,
 			this.room,
 			this.language,
-			this.args ?? [],
+			cliName,
+			cliBody,
 		);
 
 		if (modal instanceof Error) {
 			this.app.getLogger().error(modal.message);
 			return;
 		}
-
-		if (!modal) {
-			this.app.getLogger().error('Modal is undefined. Cannot open surface view.');
-			return;
-		}
-	  
+  
 		const triggerId = this.triggerId;
 
 		if (triggerId) {

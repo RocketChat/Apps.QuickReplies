@@ -27,29 +27,10 @@ export async function CreateReplyModal(
 	modify: IModify,
 	room: IRoom,
 	language: Language,
-	args: string[],
-): Promise<IUIKitSurfaceViewParam | Error | void> {
-	if (args.length > 1) {
-		const replyName = args[1];
-		const replyBody = args.slice(2).join(' ');
-
-		const replyStorage = new ReplyStorage(persistence, read.getPersistenceReader());
-
-		const result = await replyStorage.createReply(user, replyName, replyBody, language); 
-
-		const message = result.success
-			? t('Success_Create_Reply', language, {
-				name: user.name,
-				replyname: replyName,
-			})
-			: `${t('Fail_Create_Reply', language, {
-				name: user.name,
-			})} \n\n ${result.error}`;
-
-		await sendNotification(read, modify, user, room, { message });
-		return;
-	}
-
+	cliName: string,
+    cliBody: string,
+): Promise<IUIKitSurfaceViewParam | Error> {
+	
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: InputBlock[] = [];
@@ -63,6 +44,7 @@ export async function CreateReplyModal(
 			placeholder: placeholderReplyName,
 			label: labelReplyName,
 			optional: false,
+            initialValue: cliName,
 		},
 		{
 			blockId: CreateModalEnum.REPLY_NAME_BLOCK_ID,
@@ -80,6 +62,7 @@ export async function CreateReplyModal(
 			label: labelReplyBody,
 			optional: false,
 			multiline: true,
+            initialValue: cliBody,
 		},
 		{
 			blockId: CreateModalEnum.REPLY_BODY_BLOCK_ID,
