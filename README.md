@@ -63,13 +63,13 @@
     ```sh
     rc-apps deploy --url <url> --username <username> --password <password>
     ```
-         Where:
+         **Where:**
     - `<url>` is your local server URL (if you are running in another port, change the 3000 to the appropriate port)
     - `<username>` is the username of your admin user.
     - `<password>` is the password of your admin user.
 
     For more info refer [this](https://developer.rocket.chat/apps-engine/getting-started/rocket.chat-app-engine-cli) guide
-    
+
 <!-- ABOUT THE PROJECT -->
 
 ## ✅ About The Project:
