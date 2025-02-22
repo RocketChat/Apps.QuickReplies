@@ -16,8 +16,6 @@ import {
 } from '@rocket.chat/apps-engine/definition/uikit';
 import { CreateModalEnum } from '../enum/modals/createModal';
 import { Language, t } from '../lib/Translation/translation';
-import { ReplyStorage } from '../storage/ReplyStorage';
-import { sendNotification } from '../helper/notification';
 
 export async function CreateReplyModal(
 	app: QuickRepliesApp,
