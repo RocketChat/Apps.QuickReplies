@@ -69,7 +69,7 @@
     - `<password>` is the password of your admin user.
 
     For more info refer [this](https://developer.rocket.chat/apps-engine/getting-started/rocket.chat-app-engine-cli) guide
-
+    
 <!-- ABOUT THE PROJECT -->
 
 ## ✅ About The Project:
