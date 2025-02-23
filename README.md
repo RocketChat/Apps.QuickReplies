@@ -64,7 +64,7 @@
     rc-apps deploy --url <url> --username <username> --password <password>
     ```
     Where:
-    - `<url>` is your local server URL (if you are running in another port, change the 3000 to the appropriate port)
+    - `<url>` is the server where your app is hosted. This could be a local development server (e.g., http://localhost:3000) or a remote server (e.g., https://yourdomain.com). Update the port if necessary.
     - `<username>` is the username of your admin user.
     - `<password>` is the password of your admin user.
 
