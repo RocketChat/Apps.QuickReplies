@@ -59,8 +59,8 @@ export class Handler implements IHandler {
 	}
 
 	public async CreateReply(): Promise<void> {
-		const cliName = this.args?.[1] || '';
-		const cliBody = this.args?.slice(2).join(' ') || '';
+		const initialReplyName = this.args?.[1] || '';
+		const initialReplyBody = this.args?.slice(2).join(' ') || '';
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -69,8 +69,8 @@ export class Handler implements IHandler {
 			this.modify,
 			this.room,
 			this.language,
-			cliName,
-			cliBody,
+			initialReplyName,
+			initialReplyBody,
 		);
 
 		if (modal instanceof Error) {

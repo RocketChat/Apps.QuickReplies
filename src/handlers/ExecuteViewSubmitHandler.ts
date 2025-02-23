@@ -119,12 +119,14 @@ export class ExecuteViewSubmitHandler {
 		language: Language,
 		triggerId: string,
 	): Promise<IUIKitResponse> {
-		const nameStateValue = view.state && Object.values(view.state)
-		.find(obj => 'reply-name-action-id' in obj)
-		?.['reply-name-action-id'];
-		const bodyStateValue = view.state && Object.values(view.state)
-		.find(obj => 'reply-body-action-id' in obj)
-		?.['reply-body-action-id'];
+		const nameStateValue =
+			view.state?.[CreateModalEnum.REPLY_NAME_BLOCK_ID]?.[
+				CreateModalEnum.REPLY_NAME_ACTION_ID
+			];
+		const bodyStateValue =
+			view.state?.[CreateModalEnum.REPLY_BODY_BLOCK_ID]?.[
+				CreateModalEnum.REPLY_BODY_ACTION_ID
+			];
 
 		const name = nameStateValue ? nameStateValue.trim() : '';
 		const body = bodyStateValue ? bodyStateValue.trim() : '';

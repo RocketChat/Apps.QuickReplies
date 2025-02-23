@@ -85,7 +85,7 @@ export class CommandUtility implements ICommandUtility {
 				await this.handleSingleParam(handler);
 				break;
 			}
-			default: {	
+			default: {
 				await handler.sendDefault();
 			}
 		}
