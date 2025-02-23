@@ -61,10 +61,10 @@
 4. Deploy app using:
 
     ```sh
-    rc-apps deploy --url <url> --username <username> --password <password>
+    rc-apps deploy --url <server_url> --username <username> --password <password>
     ```
     Where:
-    - `<url>` is the server where your app is hosted. This could be a local development server (e.g., http://localhost:3000) or a remote server (e.g., https://yourdomain.com). Update the port if necessary.
+    - `<server_url>` is the URL where your Rocket.Chat workspace is hosted. This could be a local development server (e.g., http://localhost:3000) or a remote server (e.g., https://yourdomain.com). Update the port if necessary.
     - `<username>` is the username of your admin user.
     - `<password>` is the password of your admin user.
 
