@@ -77,7 +77,6 @@ export class Handler implements IHandler {
 			this.app.getLogger().error(modal.message);
 			return;
 		}
-  
 		const triggerId = this.triggerId;
 
 		if (triggerId) {

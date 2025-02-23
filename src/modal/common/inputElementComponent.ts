@@ -2,7 +2,6 @@ import { InputBlock, InputElementDispatchAction } from '@rocket.chat/ui-kit';
 import { QuickRepliesApp } from '../../../QuickRepliesApp';
 import { ElementInteractionParam } from '../../definition/ui-kit/Element/IElementBuilder';
 import { Modals } from '../../enum/modals/common/Modal';
-
 export function inputElementComponent(
 	{
 		app,
