@@ -53,7 +53,7 @@ export class QrCommand implements ISlashCommand {
 			context.getSender().id,
 		);
 
-		const lastOtherUserMessage = prevMessages.find(message => 
+		const lastUserMessage = prevMessages.find(message => 
 			message.text &&
 			message.sender.username !== sender.username
 		);
@@ -68,9 +68,9 @@ export class QrCommand implements ISlashCommand {
 		const AiHandler = new AIHandler(this.app, http, Preference);
 
 		let items = [] as ISlashCommandPreviewItem[];
-		if (lastOtherUserMessage?.text) {
+		if (lastUserMessage?.text) {
 			const data = await AiHandler.handleResponse(
-				lastOtherUserMessage.text,
+				lastUserMessage.text,
 				'',
 				true,
 			);
