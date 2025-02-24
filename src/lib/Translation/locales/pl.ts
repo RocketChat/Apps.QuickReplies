@@ -21,7 +21,7 @@ export const pl = {
     Error_Reply_Name_Invalid: "Nieprawidłowa nazwa: Nazwa musi być niepustym ciągiem znaków o maksymalnej długości 100 znaków.",
     Error_Reply_Body_Invalid: "Nieprawidłowa treść: Treść musi być niepustym ciągiem znaków o maksymalnej długości 1000 znaków.",
     Error_Fail_Internal: "Błąd wewnętrzny. Proszę spróbować później.",
-    Helper_Commands: "Użyj `/quick`, aby rozpocząć \n Użyj `/quick create`, aby utworzyć nową szybką odpowiedź \n Użyj `/quick list`, aby wyświetlić wszystkie szybkie wiadomości \n Użyj `/quick config`, aby skonfigurować preferencje użytkownika \n Użyj `/quick help`, aby uzyskać pomoc \n Użyj `/qs <replyname>`, aby wyszukać i wysłać szybką odpowiedź \n",
+    Helper_Commands: "Użyj `/quick`, aby rozpocząć \n Użyj `/quick create`, aby utworzyć nową szybką odpowiedź \n Użyj `/quick list`, aby wyświetlić wszystkie szybkie wiadomości \n Użyj `/quick config`, aby skonfigurować preferencje użytkownika\n Użyj `/quick ai` aby generować odpowiedzi za pomocą AI \n Użyj `/quick help`, aby uzyskać pomoc \n Użyj `/qs <replyname>`, aby wyszukać i wysłać szybką odpowiedź \n",
     Helper_Text: "Hej __name__, Jestem Quick Bot 👋 Oto kilka szybkich wskazówek, które pomogą Ci zacząć!",
     Default_Message: "Hej __name__, Jestem Quick Bot 👋 Mogę pomóc Ci tworzyć i wysyłać szybkie odpowiedzi. W czym mogę pomóc?",
     Create_Reply: "Utwórz odpowiedź",

@@ -13,7 +13,7 @@ import {
 	ButtonStyle,
 	UIKitSurfaceType,
 } from '@rocket.chat/apps-engine/definition/uikit';
-import { Language, t } from '../lib/Translation/translation';
+import { ErrorKeys, Language, t } from '../lib/Translation/translation';
 import { ReplyAIModalEnum } from '../enum/modals/AIreplyModal';
 import { inputElementComponent } from './common/inputElementComponent';
 
@@ -88,13 +88,24 @@ export async function ReplyAIModal(
 		blocks.push(inputReplyBody);
 	}
 
-	const submit = elementBuilder.addButton(
-		{ text: t('Send_This_Text', language), style: ButtonStyle.PRIMARY },
-		{
-			actionId: ReplyAIModalEnum.SUBMIT_ACTION_ID,
-			blockId: ReplyAIModalEnum.SUBMIT_BLOCK_ID,
-		},
+    const isError = response && ErrorKeys.some(key =>
+		response.includes(t(key, language))
 	);
+
+	const SubmitButton = () => {
+		if (!isError && response) {
+			return {
+				submit: elementBuilder.addButton(
+					{ text: t('Send_This_Text', language), style: ButtonStyle.PRIMARY },
+					{
+						actionId: ReplyAIModalEnum.SUBMIT_ACTION_ID,
+						blockId: ReplyAIModalEnum.SUBMIT_BLOCK_ID,
+					}
+				)
+			};
+		}
+		return {};
+	};
 
 	const close = elementBuilder.addButton(
 		{ text: t('Close_Button', language), style: ButtonStyle.DANGER },
@@ -112,6 +123,6 @@ export async function ReplyAIModal(
 		},
 		blocks,
 		close,
-		submit,
+		...SubmitButton()
 	};
 }
