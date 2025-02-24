@@ -16,6 +16,8 @@ import { getSortedMessages, sendMessage } from '../helper/message';
 import AIHandler from '../handlers/AIHandler';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
 import { sendNotification } from '../helper/notification';
+import { t } from '../lib/Translation/translation';
+import { getUserPreferredLanguage } from '../helper/userPreference';
 
 export class QrCommand implements ISlashCommand {
 	constructor(private readonly app: QuickRepliesApp) {}
@@ -45,7 +47,16 @@ export class QrCommand implements ISlashCommand {
 		const sender = context.getSender();
 		const room = context.getRoom();
 		const prevMessages = await getSortedMessages(room.id, read);
-		const lastMessage = prevMessages[0];
+		const language = await getUserPreferredLanguage(
+			read.getPersistenceReader(),
+			persis,
+			context.getSender().id,
+		);
+
+		const lastOtherUserMessage = prevMessages.find(message => 
+			message.text &&
+			message.sender.username !== sender.username
+		);
 
 		const userPreference = new UserPreferenceStorage(
 			persis,
@@ -57,9 +68,9 @@ export class QrCommand implements ISlashCommand {
 		const AiHandler = new AIHandler(this.app, http, Preference);
 
 		let items = [] as ISlashCommandPreviewItem[];
-		if (lastMessage.text && lastMessage.sender._id != sender.id) {
+		if (lastOtherUserMessage?.text) {
 			const data = await AiHandler.handleResponse(
-				lastMessage?.text,
+				lastOtherUserMessage.text,
 				'',
 				true,
 			);
@@ -88,6 +99,10 @@ export class QrCommand implements ISlashCommand {
 				};
 			}
 		} else {
+			const errorMessage = t('No_User_Reply_Found', language);
+			await sendNotification(read, modify, sender, room, {
+				message: errorMessage,
+			});
 			items = [];
 			return { i18nTitle: 'Quick_Response_Command_Preview_Title', items };
 		}
