@@ -147,7 +147,7 @@ async function buildPrivateMessageReplacements(
 	};
 }
 
-async function getSortedMessages(roomId: string, read: IRead) {
+export async function getSortedMessages(roomId: string, read: IRead) {
 	const prevMessages: IMessageRaw[] = await read
 		.getRoomReader()
 		.getMessages(roomId, {});
