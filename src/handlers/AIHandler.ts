@@ -2,7 +2,6 @@ import {
 	IHttp,
 	IHttpResponse,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { SettingEnum } from '../config/settings';
 import {
@@ -21,11 +20,12 @@ class AIHandler {
 	private language = this.userPreference.language;
 
 	public async handleResponse(
-		user: IUser,
 		message: string,
 		prompt: string,
-	): Promise<string> {
+		Multiple?: boolean,
+	): Promise<{ response: string; success: boolean }> {
 		let aiProvider: string;
+
 		if (
 			this.userPreference.AIusagePreference ===
 			AIusagePreferenceEnum.Personal
@@ -38,18 +38,21 @@ class AIHandler {
 				.getValueById(SettingEnum.AI_PROVIDER_OPTOIN_ID);
 		}
 
+		const content = Multiple
+			? this.getMultiReponsePrompt(message)
+			: this.getSingleResponsePrompt(message, prompt);
 		switch (aiProvider) {
 			case AIProviderEnum.SelfHosted:
 			case SettingEnum.SELF_HOSTED_MODEL:
-				return this.handleSelfHostedModel(user, message, prompt);
+				return this.handleSelfHostedModel(content);
 
 			case AIProviderEnum.OpenAI:
 			case SettingEnum.OPEN_AI:
-				return this.handleOpenAI(user, message, prompt);
+				return this.handleOpenAI(content);
 
 			case AIProviderEnum.Gemini:
 			case SettingEnum.GEMINI:
-				return this.handleGemini(user, message, prompt);
+				return this.handleGemini(content);
 
 			default:
 				const errorMsg =
@@ -59,19 +62,20 @@ class AIHandler {
 						: t('AI_Not_Configured_Admin', this.language);
 
 				this.app.getLogger().log(errorMsg);
-				return errorMsg;
+				return { response: errorMsg, success: false };
 		}
 	}
 
-	private getPrompt(message: string, prompt: string): string {
-		return `Write a reply to this message: "${message}". ${this.userPreference.AIconfiguration.AIPrompt} and Use the following as a prompt or response reply: "${prompt}" and make sure you respond with just the reply without quotes.`;
+	private getSingleResponsePrompt(message: string, prompt: string): string {
+		return `You are a function that generates responses from a message and prompt message is : "${message}". ${this.userPreference.AIconfiguration.AIPrompt} and Use the following as a prompt : "${prompt}" and make sure you respond with just the reply without quotes.`;
+	}
+	private getMultiReponsePrompt(message: string): string {
+		return `You are a function that generates responses from a message. Give me an array of strings as responses to this message: ${message}. Example: ["hey", "how are you doing", "can I help you"]. Respond exactly like this; don't do anything else. No variable naming or code quotes—just an array of strings for the responses.`;
 	}
 
 	private async handleSelfHostedModel(
-		user: IUser,
-		message: string,
 		prompt: string,
-	): Promise<string> {
+	): Promise<{ response: string; success: boolean }> {
 		try {
 			const url = await this.getSelfHostedModelUrl();
 
@@ -81,15 +85,21 @@ class AIHandler {
 					this.userPreference.AIusagePreference ===
 					AIusagePreferenceEnum.Personal
 				) {
-					return t(
-						'AI_Self_Hosted_Model_Not_Configured',
-						this.language,
-					);
+					return {
+						response: t(
+							'AI_Self_Hosted_Model_Not_Configured',
+							this.language,
+						),
+						success: false,
+					};
 				} else {
-					return t(
-						'AI_Workspace_Model_Not_Configured',
-						this.language,
-					);
+					return {
+						response: t(
+							'AI_Workspace_Model_Not_Configured',
+							this.language,
+						),
+						success: false,
+					};
 				}
 			}
 
@@ -97,7 +107,7 @@ class AIHandler {
 				messages: [
 					{
 						role: 'system',
-						content: this.getPrompt(message, prompt),
+						content: prompt,
 					},
 				],
 				temperature: 0,
@@ -115,15 +125,24 @@ class AIHandler {
 
 			if (!response || !response.data) {
 				this.app.getLogger().log('No response data received from AI.');
-				return t('AI_Something_Went_Wrong', this.language);
+				return {
+					response: t('AI_Something_Went_Wrong', this.language),
+					success: false,
+				};
 			}
-
-			return response.data.choices[0].message.content;
+			this.app.getLogger().log(response.data.choices[0].message.content);
+			return {
+				response: response.data.choices[0].message.content,
+				success: true,
+			};
 		} catch (error) {
 			this.app
 				.getLogger()
 				.log(`Error in handleSelfHostedModel: ${error.message}`);
-			return t('AI_Something_Went_Wrong', this.language);
+			return {
+				response: t('AI_Something_Went_Wrong', this.language),
+				success: false,
+			};
 		}
 	}
 
@@ -142,10 +161,8 @@ class AIHandler {
 	}
 
 	private async handleOpenAI(
-		user: IUser,
-		message: string,
 		prompt: string,
-	): Promise<string> {
+	): Promise<{ response: string; success: boolean }> {
 		try {
 			const { openaikey, openaimodel } = await this.getOpenAIConfig();
 
@@ -157,7 +174,7 @@ class AIHandler {
 						? t('AI_OpenAI_Model_Not_Configured', this.language)
 						: t('AI_Not_Configured_Admin', this.language);
 
-				return errorMsg;
+				return { response: errorMsg, success: false };
 			}
 
 			const response: IHttpResponse = await this.http.post(
@@ -172,7 +189,7 @@ class AIHandler {
 						messages: [
 							{
 								role: 'system',
-								content: this.getPrompt(message, prompt),
+								content: prompt,
 							},
 						],
 					}),
@@ -181,14 +198,20 @@ class AIHandler {
 
 			if (!response || !response.data) {
 				this.app.getLogger().log('No response data received from AI.');
-				return t('AI_Something_Went_Wrong', this.language);
+				return {
+					response: t('AI_Something_Went_Wrong', this.language),
+					success: false,
+				};
 			}
 
 			const { choices } = response.data;
-			return choices[0].message.content;
+			return { response: choices[0].message.content, success: true };
 		} catch (error) {
 			this.app.getLogger().log(`Error in handleOpenAI: ${error.message}`);
-			return t('AI_Something_Went_Wrong', this.language);
+			return {
+				response: t('AI_Something_Went_Wrong', this.language),
+				success: false,
+			};
 		}
 	}
 
@@ -219,10 +242,8 @@ class AIHandler {
 		}
 	}
 	private async handleGemini(
-		user: IUser,
-		message: string,
 		prompt: string,
-	): Promise<string> {
+	): Promise<{ response: string; success: boolean }> {
 		try {
 			const geminiAPIkey = await this.getGeminiAPIKey();
 
@@ -235,7 +256,7 @@ class AIHandler {
 						? t('AI_Gemini_Model_Not_Configured', this.language)
 						: t('AI_Not_Configured_Admin', this.language);
 
-				return errorMsg;
+				return { response: errorMsg, success: false };
 			}
 
 			const response: IHttpResponse = await this.http.post(
@@ -248,7 +269,7 @@ class AIHandler {
 						contents: [
 							{
 								parts: {
-									text: this.getPrompt(message, prompt),
+									text: prompt,
 								},
 							},
 						],
@@ -260,14 +281,23 @@ class AIHandler {
 				this.app
 					.getLogger()
 					.log('No response content received from AI.');
-				return t('AI_Something_Went_Wrong', this.language);
+				return {
+					response: t('AI_Something_Went_Wrong', this.language),
+					success: false,
+				};
 			}
 
 			const data = response.data;
-			return data.candidates[0].content.parts[0].text;
+			return {
+				response: data.candidates[0].content.parts[0].text,
+				success: true,
+			};
 		} catch (error) {
 			this.app.getLogger().log(`Error in handleGemini: ${error.message}`);
-			return t('AI_Something_Went_Wrong', this.language);
+			return {
+				response: t('AI_Something_Went_Wrong', this.language),
+				success: false,
+			};
 		}
 	}
 

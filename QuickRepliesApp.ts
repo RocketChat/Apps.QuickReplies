@@ -32,6 +32,7 @@ import {
 import { ActionButton } from './src/enum/modals/common/ActionButtons';
 import { ExecuteActionButtonHandler } from './src/handlers/ExecuteActionButtonHandler';
 import { settings } from './src/config/settings';
+import { QrCommand } from './src/commands/QrCommand';
 
 export class QuickRepliesApp extends App {
 	private elementBuilder: ElementBuilder;
@@ -48,6 +49,9 @@ export class QuickRepliesApp extends App {
 		);
 		await configuration.slashCommands.provideSlashCommand(
 			new QsCommand(this),
+		);
+		await configuration.slashCommands.provideSlashCommand(
+			new QrCommand(this),
 		);
 		this.elementBuilder = new ElementBuilder(this.getID());
 		this.blockBuilder = new BlockBuilder(this.getID());
