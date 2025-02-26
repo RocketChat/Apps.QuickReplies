@@ -86,6 +86,6 @@ export const ru = {
     AI_Gemini_Model_Not_Configured: "Ваша модель Gemini не настроена должным образом. Пожалуйста, проверьте свою конфигурацию",
     AI_Workspace_Model_Not_Configured: "Ваша AI в Workspace не настроена должным образом. Пожалуйста, свяжитесь с администратором",
     AI_Something_Went_Wrong: "Что-то пошло не так. Пожалуйста, попробуйте позже.",
-    Refresh_Button_Text: "Обновить"
- 
-}
+    Refresh_Button_Text: "Обновить",
+    Reply_Not_Found: "В этой комнате не найдено сообщений от других пользователей для генерации ответа ИИ❌",
+};
