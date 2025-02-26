@@ -25,8 +25,8 @@ export async function CreateReplyModal(
 	modify: IModify,
 	room: IRoom,
 	language: Language,
-	initialReplyName: string,
-	initialReplyBody: string,
+	initialReplyName?: string,
+	initialReplyBody?: string,
 ): Promise<IUIKitSurfaceViewParam | Error> {
 	
 	const { elementBuilder, blockBuilder } = app.getUtils();

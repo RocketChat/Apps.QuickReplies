@@ -65,7 +65,7 @@ export class CommandUtility implements ICommandUtility {
 			triggerId: this.triggerId,
 			threadId: this.threadId,
 			language,
-			args: this.params,
+			params: this.params,
 		});
 
 		if(this.params.length && this.params.length > 1){
