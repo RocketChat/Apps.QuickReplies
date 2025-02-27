@@ -50,16 +50,24 @@
     ```sh
     git clone https://github.com/<yourusername>/Apps.QuickReplies
     ```
-2. Install NPM packages
+2. Navigate to the project directory
+    ```sh
+    cd Apps.QuickReplies
+    ```    
+3. Install NPM packages
     ```sh
     npm ci
     ```
-3. Deploy app using:
+4. Deploy app using:
 
     ```sh
-    rc-apps deploy --url <url> --username <username> --password <password>
+    rc-apps deploy --url <server_url> --username <username> --password <password>
     ```
-
+      Where:
+    - `<server_url>` is the URL of your Rocket.Chat workspace.
+    - `<username>` is your username.
+    - `<password>` is your password.
+    
 <!-- ABOUT THE PROJECT -->
 
 ## ✅ About The Project:
