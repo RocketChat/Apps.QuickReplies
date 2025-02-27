@@ -95,28 +95,10 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 
 
 #### Creating Quick Replies from Message Box
-**`/quick create "<name>" <message>`**: Create a quick reply using the message box
+**`/quick create "<name>" <message>`**: "you can use double quotes to write the name with spaces" and write everything else as a body!
+                                      <p align="center">or</p>
+**`/quick create <name> <message>`**: You can write name without using double quotes if the name do not have spaces!
 
-When you use this command:
-1. A modal window opens automatically
-2. The name and replybody field is prefilled with your specified values
-3. Simply review and click the Submit button to save your quick reply
-
-The command works as follows:
-- The name must be enclosed in quotes `"..."` if it contains multiple words
-- Everything after the name is treated as the message body
-- Without quotes, only the first word would be taken as the name
-
-#### Examples:
-```sh
-# Single word name (quotes optional)
-/quick create greeting Hello! How have you been?
-
-# Multi-word name (quotes required)
-/quick create "welcome message" Welcome to our channel! How can I help you?
-```
-
-Both examples will open a modal with the name and message already filled in. Just click Submit to save your quick reply, which can then be used with **`/qs <name>`**.
 
 ### Using Placeholders:
 
