@@ -96,11 +96,15 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 
 #### Creating Quick Replies from Message Box
 **`/quick create "<name>" <message>`**: "you can use double quotes to write the name with spaces" and write everything else as a body!
-                                      <p align="center">or</p>
-**`/quick create <name> <message>`**: You can write name without using double quotes if the name do not have spaces!
+Example: `/quick create "need assistance" Hey! can you guide me a bit i am facing some issues!`
 
+<p align="center">or</p> 
+
+**`/quick create <name> <message>`**: You can write name without using double quotes if the name doesn't have spaces!
+Example: `/quick create greeting Hey there! Welcome to our channel 👋`
 
 ### Using Placeholders:
+```
 
 When creating or configuring a reply, you can use placeholders like `[name]`, `[username]`, and `[email]` in the reply content. These placeholders will automatically be replaced based on the recipient's information when the message is sent.
 
