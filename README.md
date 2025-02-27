@@ -86,18 +86,37 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 
 -   **`/quick`**: Get started with Quick Reply
 -   **`/quick create`**: Create a new quick reply
+-   **`/quick create "<name>" <message>`**:  Create a quick reply directly from the message box with a name and message
 -   **`/quick list`**: List all your quick replies
 -   **`/quick config`**: Configure your language preferences and AI settings
 -   **`/quick ai`**: Use AI to generate replies
 -   **`/quick help`**: Get help with Quick Reply
 -   **`/qs <reply name>`**: Quickly search and send a reply by name
--   **`/quick create "<name>" <message>`**:  Create a quick reply directly from the input box with a name and message
 
-#### Example:
+
+#### Creating Quick Replies from Message Box
+**`/quick create "<name>" <message>`**: Create a quick reply using the message box
+
+When you use this command:
+1. A modal window opens automatically
+2. The name and replybody field is prefilled with your specified values
+3. Simply review and click the Submit button to save your quick reply
+
+The command works as follows:
+- The name must be enclosed in quotes `"..."` if it contains multiple words
+- Everything after the name is treated as the message body
+- Without quotes, only the first word would be taken as the name
+
+#### Examples:
 ```sh
-/quick create "greeting" Hello! How have you been?
+# Single word name (quotes optional)
+/quick create greeting Hello! How have you been?
+
+# Multi-word name (quotes required)
+/quick create "welcome message" Welcome to our channel! How can I help you?
 ```
-This will add the reply name as **`greeting`** and the rest message as body in the modal, which can be used later by typing **`/qs greeting`**
+
+Both examples will open a modal with the name and message already filled in. Just click Submit to save your quick reply, which can then be used with **`/qs <name>`**.
 
 ### Using Placeholders:
 
