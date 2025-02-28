@@ -95,9 +95,9 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 
 
 #### Creating Quick Replies from Message Box
-**`/quick create "<name>" <message>`**: "you can use double quotes to write the name with spaces" and write everything else as a body!
+**`/quick create "<name>" <message>`**: "if your name has multiple words with space, use double quotes" and write everything else as a body!
 
-Example: `/quick create "need assistance" Hey! can you guide me a bit i am facing some issues!`
+Example: `/quick create "schedule meeting" let's have a quick meet in an hour!`
 
 <p align="center">or</p> 
 
