@@ -35,6 +35,7 @@ export class Handler implements IHandler {
 	public triggerId?: string;
 	public threadId?: string;
 	public language: Language;
+	public params?: string[];
 
 	constructor(params: IHanderParams) {
 		this.app = params.app;
@@ -47,6 +48,8 @@ export class Handler implements IHandler {
 		this.triggerId = params.triggerId;
 		this.threadId = params.threadId;
 		this.language = params.language;
+		this.params = params.params;
+
 		const persistenceRead = params.read.getPersistenceReader();
 		this.roomInteractionStorage = new RoomInteractionStorage(
 			params.persis,
@@ -56,6 +59,8 @@ export class Handler implements IHandler {
 	}
 
 	public async CreateReply(): Promise<void> {
+		const initialReplyName = this.params?.[1];
+		const initialReplyBody = this.params?.slice(2).join(' ');
 		const modal = await CreateReplyModal(
 			this.app,
 			this.sender,
@@ -64,13 +69,14 @@ export class Handler implements IHandler {
 			this.modify,
 			this.room,
 			this.language,
+			initialReplyName,
+			initialReplyBody,
 		);
 
 		if (modal instanceof Error) {
 			this.app.getLogger().error(modal.message);
 			return;
 		}
-
 		const triggerId = this.triggerId;
 
 		if (triggerId) {
