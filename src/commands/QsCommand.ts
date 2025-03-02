@@ -75,9 +75,7 @@ export class QsCommand implements ISlashCommand {
 
 		const matchedReplies = userReplies
 			.filter((reply) => reply.name.toLowerCase().includes(searchTerm))
-			.sort((a, b) => this.compareReplies(a, b, searchTerm))
-			.slice(0, 5);
-
+			.sort((a, b) => this.compareReplies(a, b, searchTerm));
 		const items = matchedReplies.map((reply) => ({
 			id: reply.id,
 			type: SlashCommandPreviewItemType.TEXT,
