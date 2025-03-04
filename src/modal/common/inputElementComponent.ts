@@ -50,6 +50,7 @@ export function inputElementComponent(
 		text: label,
 		element: plainTextInputElement,
 		optional,
+		blockId,
 	});
 
 	return plainTextInputBlock;
