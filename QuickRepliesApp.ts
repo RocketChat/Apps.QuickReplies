@@ -180,8 +180,6 @@ export class QuickRepliesApp extends App {
 				this.getLogger().info(`Initialized default quick replies for user: ${user.id}`);
 			}
 
-			// Mark the user as initialized regardless of whether we added replies
-			// This prevents checking the replies again in the future
 			await this.markUserAsInitialized(user, persistence);
 		} catch (error) {
 			this.getLogger().error(`Error initializing default replies for user: ${error}`);
