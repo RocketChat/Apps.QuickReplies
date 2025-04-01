@@ -175,7 +175,6 @@ export class Handler implements IHandler {
 		const textMessage = Message.trim();
 
 		if (textMessage) {
-            this.app.getLogger().debug(textMessage, "testMessage")
 			const aistorage = new AIstorage(
 				this.persis,
 				this.read.getPersistenceReader(),
