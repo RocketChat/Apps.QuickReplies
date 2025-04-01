@@ -16,6 +16,7 @@ import { IReply } from '../definition/reply/IReply';
 import {
 	sendDefaultNotification,
 	sendHelperNotification,
+    sendNotification,
 } from '../helper/notification';
 import { UserPreferenceModal } from '../modal/UserPreferenceModal';
 import { Language } from '../lib/Translation/translation';
@@ -174,6 +175,7 @@ export class Handler implements IHandler {
 		const textMessage = Message.trim();
 
 		if (textMessage) {
+            this.app.getLogger().debug(textMessage, "testMessage")
 			const aistorage = new AIstorage(
 				this.persis,
 				this.read.getPersistenceReader(),
@@ -205,5 +207,19 @@ export class Handler implements IHandler {
 			}
 			return;
 		}
+        else if(lastMessage?.attachments && !lastMessage?.attachments?.[0]?.description){
+            const content = {
+                message: "Quick replies can't be used because the attachment has no description. The attachment must have a description to proceed."
+            }
+            await sendNotification(this.read, this.modify, this.sender, this.room, content);
+            return
+        }
+        else{
+            const content = {
+                message: "Quick replies can't be used because there is no message to reply to. Please try again with a valid message."
+            }
+            await sendNotification(this.read, this.modify, this.sender, this.room, content);
+            return
+        }
 	}
 }
