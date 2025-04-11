@@ -86,6 +86,7 @@ export const de = {
     AI_Gemini_Model_Not_Configured: "Ihr Gemini-Modell ist nicht richtig eingerichtet. Bitte überprüfen Sie Ihre Konfiguration",
     AI_Workspace_Model_Not_Configured: "Ihre Workspace-AI ist nicht richtig eingerichtet. Bitte kontaktieren Sie Ihren Administrator",
     AI_Something_Went_Wrong: "Etwas ist schiefgelaufen. Bitte versuchen Sie es später noch einmal.",
-    Refresh_Button_Text: "Aktualisieren"
-
+    Refresh_Button_Text: "Aktualisieren",
+    Error_Missing_Attachment_Description: "Schnelle Antwort können nicht verwendet werden, da der Anhang keine Beschreibung enthält. Der Anhang muss eine Beschreibung haben, um fortzufahren.",
+    Error_Missing_Message: "Schnelle Antwort können nicht verwendet werden, da keine Nachricht zum Antworten vorhanden ist. Bitte versuchen Sie es mit einer gültigen Nachricht erneut."
 }

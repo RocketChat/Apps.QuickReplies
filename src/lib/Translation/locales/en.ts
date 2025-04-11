@@ -86,4 +86,7 @@ export const en = {
 	AI_Gemini_Model_Not_Configured: "Your Gemini Model is not set up properly. Please check your configuration",
 	AI_Workspace_Model_Not_Configured: "Your Workspace AI is not set up properly. Please contact your administrator",
 	AI_Something_Went_Wrong: "Something went wrong. Please try again later.",
-	Refresh_Button_Text: "Refresh"};
+	Refresh_Button_Text: "Refresh",
+    Error_Missing_Attachment_Description: "Quick replies can't be used because the attachment has no description. The attachment must have a description to proceed.",
+    Error_Missing_Message: "Quick replies can't be used because there is no message to reply to. Please try again with a valid message."
+};

@@ -19,7 +19,7 @@ import {
     sendNotification,
 } from '../helper/notification';
 import { UserPreferenceModal } from '../modal/UserPreferenceModal';
-import { Language } from '../lib/Translation/translation';
+import { Language, t } from '../lib/Translation/translation';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
@@ -208,14 +208,14 @@ export class Handler implements IHandler {
 		}
         else if(lastMessage?.attachments && !lastMessage?.attachments?.[0]?.description){
             const content = {
-                message: "Quick replies can't be used because the attachment has no description. The attachment must have a description to proceed."
+                message: t('Error_Missing_Attachment_Description', this.language)
             }
             await sendNotification(this.read, this.modify, this.sender, this.room, content);
             return
         }
         else{
             const content = {
-                message: "Quick replies can't be used because there is no message to reply to. Please try again with a valid message."
+                message: t('Error_Missing_Message', this.language)
             }
             await sendNotification(this.read, this.modify, this.sender, this.room, content);
             return
