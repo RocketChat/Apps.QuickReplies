@@ -210,10 +210,10 @@ export class ExecuteViewSubmitHandler {
 				UserPreferenceModalEnum.SELF_HOSTED_URL_ACTION_ID
 			];
 
-		const PromptConfigurationInput =
+		const PromptConfigurationOptions =
 			view.state?.[
-				UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_BLOCK_ID
-			]?.[UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_ACTION_ID];
+				UserPreferenceModalEnum.PROMPT_CONFIG_OPTIONS_BLOCK_ID
+			]?.[UserPreferenceModalEnum.PROMPT_CONFIG_OPTIONS_ACTION_ID];
 
 		const userPreference = new UserPreferenceStorage(
 			this.persistence,
@@ -226,7 +226,7 @@ export class ExecuteViewSubmitHandler {
 			language: languageInput,
 			AIusagePreference: AIpreferenceInput,
 			AIconfiguration: {
-				AIPrompt: PromptConfigurationInput,
+				AIPromptOptions: PromptConfigurationOptions,
 				AIProvider: AIoptionInput,
 				openAI: {
 					apiKey: OpenAIAPIKeyInput,

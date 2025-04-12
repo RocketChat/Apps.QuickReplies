@@ -64,7 +64,7 @@ class AIHandler {
 	}
 
 	private getPrompt(message: string, prompt: string): string {
-		return `Write a reply to this message: "${message}". ${this.userPreference.AIconfiguration.AIPrompt} and Use the following as a prompt or response reply: "${prompt}" and make sure you respond with just the reply without quotes.`;
+		return `Write a reply to this message: "${message}".Reply must be ${this.userPreference.AIconfiguration.AIPromptOptions} Use the as a prompt or response reply: "${prompt}" and make sure you respond with just the reply without quotes.`;
 	}
 
 	private async handleSelfHostedModel(
