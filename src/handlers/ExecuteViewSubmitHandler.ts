@@ -34,6 +34,7 @@ import { AIusagePreference } from '../definition/helper/userPreference';
 import { listReplyContextualBar } from '../modal/listContextualBar';
 import { Receiverstorage } from '../storage/ReceiverStorage';
 import { Replacements } from '../definition/helper/message';
+import { SecurityLevel } from '../helper/AISecurity';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -193,6 +194,11 @@ export class ExecuteViewSubmitHandler {
 				UserPreferenceModalEnum.AI_OPTION_DROPDOWN_ACTION_ID
 			];
 
+		const securityLevelInput =
+			view.state?.[UserPreferenceModalEnum.SECURITY_LEVEL_DROPDOWN_BLOCK_ID]?.[
+				UserPreferenceModalEnum.SECURITY_LEVEL_DROPDOWN_ACTION_ID
+			] as SecurityLevel;
+
 		const OpenAIAPIKeyInput =
 			view.state?.[UserPreferenceModalEnum.OPEN_AI_API_KEY_BLOCK_ID]?.[
 				UserPreferenceModalEnum.OPEN_AI_API_KEY_ACTION_ID
@@ -228,6 +234,7 @@ export class ExecuteViewSubmitHandler {
 			AIconfiguration: {
 				AIPrompt: PromptConfigurationInput,
 				AIProvider: AIoptionInput,
+				securityLevel: securityLevelInput,
 				openAI: {
 					apiKey: OpenAIAPIKeyInput,
 					model: OpenAImodelInput,

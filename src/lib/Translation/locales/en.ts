@@ -86,4 +86,12 @@ export const en = {
 	AI_Gemini_Model_Not_Configured: "Your Gemini Model is not set up properly. Please check your configuration",
 	AI_Workspace_Model_Not_Configured: "Your Workspace AI is not set up properly. Please contact your administrator",
 	AI_Something_Went_Wrong: "Something went wrong. Please try again later.",
-	Refresh_Button_Text: "Refresh"};
+	Refresh_Button_Text: "Refresh",
+	AI_Security_Invalid_Input: "Sorry, I can't help with that request. Let's keep this conversation respectful and appropriate.",
+	AI_Security_Rejection_Message: "Sorry, I can't help with that request.",
+	AI_Security_Respectful_Message: "Let's keep this conversation respectful and appropriate.",
+	AI_Security_Sensitive_Topic_Message: "That topic goes against our community guidelines.",
+	AI_Security_Community_Guidelines: "I'm here to help with constructive and safe queries.",
+	Choose_Security_Level_Placeholder: "Choose security level",
+	Choose_Security_Level_Label: "Security Level"
+};
