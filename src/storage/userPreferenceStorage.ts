@@ -13,6 +13,7 @@ import {
 	IPreference,
 } from '../definition/helper/userPreference';
 import { Language } from '../lib/Translation/translation';
+import { SecurityLevel } from '../helper/AISecurity';
 
 export class UserPreferenceStorage implements IuserPreferenceStorage {
 	private userId: string;
@@ -41,6 +42,9 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 				AIProvider:
 					preference.AIconfiguration.AIProvider ||
 					currentPreference.AIconfiguration.AIProvider,
+				securityLevel:
+					preference.AIconfiguration.securityLevel ||
+					currentPreference.AIconfiguration.securityLevel,
 				openAI: {
 					apiKey:
 						preference.AIconfiguration.openAI.apiKey ||
@@ -89,8 +93,9 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 				language: Language.en,
 				AIusagePreference: AIusagePreferenceEnum.Workspace,
 				AIconfiguration: {
-					AIPrompt: `Keep the  comprehensive clear and concise reply, and ensure it's well-articulated and helpfull`,
+					AIPrompt: `Keep the comprehensive clear and concise reply, and ensure it's well-articulated and helpful`,
 					AIProvider: AIProviderEnum.SelfHosted,
+					securityLevel: SecurityLevel.STRICT,
 					gemini: {
 						apiKey: '',
 					},

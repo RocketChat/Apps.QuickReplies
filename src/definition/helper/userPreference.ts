@@ -1,4 +1,5 @@
 import { Language } from '../../lib/Translation/translation';
+import { SecurityLevel } from '../../helper/AISecurity';
 
 export type AIusagePreference =
 	| AIusagePreferenceEnum.Personal
@@ -27,6 +28,7 @@ export interface IPreference {
 	AIconfiguration: {
 		AIPrompt: string;
 		AIProvider: AIProviderType;
+		securityLevel: SecurityLevel;
 		selfHosted: {
 			url: string;
 		};

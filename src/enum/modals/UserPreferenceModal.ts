@@ -10,6 +10,8 @@ export enum UserPreferenceModalEnum {
 	AI_PREFERENCE_DROPDOWN_BLOCK_ID = 'AI-preference-drop-down-block-id',
 	AI_OPTION_DROPDOWN_BLOCK_ID = 'AI-options-drop-down-block-id',
 	AI_OPTION_DROPDOWN_ACTION_ID = 'AI-options-drop-down-action-id',
+	SECURITY_LEVEL_DROPDOWN_BLOCK_ID = 'security-level-drop-down-block-id',
+	SECURITY_LEVEL_DROPDOWN_ACTION_ID = 'security-level-drop-down-action-id',
 	CLOSE_ACTION_ID = 'set-user-preference-language-modal-action-id',
 	CLOSE_BLOCK_ID = 'set-user-preference-language-modal-block-id',
 	OPEN_AI_API_KEY_ACTION_ID = 'open-ai-api-key-action-id',

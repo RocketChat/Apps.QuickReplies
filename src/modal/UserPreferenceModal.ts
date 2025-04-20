@@ -23,6 +23,7 @@ import {
 	IPreference,
 } from '../definition/helper/userPreference';
 import { inputElementComponent } from './common/inputElementComponent';
+import { SecurityLevel } from '../helper/AISecurity';
 
 export async function UserPreferenceModal({
 	app,
@@ -276,6 +277,49 @@ export async function UserPreferenceModal({
 					break;
 			}
 		}
+
+		const securityLevelOptions = [
+			{
+				text: SecurityLevel.STRICT,
+				value: SecurityLevel.STRICT,
+			},
+			{
+				text: SecurityLevel.MODERATE,
+				value: SecurityLevel.MODERATE,
+			},
+			{
+				text: SecurityLevel.RELAXED,
+				value: SecurityLevel.RELAXED,
+			},
+		];
+
+		const securityLevelDropDownOption =
+			elementBuilder.createDropDownOptions(securityLevelOptions);
+
+		const securityLevelDropDown = elementBuilder.addDropDown(
+			{
+				placeholder: t('Choose_Security_Level_Placeholder', language),
+				options: securityLevelDropDownOption,
+				dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
+				initialOption: securityLevelDropDownOption.find(
+					(option) =>
+						option.value ===
+						existingPreference.AIconfiguration?.securityLevel,
+				),
+			},
+			{
+				blockId: UserPreferenceModalEnum.SECURITY_LEVEL_DROPDOWN_BLOCK_ID,
+				actionId: UserPreferenceModalEnum.SECURITY_LEVEL_DROPDOWN_ACTION_ID,
+			},
+		);
+
+		blocks.push(
+			blockBuilder.createInputBlock({
+				text: t('Choose_Security_Level_Label', language),
+				element: securityLevelDropDown,
+				optional: false,
+			}),
+		);
 	}
 
 	const submitButton = elementBuilder.addButton(
