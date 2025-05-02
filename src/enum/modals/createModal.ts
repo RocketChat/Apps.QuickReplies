@@ -8,4 +8,6 @@ export enum CreateModalEnum {
 	CLOSE_BLOCK_ID = 'create-new-reply-block-id',
 	SUBMIT_ACTION_ID = 'submit-create-action-id',
 	SUBMIT_BLOCK_ID = 'submit-create-block-id',
+	NAME_ERROR_BLOCK_ID = 'name-error-block-id',
+	BODY_ERROR_BLOCK_ID = 'body-error-block-id',
 }

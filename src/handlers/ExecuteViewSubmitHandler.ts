@@ -34,6 +34,7 @@ import { AIusagePreference } from '../definition/helper/userPreference';
 import { listReplyContextualBar } from '../modal/listContextualBar';
 import { Receiverstorage } from '../storage/ReceiverStorage';
 import { Replacements } from '../definition/helper/message';
+import { CreateReplyModal } from '../modal/createModal';
 
 export class ExecuteViewSubmitHandler {
 	private context: UIKitViewSubmitInteractionContext;
@@ -130,12 +131,33 @@ export class ExecuteViewSubmitHandler {
 
 		const name = nameStateValue ? nameStateValue.trim() : '';
 		const body = bodyStateValue ? bodyStateValue.trim() : '';
-		if (!name || !body) {
-			const errorMessage = `${t('Error_Fill_Required_Fields', language)}`;
-			await sendNotification(this.read, this.modify, user, room, {
-				message: errorMessage,
-			});
-			return this.context.getInteractionResponder().errorResponse();
+
+		// Check for empty fields
+		const errors = {
+			nameError: !name,
+			bodyError: !body
+		};
+
+		// If any errors exist, recreate the modal with error messages
+		if (errors.nameError || errors.bodyError) {
+			const modal = await CreateReplyModal(
+				this.app,
+				user,
+				this.read,
+				this.persistence,
+				this.modify,
+				room,
+				language,
+				errors
+			);
+
+			if (modal instanceof Error) {
+				this.app.getLogger().error(modal.message);
+				return this.context.getInteractionResponder().errorResponse();
+			}
+
+			// Update the view with errors instead of creating a new one
+			return this.context.getInteractionResponder().updateModalViewResponse(modal);
 		}
 
 		const replyStorage = new ReplyStorage(
@@ -171,91 +193,14 @@ export class ExecuteViewSubmitHandler {
 		}
 	}
 
-	private async handleSetUserPreference(
-		room: IRoom,
-		user: IUser,
-		view: IUIKitSurface,
-	): Promise<IUIKitResponse> {
-		const languageInput = view.state?.[
-			UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
-		]?.[
-			UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID
-		] as Language;
-
-		const AIpreferenceInput = view.state?.[
-			UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_BLOCK_ID
-		]?.[
-			UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID
-		] as AIusagePreference;
-
-		const AIoptionInput =
-			view.state?.[UserPreferenceModalEnum.AI_OPTION_DROPDOWN_BLOCK_ID]?.[
-				UserPreferenceModalEnum.AI_OPTION_DROPDOWN_ACTION_ID
-			];
-
-		const OpenAIAPIKeyInput =
-			view.state?.[UserPreferenceModalEnum.OPEN_AI_API_KEY_BLOCK_ID]?.[
-				UserPreferenceModalEnum.OPEN_AI_API_KEY_ACTION_ID
-			];
-		const OpenAImodelInput =
-			view.state?.[UserPreferenceModalEnum.OPEN_AI_MODEL_BLOCK_ID]?.[
-				UserPreferenceModalEnum.OPEN_AI_MODEL_ACTION_ID
-			];
-		const GeminiAPIKeyInput =
-			view.state?.[UserPreferenceModalEnum.GEMINI_API_KEY_BLOCK_ID]?.[
-				UserPreferenceModalEnum.GEMINI_API_KEY_ACTION_ID
-			];
-		const SelfHostedURLInput =
-			view.state?.[UserPreferenceModalEnum.SELF_HOSTED_URL_BLOCK_ID]?.[
-				UserPreferenceModalEnum.SELF_HOSTED_URL_ACTION_ID
-			];
-
-		const PromptConfigurationInput =
-			view.state?.[
-				UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_BLOCK_ID
-			]?.[UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_ACTION_ID];
-
-		const userPreference = new UserPreferenceStorage(
-			this.persistence,
-			this.read.getPersistenceReader(),
-			user.id,
-		);
-
-		await userPreference.storeUserPreference({
-			userId: user.id,
-			language: languageInput,
-			AIusagePreference: AIpreferenceInput,
-			AIconfiguration: {
-				AIPrompt: PromptConfigurationInput,
-				AIProvider: AIoptionInput,
-				openAI: {
-					apiKey: OpenAIAPIKeyInput,
-					model: OpenAImodelInput,
-				},
-				gemini: {
-					apiKey: GeminiAPIKeyInput,
-				},
-				selfHosted: {
-					url: SelfHostedURLInput,
-				},
-			},
-		});
-
-		await sendNotification(this.read, this.modify, user, room, {
-			message: t('Config_Updated_Successfully', languageInput),
-		});
-
-		return this.context.getInteractionResponder().successResponse();
-	}
-
 	private async handleSend(
-		room: IRoom,
+        room: IRoom,
 		user: IUser,
 		view: IUIKitSurface,
 		replyId: string,
 	): Promise<IUIKitResponse> {
-		try {
-			const replyStorage = new ReplyStorage(
+        try {
+            const replyStorage = new ReplyStorage(
 				this.persistence,
 				this.read.getPersistenceReader(),
 			);
@@ -311,6 +256,83 @@ export class ExecuteViewSubmitHandler {
 			return this.context.getInteractionResponder().errorResponse();
 		}
 	}
+
+        private async handleSetUserPreference(
+            room: IRoom,
+            user: IUser,
+            view: IUIKitSurface,
+        ): Promise<IUIKitResponse> {
+            const languageInput = view.state?.[
+                UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
+            ]?.[
+                UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID
+            ] as Language;
+
+            const AIpreferenceInput = view.state?.[
+                UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_BLOCK_ID
+            ]?.[
+                UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_ACTION_ID
+            ] as AIusagePreference;
+
+            const AIoptionInput =
+                view.state?.[UserPreferenceModalEnum.AI_OPTION_DROPDOWN_BLOCK_ID]?.[
+                    UserPreferenceModalEnum.AI_OPTION_DROPDOWN_ACTION_ID
+                ];
+
+            const OpenAIAPIKeyInput =
+                view.state?.[UserPreferenceModalEnum.OPEN_AI_API_KEY_BLOCK_ID]?.[
+                    UserPreferenceModalEnum.OPEN_AI_API_KEY_ACTION_ID
+                ];
+            const OpenAImodelInput =
+                view.state?.[UserPreferenceModalEnum.OPEN_AI_MODEL_BLOCK_ID]?.[
+                    UserPreferenceModalEnum.OPEN_AI_MODEL_ACTION_ID
+                ];
+            const GeminiAPIKeyInput =
+                view.state?.[UserPreferenceModalEnum.GEMINI_API_KEY_BLOCK_ID]?.[
+                    UserPreferenceModalEnum.GEMINI_API_KEY_ACTION_ID
+                ];
+            const SelfHostedURLInput =
+                view.state?.[UserPreferenceModalEnum.SELF_HOSTED_URL_BLOCK_ID]?.[
+                    UserPreferenceModalEnum.SELF_HOSTED_URL_ACTION_ID
+                ];
+
+            const PromptConfigurationInput =
+                view.state?.[
+                    UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_BLOCK_ID
+                ]?.[UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_ACTION_ID];
+
+            const userPreference = new UserPreferenceStorage(
+                this.persistence,
+                this.read.getPersistenceReader(),
+                user.id,
+            );
+
+            await userPreference.storeUserPreference({
+                userId: user.id,
+                language: languageInput,
+                AIusagePreference: AIpreferenceInput,
+                AIconfiguration: {
+                    AIPrompt: PromptConfigurationInput,
+                    AIProvider: AIoptionInput,
+                    openAI: {
+                        apiKey: OpenAIAPIKeyInput,
+                        model: OpenAImodelInput,
+                    },
+                    gemini: {
+                        apiKey: GeminiAPIKeyInput,
+                    },
+                    selfHosted: {
+                        url: SelfHostedURLInput,
+                    },
+                },
+            });
+
+            await sendNotification(this.read, this.modify, user, room, {
+                message: t('Config_Updated_Successfully', languageInput),
+            });
+
+            return this.context.getInteractionResponder().successResponse();
+        }
 
 	private async handleDelete(
 		room: IRoom,
@@ -395,6 +417,25 @@ export class ExecuteViewSubmitHandler {
 			: storedReply
 			? storedReply.body.trim()
 			: '';
+
+		// Check for empty fields and show red boundaries
+		const errors: Record<string, string> = {};
+
+		if (!name) {
+			errors[EditModalEnum.REPLY_NAME_BLOCK_ID] = 'This field is required';
+		}
+
+		if (!body) {
+			errors[EditModalEnum.REPLY_BODY_BLOCK_ID] = 'This field is required';
+		}
+
+		if (Object.keys(errors).length > 0) {
+			// Return error response with error fields to highlight them with red boundaries
+			return this.context.getInteractionResponder().viewErrorResponse({
+				viewId: view.id,
+				errors,
+			});
+		}
 
 		const result = await replyStorage.updateReplyById(
 			user,

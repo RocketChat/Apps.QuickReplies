@@ -4,7 +4,7 @@ import {
 	IRead,
 	IUIKitSurfaceViewParam,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { TextObjectType, InputBlock } from '@rocket.chat/ui-kit';
+import { TextObjectType, InputBlock, ContextBlock } from '@rocket.chat/ui-kit';
 
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
@@ -25,10 +25,14 @@ export async function CreateReplyModal(
 	modify: IModify,
 	room: IRoom,
 	language: Language,
+	errors?: {
+		nameError?: boolean;
+		bodyError?: boolean;
+	}
 ): Promise<IUIKitSurfaceViewParam | Error> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
-	const blocks: InputBlock[] = [];
+	const blocks: Array<InputBlock | ContextBlock> = [];
 
 	const labelReplyName = t('Reply_Name_Label', language);
 	const placeholderReplyName = t('Reply_Name_Placeholder', language);
@@ -45,6 +49,17 @@ export async function CreateReplyModal(
 			actionId: CreateModalEnum.REPLY_NAME_ACTION_ID,
 		},
 	);
+
+	blocks.push(inputReplyName);
+
+	// Add name error context block if needed
+	if (errors?.nameError) {
+		const nameErrorContext = blockBuilder.createContextBlock({
+			blockId: CreateModalEnum.NAME_ERROR_BLOCK_ID,
+			contextElements: ['**❗ Name field is required**']
+		});
+		blocks.push(nameErrorContext);
+	}
 
 	const labelReplyBody = t('Reply_Body_Label', language);
 	const placeholderReplyBody = t('Reply_Body_Placeholder', language);
@@ -63,7 +78,16 @@ export async function CreateReplyModal(
 		},
 	);
 
-	blocks.push(inputReplyName, inputReplyBody);
+	blocks.push(inputReplyBody);
+
+	// Add body error context block if needed
+	if (errors?.bodyError) {
+		const bodyErrorContext = blockBuilder.createContextBlock({
+			blockId: CreateModalEnum.BODY_ERROR_BLOCK_ID,
+			contextElements: ['**❗ Body field is required**']
+		});
+		blocks.push(bodyErrorContext);
+	}
 
 	const submit = elementBuilder.addButton(
 		{ text: t('Create_Button', language), style: ButtonStyle.PRIMARY },
