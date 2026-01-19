@@ -64,7 +64,7 @@ class AIHandler {
 	}
 
 	private getPrompt(message: string, prompt: string): string {
-		return `Write a reply to this message: "${message}". ${this.userPreference.AIconfiguration.AIPrompt} and Use the following as a prompt or response reply: "${prompt}" and make sure you respond with just the reply without quotes.`;
+		return `Write a reply to this message: "${message}".Reply must be ${this.userPreference.AIconfiguration.AIPromptOptions} Use the as a prompt or response reply: "${prompt}" and make sure you respond with just the reply without quotes.`;
 	}
 
 	private async handleSelfHostedModel(
@@ -239,7 +239,7 @@ class AIHandler {
 			}
 
 			const response: IHttpResponse = await this.http.post(
-				`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiAPIkey}`,
+				`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiAPIkey}`,
 				{
 					headers: {
 						'Content-Type': 'application/json',

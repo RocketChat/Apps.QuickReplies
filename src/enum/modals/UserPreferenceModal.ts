@@ -20,8 +20,8 @@ export enum UserPreferenceModalEnum {
 	GEMINI_API_KEY_BLOCK_ID = 'gemini-api-key-block-id',
 	SELF_HOSTED_URL_ACTION_ID = 'self-hosted-url-action-id',
 	SELF_HOSTED_URL_BLOCK_ID = 'self-hosted-url-block-id',
-	PROMPT_CONFIG_INPUT_BLOCK_ID = 'prompt-config-input-block-id',
-	PROMPT_CONFIG_INPUT_ACTION_ID = 'prompt-config-input-action-id',
+	PROMPT_CONFIG_OPTIONS_BLOCK_ID = 'prompt-config-options-block-id',
+	PROMPT_CONFIG_OPTIONS_ACTION_ID = 'prompt-config-options-action-id',
 
 	SUBMIT_ACTION_ID = 'submit-set-user-preference-language-modal-action-id',
 	SUBMIT_BLOCK_ID = 'submit-set-user-preference-language-modal-block-id',

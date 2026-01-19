@@ -12,12 +12,17 @@ import {
 	PlainTextInputElement,
 	Option,
 	StaticSelectElement,
+	MultiStaticSelectElement,
 } from '@rocket.chat/ui-kit';
 import { PlainTextInputParam } from '../definition/ui-kit/Element/IPlainTextInputElement';
 import {
 	StaticSelectElementParam,
 	StaticSelectOptionsParam,
 } from '../definition/ui-kit/Element/IStaticSelectElement';
+import {
+	MultiStaticSelectElementParam,
+	MultiStaticSelectOptionsParam,
+} from '../definition/ui-kit/Element/IMultiStaticSelectElement';
 
 export class ElementBuilder implements IElementBuilder {
 	constructor(private readonly appId: string) {}
@@ -122,6 +127,64 @@ export class ElementBuilder implements IElementBuilder {
 
 	public createDropDownOptions(
 		param: StaticSelectOptionsParam,
+	): Array<Option> {
+		const options: Array<Option> = param.map((option) => {
+			const { text, value, description, url } = option;
+			const optionObject: Option = {
+				text: {
+					type: TextObjectType.PLAIN_TEXT,
+					text,
+				},
+				value,
+				...(description
+					? {
+							description: {
+								type: TextObjectType.PLAIN_TEXT,
+								text: description,
+							},
+							// eslint-disable-next-line no-mixed-spaces-and-tabs
+					  }
+					: undefined),
+				url,
+			};
+			return optionObject;
+		});
+		return options;
+	}
+
+	public addMultiSelect(
+		param: MultiStaticSelectElementParam,
+		interaction: ElementInteractionParam,
+	): MultiStaticSelectElement {
+		const {
+			placeholder,
+			options,
+			optionGroups,
+			initialOption,
+			initialValue,
+			dispatchActionConfig,
+		} = param;
+		const { blockId, actionId } = interaction;
+		const multiSelect: MultiStaticSelectElement = {
+			type: BlockElementType.MULTI_STATIC_SELECT,
+			placeholder: {
+				type: TextObjectType.PLAIN_TEXT,
+				text: placeholder,
+			},
+			options,
+			optionGroups,
+			initialOption,
+			initialValue,
+			appId: this.appId,
+			blockId,
+			actionId,
+			dispatchActionConfig,
+		};
+		return multiSelect;
+	}
+
+	public createMultiSelectOptions(
+		param: MultiStaticSelectOptionsParam,
 	): Array<Option> {
 		const options: Array<Option> = param.map((option) => {
 			const { text, value, description, url } = option;

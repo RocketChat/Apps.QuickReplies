@@ -21,6 +21,7 @@ import {
 	AIProviderEnum,
 	AIusagePreferenceEnum,
 	IPreference,
+	PromptOptionsEnum,
 } from '../definition/helper/userPreference';
 import { inputElementComponent } from './common/inputElementComponent';
 
@@ -73,21 +74,38 @@ export async function UserPreferenceModal({
 	);
 
 	blocks.push(blockBuilder.createDividerBlock());
-	const PromptInput = inputElementComponent(
+
+	const promptOptions = Object.values(PromptOptionsEnum).map((option) => ({
+		text: option,
+		value: option,
+	}));
+
+	const promptMultiSelectOptions =
+		elementBuilder.createMultiSelectOptions(promptOptions);
+
+	const promptMultiSelect = elementBuilder.addMultiSelect(
 		{
-			app,
-			label: t('AI_Prompt_Input_Label', language),
-			placeholder: t('AI_Prompt_Input_Placeholder', language),
-			optional: false,
-			initialValue: existingPreference?.AIconfiguration?.AIPrompt,
+			placeholder: t('AI_Prompt_Options_Placeholder', language),
+			options: promptMultiSelectOptions,
+			initialValue:
+				existingPreference.AIconfiguration?.AIPromptOptions?.map(
+					(option) => option,
+				),
+			dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
 		},
 		{
-			blockId: UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_BLOCK_ID,
-			actionId: UserPreferenceModalEnum.PROMPT_CONFIG_INPUT_ACTION_ID,
+			blockId: UserPreferenceModalEnum.PROMPT_CONFIG_OPTIONS_BLOCK_ID,
+			actionId: UserPreferenceModalEnum.PROMPT_CONFIG_OPTIONS_ACTION_ID,
 		},
 	);
 
-	blocks.push(PromptInput);
+	blocks.push(
+		blockBuilder.createInputBlock({
+			text: t('AI_Prompt_Options_Label', language),
+			element: promptMultiSelect,
+			optional: false,
+		}),
+	);
 
 	const AIusagePreferenceOptions = [
 		{

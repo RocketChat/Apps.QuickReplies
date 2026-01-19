@@ -35,9 +35,9 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 				preference.AIusagePreference ||
 				currentPreference.AIusagePreference,
 			AIconfiguration: {
-				AIPrompt:
-					preference.AIconfiguration.AIPrompt ||
-					currentPreference.AIconfiguration.AIPrompt,
+				AIPromptOptions:
+					preference.AIconfiguration.AIPromptOptions ||
+					currentPreference.AIconfiguration.AIPromptOptions,
 				AIProvider:
 					preference.AIconfiguration.AIProvider ||
 					currentPreference.AIconfiguration.AIProvider,
@@ -89,7 +89,7 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 				language: Language.en,
 				AIusagePreference: AIusagePreferenceEnum.Workspace,
 				AIconfiguration: {
-					AIPrompt: `Keep the  comprehensive clear and concise reply, and ensure it's well-articulated and helpfull`,
+					AIPromptOptions: ['Professional', 'Concise', 'Helpful'],
 					AIProvider: AIProviderEnum.SelfHosted,
 					gemini: {
 						apiKey: '',
