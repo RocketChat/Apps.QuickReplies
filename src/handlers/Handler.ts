@@ -16,9 +16,10 @@ import { IReply } from '../definition/reply/IReply';
 import {
 	sendDefaultNotification,
 	sendHelperNotification,
+    sendNotification,
 } from '../helper/notification';
 import { UserPreferenceModal } from '../modal/UserPreferenceModal';
-import { Language } from '../lib/Translation/translation';
+import { Language, t } from '../lib/Translation/translation';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
@@ -205,5 +206,19 @@ export class Handler implements IHandler {
 			}
 			return;
 		}
+        else if(lastMessage?.attachments && !lastMessage?.attachments?.[0]?.description){
+            const content = {
+                message: t('Error_Missing_Attachment_Description', this.language)
+            }
+            await sendNotification(this.read, this.modify, this.sender, this.room, content);
+            return
+        }
+        else{
+            const content = {
+                message: t('Error_Missing_Message', this.language)
+            }
+            await sendNotification(this.read, this.modify, this.sender, this.room, content);
+            return
+        }
 	}
 }

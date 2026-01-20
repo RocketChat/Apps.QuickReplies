@@ -86,7 +86,8 @@ export const pt = {
     AI_Gemini_Model_Not_Configured: "Seu Modelo Gemini não está configurado corretamente. Por favor, verifique sua configuração",
     AI_Workspace_Model_Not_Configured: "Sua IA do Workspace não está configurada corretamente. Por favor, entre em contato com o administrador",
     AI_Something_Went_Wrong: "Algo deu errado. Por favor, tente novamente mais tarde.",
-    Refresh_Button_Text: "Atualizar"
- 
+    Refresh_Button_Text: "Atualizar",
+    Error_Missing_Attachment_Description: "Resposta rápida não podem ser usadas porque o anexo não tem descrição. O anexo deve ter uma descrição para prosseguir.",
+    Error_Missing_Message: "Resposta rápida não podem ser usadas porque não há mensagem para responder. Por favor, tente novamente com uma mensagem válida."
 }
 
