@@ -2,7 +2,6 @@ import {
 	IHttp,
 	IHttpResponse,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { SettingEnum } from '../config/settings';
 import {
@@ -21,55 +20,57 @@ class AIHandler {
 	private language = this.userPreference.language;
 
 	public async handleResponse(
-		user: IUser,
 		message: string,
 		prompt: string,
+		correctGrammar?: boolean,
 	): Promise<string> {
 		let aiProvider: string;
 		if (
-			this.userPreference.AIusagePreference ===
-			AIusagePreferenceEnum.Personal
+		  this.userPreference.AIusagePreference ===
+		  AIusagePreferenceEnum.Personal
 		) {
-			aiProvider = this.userPreference.AIconfiguration.AIProvider;
+		  aiProvider = this.userPreference.AIconfiguration.AIProvider;
 		} else {
-			aiProvider = await this.app
-				.getAccessors()
-				.environmentReader.getSettings()
-				.getValueById(SettingEnum.AI_PROVIDER_OPTOIN_ID);
+		  aiProvider = await this.app
+			.getAccessors()
+			.environmentReader.getSettings()
+			.getValueById(SettingEnum.AI_PROVIDER_OPTOIN_ID);
 		}
-
+	
+		const content = correctGrammar ? this.getGrammarFixPrompt(message) : this.getAIResponsePrompt(message, prompt)
 		switch (aiProvider) {
-			case AIProviderEnum.SelfHosted:
-			case SettingEnum.SELF_HOSTED_MODEL:
-				return this.handleSelfHostedModel(user, message, prompt);
-
-			case AIProviderEnum.OpenAI:
-			case SettingEnum.OPEN_AI:
-				return this.handleOpenAI(user, message, prompt);
-
-			case AIProviderEnum.Gemini:
-			case SettingEnum.GEMINI:
-				return this.handleGemini(user, message, prompt);
-
-			default:
-				const errorMsg =
-					this.userPreference.AIusagePreference ===
-					AIusagePreferenceEnum.Personal
-						? t('AI_Not_Configured_Personal', this.language)
-						: t('AI_Not_Configured_Admin', this.language);
-
-				this.app.getLogger().log(errorMsg);
-				return errorMsg;
+		  case AIProviderEnum.SelfHosted:
+		  case SettingEnum.SELF_HOSTED_MODEL:
+			return this.handleSelfHostedModel(content);
+	
+		  case AIProviderEnum.OpenAI:
+		  case SettingEnum.OPEN_AI:
+			return this.handleOpenAI(content);
+	
+		  case AIProviderEnum.Gemini:
+		  case SettingEnum.GEMINI:
+			return this.handleGemini(content);
+	
+		  default:
+			const errorMsg =
+			  this.userPreference.AIusagePreference ===
+				AIusagePreferenceEnum.Personal
+				? t('AI_Not_Configured_Personal', this.language)
+				: t('AI_Not_Configured_Admin', this.language);
+	
+			this.app.getLogger().log(errorMsg);
+			return errorMsg;
 		}
+	
 	}
 
-	private getPrompt(message: string, prompt: string): string {
-		return `Write a reply to this message: "${message}".Reply must be ${this.userPreference.AIconfiguration.AIPromptOptions} Use the as a prompt or response reply: "${prompt}" and make sure you respond with just the reply without quotes.`;
+	private getAIResponsePrompt(message: string, prompt: string): string {
+		return `You are a function that generates responses from a message and prompt message is : "${message}". ${this.userPreference.AIconfiguration.AIPromptOptions} and Use the following as a prompt : "${prompt}" and make sure you respond with just the reply without quotes.`;
 	}
-
+	private getGrammarFixPrompt(message: string): string {
+		return `You are a function that corrects grammar and spelling only. Fix any grammar errors, spelling mistakes, and punctuation in this message: "${message}". Return only the corrected text as a single string. Make no other changes to the content or meaning - just fix grammar and spelling issues.`;
+	}
 	private async handleSelfHostedModel(
-		user: IUser,
-		message: string,
 		prompt: string,
 	): Promise<string> {
 		try {
@@ -97,7 +98,7 @@ class AIHandler {
 				messages: [
 					{
 						role: 'system',
-						content: this.getPrompt(message, prompt),
+						content: prompt,
 					},
 				],
 				temperature: 0,
@@ -142,8 +143,6 @@ class AIHandler {
 	}
 
 	private async handleOpenAI(
-		user: IUser,
-		message: string,
 		prompt: string,
 	): Promise<string> {
 		try {
@@ -172,7 +171,7 @@ class AIHandler {
 						messages: [
 							{
 								role: 'system',
-								content: this.getPrompt(message, prompt),
+								content: prompt,
 							},
 						],
 					}),
@@ -219,8 +218,6 @@ class AIHandler {
 		}
 	}
 	private async handleGemini(
-		user: IUser,
-		message: string,
 		prompt: string,
 	): Promise<string> {
 		try {
@@ -239,7 +236,7 @@ class AIHandler {
 			}
 
 			const response: IHttpResponse = await this.http.post(
-				`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiAPIkey}`,
+			`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiAPIkey}`,
 				{
 					headers: {
 						'Content-Type': 'application/json',
@@ -248,7 +245,7 @@ class AIHandler {
 						contents: [
 							{
 								parts: {
-									text: this.getPrompt(message, prompt),
+									text: prompt,
 								},
 							},
 						],

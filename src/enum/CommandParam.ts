@@ -6,5 +6,6 @@ export enum CommandParam {
 	AI = 'ai',
 	DELETE = 'delete',
 	EDIT = 'edit',
+	GRAMMAR = 'grammar',
 	SEND = 'send',
 }
