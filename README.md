@@ -91,6 +91,7 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 -   **`/quick ai`**: Use AI to generate replies
 -   **`/quick help`**: Get help with Quick Reply
 -   **`/qs <reply name>`**: Quickly search and send a reply by name
+-   **`/quick grammar <text>`**: Correct grammar using AI
 
 ### Using Placeholders:
 

@@ -10,4 +10,5 @@ export interface IHandler extends Omit<ICommandUtilityParams, 'params'> {
 
 export type IHanderParams = Omit<ICommandUtilityParams, 'params'> & {
 	language: Language;
+	params?: string[]
 };
