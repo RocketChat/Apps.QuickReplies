@@ -86,14 +86,26 @@ By selecting quick replies instead of typing manually, agents/users can respond 
 
 -   **`/quick`**: Get started with Quick Reply
 -   **`/quick create`**: Create a new quick reply
+-   **`/quick create "<name>" <message>`**:  Create a quick reply directly from the message box with a name and message
 -   **`/quick list`**: List all your quick replies
 -   **`/quick config`**: Configure your language preferences and AI settings
 -   **`/quick ai`**: Use AI to generate replies
 -   **`/quick help`**: Get help with Quick Reply
 -   **`/qs <reply name>`**: Quickly search and send a reply by name
 
-### Using Placeholders:
 
+#### Creating Quick Replies from Message Box
+**`/quick create "<name>" <message>`**: "if your name has multiple words with space, use double quotes" and write everything else as a body!
+
+Example: `/quick create "schedule meeting" let's have a quick meet in an hour!`
+
+<p align="center">or</p> 
+
+**`/quick create <name> <message>`**: You can write name without using double quotes if the name doesn't have spaces!
+
+Example: `/quick create greeting Hey there! Welcome to our channel 👋`
+
+### Using Placeholders:
 When creating or configuring a reply, you can use placeholders like `[name]`, `[username]`, and `[email]` in the reply content. These placeholders will automatically be replaced based on the recipient's information when the message is sent.
 
 <!-- CONTRIBUTING -->

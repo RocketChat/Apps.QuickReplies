@@ -25,7 +25,10 @@ export async function CreateReplyModal(
 	modify: IModify,
 	room: IRoom,
 	language: Language,
+	initialReplyName?: string,
+	initialReplyBody?: string,
 ): Promise<IUIKitSurfaceViewParam | Error> {
+	
 	const { elementBuilder, blockBuilder } = app.getUtils();
 
 	const blocks: InputBlock[] = [];
@@ -39,6 +42,7 @@ export async function CreateReplyModal(
 			placeholder: placeholderReplyName,
 			label: labelReplyName,
 			optional: false,
+            initialValue: initialReplyName,
 		},
 		{
 			blockId: CreateModalEnum.REPLY_NAME_BLOCK_ID,
@@ -56,6 +60,7 @@ export async function CreateReplyModal(
 			label: labelReplyBody,
 			optional: false,
 			multiline: true,
+            initialValue: initialReplyBody,
 		},
 		{
 			blockId: CreateModalEnum.REPLY_BODY_BLOCK_ID,
