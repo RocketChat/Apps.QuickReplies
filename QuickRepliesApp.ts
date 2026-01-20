@@ -1,5 +1,6 @@
 import {
 	IAppAccessors,
+	IAppInstallationContext,
 	IConfigurationExtend,
 	IEnvironmentRead,
 	IHttp,
@@ -32,10 +33,13 @@ import {
 import { ActionButton } from './src/enum/modals/common/ActionButtons';
 import { ExecuteActionButtonHandler } from './src/handlers/ExecuteActionButtonHandler';
 import { settings } from './src/config/settings';
+import { IUser } from '@rocket.chat/apps-engine/definition/users';
+import { UserInitStorage } from './src/handlers/UserDefaultReplies';
 
 export class QuickRepliesApp extends App {
 	private elementBuilder: ElementBuilder;
 	private blockBuilder: BlockBuilder;
+
 	constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
 		super(info, logger, accessors);
 	}
@@ -91,6 +95,36 @@ export class QuickRepliesApp extends App {
 			blockBuilder: this.blockBuilder,
 		};
 	}
+
+	public async initializeDefaultRepliesForUser(
+		user: IUser,
+		read: IRead,
+		persistence: IPersistence
+	): Promise<void> {
+		const userInitStorage = new UserInitStorage(
+			persistence,
+			read.getPersistenceReader(),
+			this.getLogger()
+		);
+
+		await userInitStorage.initializeDefaultRepliesForUser(user);
+	}
+
+	public async onInstall(
+		context: IAppInstallationContext,
+		read: IRead,
+		http: IHttp,
+		persistence: IPersistence,
+	): Promise<void> {
+		try {
+			// Initialize for the admin/installer user
+			await this.initializeDefaultRepliesForUser(context.user, read, persistence);
+			this.getLogger().info('Successfully initialized default replies for admin during installation');
+		} catch (error) {
+			this.getLogger().error(`Error in onInstall: ${error}`);
+		}
+	}
+
 	public async executeViewSubmitHandler(
 		context: UIKitViewSubmitInteractionContext,
 		read: IRead,
@@ -98,6 +132,7 @@ export class QuickRepliesApp extends App {
 		persistence: IPersistence,
 		modify: IModify,
 	) {
+
 		const handler = new ExecuteViewSubmitHandler(
 			this,
 			read,
@@ -109,6 +144,7 @@ export class QuickRepliesApp extends App {
 
 		return await handler.handleActions();
 	}
+
 	public async executeViewClosedHandler(
 		context: UIKitViewCloseInteractionContext,
 		read: IRead,
@@ -135,6 +171,9 @@ export class QuickRepliesApp extends App {
 		persistence: IPersistence,
 		modify: IModify,
 	): Promise<IUIKitResponse> {
+		// Check and initialize default replies for the user
+		await this.initializeDefaultRepliesForUser(context.getInteractionData().user, read, persistence);
+
 		const handler = new ExecuteBlockActionHandler(
 			this,
 			read,
@@ -154,6 +193,9 @@ export class QuickRepliesApp extends App {
 		persistence: IPersistence,
 		modify: IModify,
 	): Promise<IUIKitResponse> {
+		// Check and initialize default replies for the user
+		await this.initializeDefaultRepliesForUser(context.getInteractionData().user, read, persistence);
+
 		const handler = new ExecuteActionButtonHandler(
 			this,
 			read,
