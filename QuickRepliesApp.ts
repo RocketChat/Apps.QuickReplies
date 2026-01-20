@@ -1,5 +1,6 @@
 import {
 	IAppAccessors,
+	IAppInstallationContext,
 	IConfigurationExtend,
 	IEnvironmentRead,
 	IHttp,
@@ -9,7 +10,7 @@ import {
 	IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { App } from '@rocket.chat/apps-engine/definition/App';
-import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
+import {IAppInfo, RocketChatAssociationModel, RocketChatAssociationRecord} from '@rocket.chat/apps-engine/definition/metadata';
 import { QuickCommand } from './src/commands/QuickCommand';
 import {
 	IUIKitResponse,
@@ -32,6 +33,7 @@ import {
 import { ActionButton } from './src/enum/modals/common/ActionButtons';
 import { ExecuteActionButtonHandler } from './src/handlers/ExecuteActionButtonHandler';
 import { settings } from './src/config/settings';
+import { IReply } from './src/definition/reply/IReply';
 
 export class QuickRepliesApp extends App {
 	private elementBuilder: ElementBuilder;
@@ -91,6 +93,77 @@ export class QuickRepliesApp extends App {
 			blockBuilder: this.blockBuilder,
 		};
 	}
+
+	private getAssociations(userId: string): RocketChatAssociationRecord[] {
+		return [
+			new RocketChatAssociationRecord(
+				RocketChatAssociationModel.USER,
+				userId,
+			),
+			new RocketChatAssociationRecord(
+				RocketChatAssociationModel.MISC,
+				'reply',
+			),
+		];
+	}
+
+	public async onInstall(
+		context: IAppInstallationContext,
+		read: IRead,
+		http: IHttp,
+		persistence: IPersistence,
+		modify: IModify
+	): Promise<void> {
+		try {
+
+			const quickReplies: IReply[] = [
+				{
+					name: 'Greeting',
+					body: 'Hello! How may I assist you today?',
+					id: `${context.user.id}-${(Date.now() - 10).toString(36)}`,
+				},
+				{
+					name: 'Acknowledgment',
+					body: 'Thank you for reaching out. I will get back to you shortly.',
+					id: `${context.user.id}-${(Date.now() - 5).toString(36)}`,
+				},
+				{
+					name: 'Follow-up',
+					body: 'I wanted to follow up on our previous discussion. Please let me know how you’d like to proceed.',
+					id: `${context.user.id}-${Date.now().toString(36)}`,
+				},
+				{
+					name: 'Apology',
+					body: 'I sincerely apologize for any inconvenience. We are looking into this and will resolve it as soon as possible.',
+					id: `${context.user.id}-${(Date.now() + 5).toString(36)}`,
+				},
+				{
+					name: 'Closing',
+					body: 'It was a pleasure assisting you. Please feel free to reach out for any further queries.',
+					id: `${context.user.id}-${(Date.now() + 10).toString(36)}`,
+				},
+			];						
+
+			const association = this.getAssociations(context.user.id);
+
+			const storedReplies = await read.getPersistenceReader().readByAssociations(association);
+			if (storedReplies.length > 0) {
+				this.getLogger().info('Quick replies already exist. Skipping initialization.');
+				return;
+			}
+
+			await persistence.updateByAssociations(
+				association,
+				quickReplies,
+				true
+			);
+	
+			this.getLogger().info('Pre-built quick replies initialized successfully.');
+		} catch (error) {
+			this.getLogger().error(`Error initializing pre-built replies: ${error}`);
+		}
+	}
+	
 	public async executeViewSubmitHandler(
 		context: UIKitViewSubmitInteractionContext,
 		read: IRead,
