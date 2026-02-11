@@ -84,7 +84,7 @@ export class ExecuteBlockActionHandler {
 		);
 		const userReplies = await replyStorage.getReplyForUser(user);
 
-		if (room === undefined) {
+		if (!room) {
 			if (roomPersistance) {
 				room = roomPersistance;
 			} else {
