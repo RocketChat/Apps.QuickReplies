@@ -2,6 +2,7 @@ import {
 	IHttp,
 	IHttpResponse,
 } from '@rocket.chat/apps-engine/definition/accessors';
+import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { SettingEnum } from '../config/settings';
 import {
@@ -16,8 +17,25 @@ class AIHandler {
 		private app: QuickRepliesApp,
 		private http: IHttp,
 		private userPreference: IPreference,
+		private user: IUser,
 	) {}
 	private language = this.userPreference.language;
+
+	private getConfigError(provider: string): string {
+		if (
+			this.userPreference.AIusagePreference ===
+			AIusagePreferenceEnum.Personal
+		) {
+			return t('AI_Not_Configured_Personal', this.language, {
+				provider,
+			});
+		}
+		return this.user.roles.includes('admin')
+			? t('AI_Not_Configured_Admin_Self', this.language, { provider })
+			: t('AI_Not_Configured_Workspace_User', this.language, {
+					provider,
+			  });
+	}
 
 	public async handleResponse(
 		message: string,
@@ -52,11 +70,7 @@ class AIHandler {
 			return this.handleGemini(content);
 	
 		  default:
-			const errorMsg =
-			  this.userPreference.AIusagePreference ===
-				AIusagePreferenceEnum.Personal
-				? t('AI_Not_Configured_Personal', this.language)
-				: t('AI_Not_Configured_Admin', this.language);
+			const errorMsg = this.getConfigError('AI provider');
 	
 			this.app.getLogger().log(errorMsg);
 			return errorMsg;
@@ -78,20 +92,7 @@ class AIHandler {
 
 			if (!url) {
 				this.app.getLogger().log('Self Hosted Model address not set.');
-				if (
-					this.userPreference.AIusagePreference ===
-					AIusagePreferenceEnum.Personal
-				) {
-					return t(
-						'AI_Self_Hosted_Model_Not_Configured',
-						this.language,
-					);
-				} else {
-					return t(
-						'AI_Workspace_Model_Not_Configured',
-						this.language,
-					);
-				}
+				return this.getConfigError('Self Hosted Model URL');
 			}
 
 			const requestBody = {
@@ -150,13 +151,7 @@ class AIHandler {
 
 			if (!openaikey || !openaimodel) {
 				this.app.getLogger().log('OpenAI settings not set properly.');
-				const errorMsg =
-					this.userPreference.AIusagePreference ===
-					AIusagePreferenceEnum.Personal
-						? t('AI_OpenAI_Model_Not_Configured', this.language)
-						: t('AI_Not_Configured_Admin', this.language);
-
-				return errorMsg;
+				return this.getConfigError('OpenAI API key or model');
 			}
 
 			const response: IHttpResponse = await this.http.post(
@@ -225,14 +220,7 @@ class AIHandler {
 
 			if (!geminiAPIkey) {
 				this.app.getLogger().log('Gemini API key not set Properly');
-
-				const errorMsg =
-					this.userPreference.AIusagePreference ===
-					AIusagePreferenceEnum.Personal
-						? t('AI_Gemini_Model_Not_Configured', this.language)
-						: t('AI_Not_Configured_Admin', this.language);
-
-				return errorMsg;
+				return this.getConfigError('Gemini API key');
 			}
 
 			const response: IHttpResponse = await this.http.post(

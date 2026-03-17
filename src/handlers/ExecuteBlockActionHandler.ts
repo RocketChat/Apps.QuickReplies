@@ -258,6 +258,7 @@ export class ExecuteBlockActionHandler {
 					this.app,
 					this.http,
 					Preference,
+					user,
 				).handleResponse(message, prompt);
 
 				await aiStorage.updateResponse(response);
