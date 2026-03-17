@@ -66,7 +66,7 @@ export const getUserPreferredAI = async (
 	const preference = await userPreference.getUserPreference();
 
 	if (preference != null) {
-		return AIusagePreferenceEnum.Workspace;
+		return preference.AIusagePreference ?? AIusagePreferenceEnum.Workspace;
 	}
 
 	return AIusagePreferenceEnum.Workspace;

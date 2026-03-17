@@ -30,33 +30,33 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 
 		const updatedPreference: IPreference = {
 			userId: this.userId,
-			language: preference.language || currentPreference.language,
+			language: preference.language ?? currentPreference.language,
 			AIusagePreference:
-				preference.AIusagePreference ||
+				preference.AIusagePreference ??
 				currentPreference.AIusagePreference,
 			AIconfiguration: {
 				AIPromptOptions:
-					preference.AIconfiguration.AIPromptOptions ||
+					preference.AIconfiguration.AIPromptOptions ??
 					currentPreference.AIconfiguration.AIPromptOptions,
 				AIProvider:
-					preference.AIconfiguration.AIProvider ||
+					preference.AIconfiguration.AIProvider ??
 					currentPreference.AIconfiguration.AIProvider,
 				openAI: {
 					apiKey:
-						preference.AIconfiguration.openAI.apiKey ||
+						preference.AIconfiguration.openAI.apiKey ??
 						currentPreference.AIconfiguration.openAI.apiKey,
 					model:
-						preference.AIconfiguration.openAI.model ||
+						preference.AIconfiguration.openAI.model ??
 						currentPreference.AIconfiguration.openAI.model,
 				},
 				gemini: {
 					apiKey:
-						preference.AIconfiguration.gemini.apiKey ||
+						preference.AIconfiguration.gemini.apiKey ??
 						currentPreference.AIconfiguration.gemini.apiKey,
 				},
 				selfHosted: {
 					url:
-						preference.AIconfiguration.selfHosted.url ||
+						preference.AIconfiguration.selfHosted.url ??
 						currentPreference.AIconfiguration.selfHosted.url,
 				},
 			},
