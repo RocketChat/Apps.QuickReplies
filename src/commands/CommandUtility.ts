@@ -65,21 +65,14 @@ export class CommandUtility implements ICommandUtility {
 			triggerId: this.triggerId,
 			threadId: this.threadId,
 			language,
+			params: this.params,
 		});
 
-		switch (this.params.length) {
-			case 0: {
-				await handler.sendDefault();
-				break;
-			}
-			case 1: {
-				await this.handleSingleParam(handler);
-				break;
-			}
-			default: {
-				await handler.sendDefault();
-			}
+		if (this.params.length === 0) {
+			await handler.sendDefault();
+			return;
 		}
+		await this.handleSingleParam(handler);
 	}
 
 	private async handleSingleParam(handler: Handler): Promise<void> {
@@ -100,6 +93,9 @@ export class CommandUtility implements ICommandUtility {
 				break;
 			case CommandParam.AI:
 				await handler.replyUsingAI();
+				break;
+			case CommandParam.GRAMMAR:
+				await handler.CorrectGrammarUsingAI();
 				break;
 			default: {
 				await handler.sendDefault();

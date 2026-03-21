@@ -18,10 +18,12 @@ import {
 	sendHelperNotification,
 } from '../helper/notification';
 import { UserPreferenceModal } from '../modal/UserPreferenceModal';
-import { Language } from '../lib/Translation/translation';
+import { Language, t } from '../lib/Translation/translation';
 import { ReplyAIModal } from '../modal/AIreplyModal';
 import { AIstorage } from '../storage/AIStorage';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
+import { sendMessage } from '../helper/message';
+import AIHandler from './AIHandler';
 
 export class Handler implements IHandler {
 	public app: QuickRepliesApp;
@@ -35,6 +37,7 @@ export class Handler implements IHandler {
 	public triggerId?: string;
 	public threadId?: string;
 	public language: Language;
+	public params?: string[];
 
 	constructor(params: IHanderParams) {
 		this.app = params.app;
@@ -47,6 +50,7 @@ export class Handler implements IHandler {
 		this.triggerId = params.triggerId;
 		this.threadId = params.threadId;
 		this.language = params.language;
+		this.params = params.params;
 		const persistenceRead = params.read.getPersistenceReader();
 		this.roomInteractionStorage = new RoomInteractionStorage(
 			params.persis,
@@ -160,6 +164,27 @@ export class Handler implements IHandler {
 		return;
 	}
 
+	public async CorrectGrammarUsingAI(): Promise<void> {
+		const userPreference = new UserPreferenceStorage(
+		  this.persis,
+		  this.read.getPersistenceReader(),
+		  this.sender.id,
+		);
+		const value = this.params?.slice(1).join(' ') || '';
+		const existingPreference = await userPreference.getUserPreference();
+		const AiHandler = new AIHandler(this.app, this.http, existingPreference);
+		if (!value) {
+		  await sendMessage(this.modify, this.sender, this.room, t('Error_Grammar_Correct', this.language));
+		  return;
+		}
+	
+		const response = await AiHandler.handleResponse(
+		  value, '', true
+		);
+	
+		await sendMessage(this.modify, this.sender, this.room, response);
+	}
+	
 	public async replyUsingAI(message?: string): Promise<void> {
 		const roomId = this.room.id;
 		const roomMessages = await this.read
