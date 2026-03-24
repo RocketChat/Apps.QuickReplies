@@ -244,9 +244,11 @@ class AIHandler {
 					content: JSON.stringify({
 						contents: [
 							{
-								parts: {
-									text: prompt,
-								},
+								parts: [
+									{
+										text: prompt,
+									},
+								],
 							},
 						],
 					}),
