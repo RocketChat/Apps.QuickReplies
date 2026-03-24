@@ -236,10 +236,11 @@ class AIHandler {
 			}
 
 			const response: IHttpResponse = await this.http.post(
-			`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiAPIkey}`,
+			`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent`,
 				{
 					headers: {
 						'Content-Type': 'application/json',
+						'x-goog-api-key': geminiAPIkey,
 					},
 					content: JSON.stringify({
 						contents: [
