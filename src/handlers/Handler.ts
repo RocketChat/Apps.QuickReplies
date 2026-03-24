@@ -16,6 +16,7 @@ import { IReply } from '../definition/reply/IReply';
 import {
 	sendDefaultNotification,
 	sendHelperNotification,
+	sendNotification,
 } from '../helper/notification';
 import { UserPreferenceModal } from '../modal/UserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
@@ -190,14 +191,15 @@ export class Handler implements IHandler {
 		const roomMessages = await this.read
 			.getRoomReader()
 			.getMessages(roomId);
-		const lastMessage = roomMessages.pop();
+		const lastMessage = roomMessages.reverse() && roomMessages
+		.find(message => message.text &&
+			message.sender.username !== this.sender.username);
 		const Message =
 			message ||
 			lastMessage?.text ||
 			lastMessage?.attachments?.[0]?.description ||
 			'';
 		const textMessage = Message.trim();
-
 		if (textMessage) {
 			const aistorage = new AIstorage(
 				this.persis,
@@ -229,6 +231,11 @@ export class Handler implements IHandler {
 					.openSurfaceView(modal, { triggerId }, this.sender);
 			}
 			return;
+		}else{
+			const errorMessage = t('Reply_Not_Found',this.language)
+			await sendNotification(this.read, this.modify, this.sender, this.room, {
+				message: errorMessage,
+			});
 		}
 	}
 }
