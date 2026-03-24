@@ -215,6 +215,11 @@ export class ExecuteViewSubmitHandler {
 				UserPreferenceModalEnum.PROMPT_CONFIG_OPTIONS_BLOCK_ID
 			]?.[UserPreferenceModalEnum.PROMPT_CONFIG_OPTIONS_ACTION_ID];
 
+		const autoSuggestInput =
+			view.state?.[
+				UserPreferenceModalEnum.AUTO_SUGGEST_TOGGLE_BLOCK_ID
+			]?.[UserPreferenceModalEnum.AUTO_SUGGEST_TOGGLE_ACTION_ID];
+
 		const userPreference = new UserPreferenceStorage(
 			this.persistence,
 			this.read.getPersistenceReader(),
@@ -225,6 +230,7 @@ export class ExecuteViewSubmitHandler {
 			userId: user.id,
 			language: languageInput,
 			AIusagePreference: AIpreferenceInput,
+			autoSuggestEnabled: autoSuggestInput === 'true',
 			AIconfiguration: {
 				AIPromptOptions: PromptConfigurationOptions,
 				AIProvider: AIoptionInput,
@@ -302,6 +308,7 @@ export class ExecuteViewSubmitHandler {
 				}
 
 				await sendMessage(this.modify, user, room, message);
+				await ReceiverStorage.removeReceiverRecord();
 				return this.context.getInteractionResponder().successResponse();
 			} else {
 				return this.context.getInteractionResponder().errorResponse();

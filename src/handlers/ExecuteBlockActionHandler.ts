@@ -13,7 +13,7 @@ import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { ReplyStorage } from '../storage/ReplyStorage';
 import { SendReplyModal } from '../modal/sendModal';
 import { Handler } from './Handler';
-import { MessageActionButton } from '../enum/notification';
+import { MessageActionButton, SuggestionAction } from '../enum/notification';
 import { ListContextualBarEnum } from '../enum/modals/listContextualBar';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { confirmDeleteModal } from '../modal/confirmDeleteModal';
@@ -30,6 +30,7 @@ import {
 } from '../definition/helper/userPreference';
 import { UserPreferenceModalEnum } from '../enum/modals/UserPreferenceModal';
 import { UserPreferenceStorage } from '../storage/userPreferenceStorage';
+import { sendMessage } from '../helper/message';
 
 export class ExecuteBlockActionHandler {
 	private context: UIKitBlockInteractionContext;
@@ -342,6 +343,31 @@ export class ExecuteBlockActionHandler {
 					console.log('no value');
 				}
 				break;
+		}
+
+		if (actionId.startsWith(SuggestionAction.SUGGESTION_ACTION_PREFIX)) {
+			if (value) {
+				try {
+					const { text, threadId: suggestionThreadId } =
+						JSON.parse(value);
+					await sendMessage(
+						this.modify,
+						user,
+						room,
+						text,
+						suggestionThreadId || undefined,
+					);
+				} catch (e) {
+					this.app
+						.getLogger()
+						.error(
+							`Failed to send suggestion: ${e.message}`,
+						);
+					return this.context
+						.getInteractionResponder()
+						.errorResponse();
+				}
+			}
 		}
 
 		return this.context.getInteractionResponder().successResponse();

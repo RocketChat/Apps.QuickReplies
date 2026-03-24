@@ -87,6 +87,10 @@ export const de = {
     AI_Gemini_Model_Not_Configured: "Ihr Gemini-Modell ist nicht richtig eingerichtet. Bitte überprüfen Sie Ihre Konfiguration",
     AI_Workspace_Model_Not_Configured: "Ihre Workspace-AI ist nicht richtig eingerichtet. Bitte kontaktieren Sie Ihren Administrator",
     AI_Something_Went_Wrong: "Etwas ist schiefgelaufen. Bitte versuchen Sie es später noch einmal.",
-    Refresh_Button_Text: "Aktualisieren"
-
+    Refresh_Button_Text: "Aktualisieren",
+    AI_Suggestions_Header: "Vorgeschlagene Antworten",
+    Auto_Suggest_Enabled: "Aktiviert",
+    Auto_Suggest_Disabled: "Deaktiviert",
+    Auto_Suggest_Label: "Automatische Antwortvorschläge",
+    Auto_Suggest_Placeholder: "Aktivieren oder deaktivieren",
 }
