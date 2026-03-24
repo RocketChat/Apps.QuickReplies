@@ -10,4 +10,6 @@ export enum ListContextualBarEnum {
 	CLOESE_BUTTON_TEXT = 'Close',
 	SEARCH_BLOCK_ID = 'list-reply-search-block-id',
 	SEARCH_ACTION_ID = 'list-reply-search-action-id',
+	SEND_BLOCK_ID = 'send_reply_block',
+    SEND_ACTION_ID = 'send_reply_action',
 }
