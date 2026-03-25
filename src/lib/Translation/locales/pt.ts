@@ -93,5 +93,6 @@ export const pt = {
     Auto_Suggest_Disabled: "Desativado",
     Auto_Suggest_Label: "Sugestões Automáticas de Respostas",
     Auto_Suggest_Placeholder: "Ativar ou desativar sugestões automáticas",
+    Qs_Select_Preview_Hint: "Por favor, selecione uma resposta da lista de pré-visualização. Digite `/qs` seguido de um termo de busca para ver as respostas correspondentes.",
 }
 
