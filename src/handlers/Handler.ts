@@ -204,7 +204,7 @@ export class Handler implements IHandler {
 				this.read.getPersistenceReader(),
 				this.sender.id,
 			);
-			aistorage.updateMessage(textMessage);
+			await aistorage.updateMessage(textMessage);
 			const modal = await ReplyAIModal(
 				this.app,
 				this.sender,
