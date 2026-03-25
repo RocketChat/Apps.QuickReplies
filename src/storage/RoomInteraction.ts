@@ -30,7 +30,7 @@ export class RoomInteractionStorage implements IRoomInteractionStorage {
 		);
 	}
 
-	public async getInteractionRoomId(): Promise<string> {
+	public async getInteractionRoomId(): Promise<string | undefined> {
 		const association = new RocketChatAssociationRecord(
 			RocketChatAssociationModel.USER,
 			`${this.userId}#RoomId`,
@@ -38,7 +38,7 @@ export class RoomInteractionStorage implements IRoomInteractionStorage {
 		const [result] = (await this.persistenceRead.readByAssociation(
 			association,
 		)) as Array<{ roomId: string }>;
-		return result.roomId;
+		return result?.roomId;
 	}
 
 	public async clearInteractionRoomId(): Promise<void> {
