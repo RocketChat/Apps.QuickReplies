@@ -204,7 +204,7 @@ export class Handler implements IHandler {
 				this.read.getPersistenceReader(),
 				this.sender.id,
 			);
-			aistorage.updateMessage(textMessage);
+			await aistorage.updateMessage(textMessage);
 			const modal = await ReplyAIModal(
 				this.app,
 				this.sender,
@@ -227,8 +227,13 @@ export class Handler implements IHandler {
 				await this.modify
 					.getUiController()
 					.openSurfaceView(modal, { triggerId }, this.sender);
+			} else {
+				this.app
+					.getLogger()
+					.warn('replyUsingAI could not open the modal because triggerId was missing.');
 			}
 			return;
 		}
+		this.app.getLogger().warn('replyUsingAI found no source message to use.');
 	}
 }

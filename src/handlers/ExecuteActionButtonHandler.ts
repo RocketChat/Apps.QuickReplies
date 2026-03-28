@@ -44,7 +44,7 @@ export class ExecuteActionButtonHandler {
 			this.read.getPersistenceReader(),
 			user.id,
 		);
-		roomInteractionStorage.storeInteractionRoomId(room.id);
+		await roomInteractionStorage.storeInteractionRoomId(room.id);
 
 		const handler = new Handler({
 			app: this.app,

@@ -250,6 +250,13 @@ export class ExecuteBlockActionHandler {
 				);
 				const message = await aiStorage.getMessage();
 				const prompt = await aiStorage.getPrompt();
+				if (!message.trim()) {
+					console.log('AI generate requested without a stored source message.');
+					return this.context.getInteractionResponder().errorResponse();
+				}
+				if (!prompt.trim()) {
+					console.log('AI generate requested without a prompt.');
+				}
 
 				const Preference = await userPreference.getUserPreference();
 
