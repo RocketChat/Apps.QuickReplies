@@ -70,8 +70,7 @@ export class ReplyStorage {
 
 		const replyFound = replies.find((reply) => reply.name === name);
 		if (replyFound && replyId) {
-			replyFound.id === replyId;
-			return true;
+			return replyFound.id === replyId;
 		} else if (replyFound) {
 			return false;
 		}
