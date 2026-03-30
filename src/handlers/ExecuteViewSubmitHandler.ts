@@ -157,7 +157,7 @@ export class ExecuteViewSubmitHandler {
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
-			this.updateList(user, room, language, triggerId);
+			await this.updateList(user, room, language, triggerId);
 			return this.context.getInteractionResponder().successResponse();
 		} else {
 			const errorMessage = `${t('Fail_Create_Reply', language, {
@@ -352,7 +352,7 @@ export class ExecuteViewSubmitHandler {
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
-			this.updateList(user, room, language, triggerId);
+			await this.updateList(user, room, language, triggerId);
 
 			return this.context.getInteractionResponder().successResponse();
 		} else {
@@ -419,7 +419,7 @@ export class ExecuteViewSubmitHandler {
 			await sendNotification(this.read, this.modify, user, room, {
 				message: successMessage,
 			});
-			this.updateList(user, room, language, triggerId);
+			await this.updateList(user, room, language, triggerId);
 
 			return this.context.getInteractionResponder().successResponse();
 		} else {

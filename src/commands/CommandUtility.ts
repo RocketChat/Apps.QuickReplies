@@ -52,7 +52,7 @@ export class CommandUtility implements ICommandUtility {
 			this.read.getPersistenceReader(),
 			this.sender.id,
 		);
-		roomInteractionStorage.storeInteractionRoomId(this.room.id);
+		await roomInteractionStorage.storeInteractionRoomId(this.room.id);
 
 		const handler = new Handler({
 			app: this.app,
