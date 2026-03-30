@@ -256,15 +256,25 @@ class AIHandler {
 				},
 			);
 
-			if (!response || !response.content) {
-				this.app
-					.getLogger()
-					.log('No response content received from AI.');
+			if (!response || !response.data) {
+				console.log('No response data received from Gemini.');
 				return t('AI_Something_Went_Wrong', this.language);
 			}
 
 			const data = response.data;
-			return data.candidates[0].content.parts[0].text;
+			if (data?.error?.message) {
+				console.log(`Gemini error response: ${JSON.stringify(data.error)}`);
+				return data.error.message;
+			}
+
+			const generatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+			if (!generatedText) {
+				console.log(`Unexpected Gemini response: ${JSON.stringify(data)}`);
+				return t('AI_Something_Went_Wrong', this.language);
+			}
+
+			return generatedText;
 		} catch (error) {
 			this.app.getLogger().log(`Error in handleGemini: ${error.message}`);
 			return t('AI_Something_Went_Wrong', this.language);
