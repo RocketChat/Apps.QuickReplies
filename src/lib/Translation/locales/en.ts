@@ -93,4 +93,5 @@ export const en = {
 	Auto_Suggest_Disabled: "Disabled",
 	Auto_Suggest_Label: "Auto-Suggest Replies",
 	Auto_Suggest_Placeholder: "Enable or disable auto-suggest",
+	Qs_Select_Preview_Hint: "Please select a reply from the preview list. Type `/qs` followed by a search term to see matching replies.",
 };

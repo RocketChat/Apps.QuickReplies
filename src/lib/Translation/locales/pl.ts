@@ -93,5 +93,6 @@ export const pl = {
     Auto_Suggest_Disabled: "Wyłączone",
     Auto_Suggest_Label: "Automatyczne Sugestie Odpowiedzi",
     Auto_Suggest_Placeholder: "Włącz lub wyłącz automatyczne sugestie",
+    Qs_Select_Preview_Hint: "Proszę wybrać odpowiedź z listy podglądu. Wpisz `/qs` i szukany termin, aby zobaczyć pasujące odpowiedzi.",
 }
 

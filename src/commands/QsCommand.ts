@@ -22,6 +22,7 @@ import { t } from '../lib/Translation/translation';
 import { getUserPreferredLanguage } from '../helper/userPreference';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { Replacements } from '../definition/helper/message';
+import { sendNotification } from '../helper/notification';
 
 export class QsCommand implements ISlashCommand {
 	constructor(private readonly app: QuickRepliesApp) {}
@@ -38,7 +39,17 @@ export class QsCommand implements ISlashCommand {
 		http: IHttp,
 		persis: IPersistence,
 	): Promise<void> {
-		// Placeholder for command execution logic
+		const user = context.getSender();
+		const room = context.getRoom();
+		const language = await getUserPreferredLanguage(
+			read.getPersistenceReader(),
+			persis,
+			user.id,
+		);
+
+		await sendNotification(read, modify, user, room, {
+			message: t('Qs_Select_Preview_Hint', language),
+		});
 	}
 
 	public async previewer(

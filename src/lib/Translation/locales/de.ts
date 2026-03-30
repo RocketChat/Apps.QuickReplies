@@ -93,4 +93,5 @@ export const de = {
     Auto_Suggest_Disabled: "Deaktiviert",
     Auto_Suggest_Label: "Automatische Antwortvorschläge",
     Auto_Suggest_Placeholder: "Aktivieren oder deaktivieren",
+    Qs_Select_Preview_Hint: "Bitte wählen Sie eine Antwort aus der Vorschauliste. Geben Sie `/qs` gefolgt von einem Suchbegriff ein, um passende Antworten zu sehen.",
 }
