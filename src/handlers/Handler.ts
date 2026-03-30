@@ -16,6 +16,7 @@ import { IReply } from '../definition/reply/IReply';
 import {
 	sendDefaultNotification,
 	sendHelperNotification,
+	sendNotification,
 } from '../helper/notification';
 import { UserPreferenceModal } from '../modal/UserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
@@ -172,7 +173,7 @@ export class Handler implements IHandler {
 		);
 		const value = this.params?.slice(1).join(' ') || '';
 		const existingPreference = await userPreference.getUserPreference();
-		const AiHandler = new AIHandler(this.app, this.http, existingPreference);
+		const AiHandler = new AIHandler(this.app, this.http, existingPreference, this.sender);
 		if (!value) {
 		  await sendMessage(this.modify, this.sender, this.room, t('Error_Grammar_Correct', this.language));
 		  return;
@@ -198,37 +199,46 @@ export class Handler implements IHandler {
 			'';
 		const textMessage = Message.trim();
 
-		if (textMessage) {
-			const aistorage = new AIstorage(
-				this.persis,
-				this.read.getPersistenceReader(),
-				this.sender.id,
-			);
-			await aistorage.updateMessage(textMessage);
-			const modal = await ReplyAIModal(
-				this.app,
-				this.sender,
+		if (!textMessage) {
+			await sendNotification(
 				this.read,
-				this.persis,
 				this.modify,
+				this.sender,
 				this.room,
-				this.language,
-				textMessage,
+				{ message: t('AI_No_Message_Found', this.language) },
 			);
-
-			if (modal instanceof Error) {
-				this.app.getLogger().error(modal.message);
-				return;
-			}
-
-			const triggerId = this.triggerId;
-
-			if (triggerId) {
-				await this.modify
-					.getUiController()
-					.openSurfaceView(modal, { triggerId }, this.sender);
-			}
 			return;
 		}
+
+		const aistorage = new AIstorage(
+			this.persis,
+			this.read.getPersistenceReader(),
+			this.sender.id,
+		);
+		await aistorage.updateMessage(textMessage);
+		const modal = await ReplyAIModal(
+			this.app,
+			this.sender,
+			this.read,
+			this.persis,
+			this.modify,
+			this.room,
+			this.language,
+			textMessage,
+		);
+
+		if (modal instanceof Error) {
+			this.app.getLogger().error(modal.message);
+			return;
+		}
+
+		const triggerId = this.triggerId;
+
+		if (triggerId) {
+			await this.modify
+				.getUiController()
+				.openSurfaceView(modal, { triggerId }, this.sender);
+		}
+		return;
 	}
 }

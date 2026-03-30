@@ -15,13 +15,10 @@ export enum Language {
 }
 
 export const ErrorKeys = [
-    'AI_Not_Configured_Personal',
-    'AI_Not_Configured_Admin',
-    'AI_Self_Hosted_Model_Not_Configured',
-    'AI_OpenAI_Model_Not_Configured',
-    'AI_Gemini_Model_Not_Configured',
-    'AI_Workspace_Model_Not_Configured',
-    'AI_Something_Went_Wrong'
+	'AI_Not_Configured_Personal',
+	'AI_Not_Configured_Admin_Self',
+	'AI_Not_Configured_Workspace_User',
+	'AI_Something_Went_Wrong',
 ] as TranslationKey[];
 
 export const t = (key: TranslationKey, language: Language, params?: object) => {
