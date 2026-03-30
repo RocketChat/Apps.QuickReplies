@@ -87,4 +87,10 @@ export const en = {
 	AI_Gemini_Model_Not_Configured: "Your Gemini Model is not set up properly. Please check your configuration",
 	AI_Workspace_Model_Not_Configured: "Your Workspace AI is not set up properly. Please contact your administrator",
 	AI_Something_Went_Wrong: "Something went wrong. Please try again later.",
-	Refresh_Button_Text: "Refresh"};
+	Refresh_Button_Text: "Refresh",
+	AI_Suggestions_Header: "Suggested Replies",
+	Auto_Suggest_Enabled: "Enabled",
+	Auto_Suggest_Disabled: "Disabled",
+	Auto_Suggest_Label: "Auto-Suggest Replies",
+	Auto_Suggest_Placeholder: "Enable or disable auto-suggest",
+};

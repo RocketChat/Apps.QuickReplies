@@ -75,6 +75,41 @@ export async function UserPreferenceModal({
 
 	blocks.push(blockBuilder.createDividerBlock());
 
+	const autoSuggestOptions = [
+		{ text: t('Auto_Suggest_Enabled', language), value: 'true' },
+		{ text: t('Auto_Suggest_Disabled', language), value: 'false' },
+	];
+
+	const autoSuggestDropDownOptions =
+		elementBuilder.createDropDownOptions(autoSuggestOptions);
+
+	const autoSuggestDropDown = elementBuilder.addDropDown(
+		{
+			placeholder: t('Auto_Suggest_Placeholder', language),
+			options: autoSuggestDropDownOptions,
+			initialOption: autoSuggestDropDownOptions.find(
+				(option) =>
+					option.value ===
+					String(existingPreference.autoSuggestEnabled ?? false),
+			),
+			dispatchActionConfig: [Modals.dispatchActionConfigOnSelect],
+		},
+		{
+			blockId: UserPreferenceModalEnum.AUTO_SUGGEST_TOGGLE_BLOCK_ID,
+			actionId: UserPreferenceModalEnum.AUTO_SUGGEST_TOGGLE_ACTION_ID,
+		},
+	);
+
+	blocks.push(
+		blockBuilder.createInputBlock({
+			text: t('Auto_Suggest_Label', language),
+			element: autoSuggestDropDown,
+			optional: false,
+		}),
+	);
+
+	blocks.push(blockBuilder.createDividerBlock());
+
 	const promptOptions = Object.values(PromptOptionsEnum).map((option) => ({
 		text: option,
 		value: option,

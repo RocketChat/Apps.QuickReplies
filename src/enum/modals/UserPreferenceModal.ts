@@ -23,6 +23,9 @@ export enum UserPreferenceModalEnum {
 	PROMPT_CONFIG_OPTIONS_BLOCK_ID = 'prompt-config-options-block-id',
 	PROMPT_CONFIG_OPTIONS_ACTION_ID = 'prompt-config-options-action-id',
 
+	AUTO_SUGGEST_TOGGLE_ACTION_ID = 'auto-suggest-toggle-action-id',
+	AUTO_SUGGEST_TOGGLE_BLOCK_ID = 'auto-suggest-toggle-block-id',
+
 	SUBMIT_ACTION_ID = 'submit-set-user-preference-language-modal-action-id',
 	SUBMIT_BLOCK_ID = 'submit-set-user-preference-language-modal-block-id',
 }

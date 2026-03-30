@@ -1,7 +1,7 @@
 import { IRead, IModify } from '@rocket.chat/apps-engine/definition/accessors';
 import { IRoom } from '@rocket.chat/apps-engine/definition/rooms';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
-import { MessageActionButton } from '../enum/notification';
+import { MessageActionButton, SuggestionAction } from '../enum/notification';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { Language, t } from '../lib/Translation/translation';
 
@@ -119,4 +119,53 @@ export async function sendNotification(
 	}
 
 	return read.getNotifier().notifyUser(user, messageBuilder.getMessage());
+}
+
+export async function sendSuggestionNotification(
+	app: QuickRepliesApp,
+	read: IRead,
+	modify: IModify,
+	user: IUser,
+	room: IRoom,
+	suggestions: string[],
+	language: Language,
+	threadId?: string,
+): Promise<void> {
+	const appUser = (await read.getUserReader().getAppUser()) as IUser;
+	const { elementBuilder, blockBuilder } = app.getUtils();
+
+	const header = blockBuilder.createSectionBlock({
+		text: `💡 ${t('AI_Suggestions_Header', language)}`,
+	});
+
+	const blocks: Array<ReturnType<typeof blockBuilder.createSectionBlock> | ReturnType<typeof blockBuilder.createActionBlock>> = [header];
+
+	for (let i = 0; i < suggestions.length && i < 3; i++) {
+		const suggestion = suggestions[i];
+		const sectionBlock = blockBuilder.createSectionBlock({
+			text: suggestion,
+			accessory: elementBuilder.addButton(
+				{ text: t('Send_Text', language), style: 'primary', value: JSON.stringify({ text: suggestion, threadId: threadId || '' }) },
+				{
+					blockId: SuggestionAction.SUGGESTION_BLOCK_ID,
+					actionId: `${SuggestionAction.SUGGESTION_ACTION_PREFIX}${i}`,
+				},
+			),
+		});
+		blocks.push(sectionBlock);
+	}
+
+	const msg = modify
+		.getCreator()
+		.startMessage()
+		.setRoom(room)
+		.setSender(appUser)
+		.setGroupable(false)
+		.setBlocks(blocks);
+
+	if (threadId) {
+		msg.setThreadId(threadId);
+	}
+
+	return read.getNotifier().notifyUser(user, msg.getMessage());
 }

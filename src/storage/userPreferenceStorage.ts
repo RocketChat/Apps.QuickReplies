@@ -34,6 +34,9 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 			AIusagePreference:
 				preference.AIusagePreference ??
 				currentPreference.AIusagePreference,
+			autoSuggestEnabled:
+				preference.autoSuggestEnabled ??
+				currentPreference.autoSuggestEnabled,
 			AIconfiguration: {
 				AIPromptOptions:
 					preference.AIconfiguration.AIPromptOptions ??
@@ -88,6 +91,7 @@ export class UserPreferenceStorage implements IuserPreferenceStorage {
 				userId: this.userId,
 				language: Language.en,
 				AIusagePreference: AIusagePreferenceEnum.Workspace,
+				autoSuggestEnabled: false,
 				AIconfiguration: {
 					AIPromptOptions: ['Professional', 'Concise', 'Helpful'],
 					AIProvider: AIProviderEnum.SelfHosted,

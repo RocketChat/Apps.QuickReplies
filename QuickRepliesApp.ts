@@ -10,6 +10,8 @@ import {
 } from '@rocket.chat/apps-engine/definition/accessors';
 import { App } from '@rocket.chat/apps-engine/definition/App';
 import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
+import { IMessage } from '@rocket.chat/apps-engine/definition/messages';
+import { IPostMessageSent } from '@rocket.chat/apps-engine/definition/messages';
 import { QuickCommand } from './src/commands/QuickCommand';
 import {
 	IUIKitResponse,
@@ -32,8 +34,9 @@ import {
 import { ActionButton } from './src/enum/modals/common/ActionButtons';
 import { ExecuteActionButtonHandler } from './src/handlers/ExecuteActionButtonHandler';
 import { settings } from './src/config/settings';
+import { PostMessageSentHandler } from './src/handlers/PostMessageSentHandler';
 
-export class QuickRepliesApp extends App {
+export class QuickRepliesApp extends App implements IPostMessageSent {
 	private elementBuilder: ElementBuilder;
 	private blockBuilder: BlockBuilder;
 	constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
@@ -164,5 +167,41 @@ export class QuickRepliesApp extends App {
 		);
 
 		return await handler.handleActions();
+	}
+
+	public async checkPostMessageSent(
+		message: IMessage,
+		read: IRead,
+		http: IHttp,
+	): Promise<boolean> {
+		const appUser = await read.getUserReader().getAppUser();
+		if (appUser && message.sender.id === appUser.id) {
+			return false;
+		}
+		
+		if (!message.text || message.text.startsWith('/')) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public async executePostMessageSent(
+		message: IMessage,
+		read: IRead,
+		http: IHttp,
+		persistence: IPersistence,
+		modify: IModify,
+	): Promise<void> {
+		const handler = new PostMessageSentHandler(
+			this,
+			message,
+			read,
+			http,
+			persistence,
+			modify,
+		);
+
+		await handler.run();
 	}
 }

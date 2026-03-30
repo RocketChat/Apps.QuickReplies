@@ -28,3 +28,8 @@ export enum MessageActionButton {
 	NEED_MORE_ACTION_ID = 'need-more-actionId',
 	NEED_MORE_BLOCK_ID = 'need-more-blockId',
 }
+
+export enum SuggestionAction {
+	SUGGESTION_BLOCK_ID = 'ai-suggestion-block',
+	SUGGESTION_ACTION_PREFIX = 'ai-suggestion-send-',
+}

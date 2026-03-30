@@ -39,6 +39,7 @@ export interface IPreference {
 	userId: string;
 	language: Language;
 	AIusagePreference: AIusagePreference;
+	autoSuggestEnabled: boolean;
 	AIconfiguration: {
 		AIPromptOptions: PromptOptions[];
 		AIProvider: AIProviderType;
