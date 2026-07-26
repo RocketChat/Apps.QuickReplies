@@ -64,8 +64,10 @@ export class ExecuteBlockActionHandler {
 			user.id,
 		);
 
-		const roomId = await roomInteractionStorage.getInteractionRoomId();
-		const roomPersistance = await this.read.getRoomReader().getById(roomId);
+	const roomId = await roomInteractionStorage.getInteractionRoomId();
+	const roomPersistance = roomId
+	? await this.read.getRoomReader().getById(roomId)
+	: undefined;
 
 		const userPreference = new UserPreferenceStorage(
 			this.persistence,
@@ -209,11 +211,12 @@ export class ExecuteBlockActionHandler {
 						this.read,
 						this.persistence,
 						this.modify,
-						room,
-						userReplies,
-						language,
-						value,
-					);
+					room,
+					userReplies,
+					language,
+					value,
+					container.id,
+				);
 					return this.context
 						.getInteractionResponder()
 						.updateContextualBarViewResponse(UpdatedListBar);
@@ -227,6 +230,8 @@ export class ExecuteBlockActionHandler {
 						room,
 						userReplies,
 						language,
+						undefined,
+						container.id,
 					);
 					return this.context
 						.getInteractionResponder()

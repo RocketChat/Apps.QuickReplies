@@ -33,9 +33,10 @@ export async function listReplyContextualBar(
 	persistence: IPersistence,
 	modify: IModify,
 	room: IRoom,
-	userReplies: IReply[],
+		userReplies: IReply[],
 	language: Language,
 	searchValue?: string,
+	viewId?: string,
 ): Promise<IUIKitSurfaceViewParam> {
 	const { elementBuilder, blockBuilder } = app.getUtils();
 	const blocks: (
@@ -159,9 +160,9 @@ export async function listReplyContextualBar(
 		},
 	);
 
-	return {
-		id: ListContextualBarEnum.VIEW_ID,
-		type: UIKitSurfaceType.CONTEXTUAL_BAR,
+return {
+	...(viewId ? { id: viewId } : {}),
+	type: UIKitSurfaceType.CONTEXTUAL_BAR,
 		title: {
 			type: TextObjectType.MRKDWN,
 			text: t('List_Reply_Title', language),

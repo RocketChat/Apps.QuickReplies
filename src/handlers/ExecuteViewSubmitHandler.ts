@@ -49,16 +49,21 @@ export class ExecuteViewSubmitHandler {
 		this.context = context;
 	}
 
-	public async handleActions(): Promise<IUIKitResponse> {
-		const { view, user, triggerId } = this.context.getInteractionData();
-		const persistenceRead = this.read.getPersistenceReader();
-		const roomInteractionStorage = new RoomInteractionStorage(
-			this.persistence,
-			persistenceRead,
-			user.id,
-		);
-		const roomId = await roomInteractionStorage.getInteractionRoomId();
-		const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
+public async handleActions(): Promise<IUIKitResponse> {
+	const { view, user, triggerId } = this.context.getInteractionData();
+	const persistenceRead = this.read.getPersistenceReader();
+	const roomInteractionStorage = new RoomInteractionStorage(
+		this.persistence,
+		persistenceRead,
+		user.id,
+	);
+	const roomId = await roomInteractionStorage.getInteractionRoomId();
+
+	if (!roomId) {
+		return this.context.getInteractionResponder().errorResponse();
+	}
+
+	const room = (await this.read.getRoomReader().getById(roomId)) as IRoom;
 		const language = await getUserPreferredLanguage(
 			this.read.getPersistenceReader(),
 			this.persistence,
@@ -172,15 +177,15 @@ export class ExecuteViewSubmitHandler {
 	}
 
 	private async handleSetUserPreference(
-		room: IRoom,
-		user: IUser,
-		view: IUIKitSurface,
-	): Promise<IUIKitResponse> {
-		const languageInput = view.state?.[
-			UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
-		]?.[
-			UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID
-		] as Language;
+	room: IRoom,
+	user: IUser,
+	view: IUIKitSurface,
+): Promise<IUIKitResponse> {
+	const languageInput = view.state?.[
+		UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_BLOCK_ID
+	]?.[
+		UserPreferenceModalEnum.LANGUAGE_INPUT_DROPDOWN_ACTION_ID
+	] as Language;
 
 		const AIpreferenceInput = view.state?.[
 			UserPreferenceModalEnum.AI_PREFERENCE_DROPDOWN_BLOCK_ID
@@ -488,9 +493,8 @@ export class ExecuteViewSubmitHandler {
 			userReplies,
 			language,
 		);
-
-		this.modify
-			.getUiController()
-			.updateSurfaceView(listbar, { triggerId: triggerId }, user);
+await this.modify
+	.getUiController()
+	.openSurfaceView(listbar, { triggerId: triggerId }, user);
 	}
 }
