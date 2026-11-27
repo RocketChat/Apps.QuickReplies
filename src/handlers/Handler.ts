@@ -16,6 +16,7 @@ import { IReply } from '../definition/reply/IReply';
 import {
 	sendDefaultNotification,
 	sendHelperNotification,
+	sendNotification,
 } from '../helper/notification';
 import { UserPreferenceModal } from '../modal/UserPreferenceModal';
 import { Language, t } from '../lib/Translation/translation';
@@ -166,20 +167,25 @@ export class Handler implements IHandler {
 
 	public async CorrectGrammarUsingAI(): Promise<void> {
 		const userPreference = new UserPreferenceStorage(
-		  this.persis,
-		  this.read.getPersistenceReader(),
-		  this.sender.id,
+			this.persis,
+			this.read.getPersistenceReader(),
+			this.sender.id,
 		);
 		const value = this.params?.slice(1).join(' ') || '';
 		const existingPreference = await userPreference.getUserPreference();
-		const AiHandler = new AIHandler(this.app, this.http, existingPreference);
+		const AiHandler = new AIHandler(
+			this.app,
+			this.http,
+			existingPreference,
+			this.sender,
+		);
 		if (!value) {
-		  await sendMessage(this.modify, this.sender, this.room, t('Error_Grammar_Correct', this.language));
-		  return;
+			await sendMessage(this.modify, this.sender, this.room, t('Error_Grammar_Correct', this.language));
+			return;
 		}
 	
 		const response = await AiHandler.handleResponse(
-		  value, '', true
+			value, '', true
 		);
 	
 		await sendMessage(this.modify, this.sender, this.room, response);
@@ -197,6 +203,19 @@ export class Handler implements IHandler {
 			lastMessage?.attachments?.[0]?.description ||
 			'';
 		const textMessage = Message.trim();
+
+		if (!textMessage) {
+			await sendNotification(
+				this.read,
+				this.modify,
+				this.sender,
+				this.room,
+				{
+					message: t('AI_No_Messages_In_Room', this.language),
+				},
+			);
+			return;
+		}
 
 		if (textMessage) {
 			const aistorage = new AIstorage(

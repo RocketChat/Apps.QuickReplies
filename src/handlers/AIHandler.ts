@@ -2,6 +2,7 @@ import {
 	IHttp,
 	IHttpResponse,
 } from '@rocket.chat/apps-engine/definition/accessors';
+import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { QuickRepliesApp } from '../../QuickRepliesApp';
 import { SettingEnum } from '../config/settings';
 import {
@@ -9,15 +10,33 @@ import {
 	AIusagePreferenceEnum,
 	IPreference,
 } from '../definition/helper/userPreference';
-import { t } from '../lib/Translation/translation';
+import { t, TranslationKey } from '../lib/Translation/translation';
 
 class AIHandler {
 	constructor(
 		private app: QuickRepliesApp,
 		private http: IHttp,
 		private userPreference: IPreference,
+		private user?: IUser,
 	) {}
 	private language = this.userPreference.language;
+
+	private getNotConfiguredError(
+		personalKey: TranslationKey,
+		workspaceUserKey: TranslationKey = 'AI_Not_Configured_Admin',
+	): string {
+		if (
+			this.userPreference.AIusagePreference ===
+			AIusagePreferenceEnum.Personal
+		) {
+			return t(personalKey, this.language);
+		}
+		const isAdmin = Boolean(this.user?.roles?.includes('admin'));
+		return t(
+			isAdmin ? 'AI_Not_Configured_Workspace_Admin' : workspaceUserKey,
+			this.language,
+		);
+	}
 
 	public async handleResponse(
 		message: string,
@@ -26,12 +45,12 @@ class AIHandler {
 	): Promise<string> {
 		let aiProvider: string;
 		if (
-		  this.userPreference.AIusagePreference ===
-		  AIusagePreferenceEnum.Personal
+			this.userPreference.AIusagePreference ===
+			AIusagePreferenceEnum.Personal
 		) {
-		  aiProvider = this.userPreference.AIconfiguration.AIProvider;
+			aiProvider = this.userPreference.AIconfiguration?.AIProvider ?? '';
 		} else {
-		  aiProvider = await this.app
+			aiProvider = await this.app
 			.getAccessors()
 			.environmentReader.getSettings()
 			.getValueById(SettingEnum.AI_PROVIDER_OPTOIN_ID);
@@ -39,33 +58,31 @@ class AIHandler {
 	
 		const content = correctGrammar ? this.getGrammarFixPrompt(message) : this.getAIResponsePrompt(message, prompt)
 		switch (aiProvider) {
-		  case AIProviderEnum.SelfHosted:
-		  case SettingEnum.SELF_HOSTED_MODEL:
+			case AIProviderEnum.SelfHosted:
+			case SettingEnum.SELF_HOSTED_MODEL:
 			return this.handleSelfHostedModel(content);
 	
-		  case AIProviderEnum.OpenAI:
-		  case SettingEnum.OPEN_AI:
+			case AIProviderEnum.OpenAI:
+			case SettingEnum.OPEN_AI:
 			return this.handleOpenAI(content);
 	
-		  case AIProviderEnum.Gemini:
-		  case SettingEnum.GEMINI:
+			case AIProviderEnum.Gemini:
+			case SettingEnum.GEMINI:
 			return this.handleGemini(content);
 	
-		  default:
-			const errorMsg =
-			  this.userPreference.AIusagePreference ===
-				AIusagePreferenceEnum.Personal
-				? t('AI_Not_Configured_Personal', this.language)
-				: t('AI_Not_Configured_Admin', this.language);
-	
-			this.app.getLogger().log(errorMsg);
-			return errorMsg;
+			default:
+				const errorMsg = this.getNotConfiguredError(
+					'AI_Not_Configured_Personal',
+				);
+
+				this.app.getLogger().log(errorMsg);
+				return errorMsg;
 		}
 	
 	}
 
 	private getAIResponsePrompt(message: string, prompt: string): string {
-		return `You are a function that generates responses from a message and prompt message is : "${message}". ${this.userPreference.AIconfiguration.AIPromptOptions} and Use the following as a prompt : "${prompt}" and make sure you respond with just the reply without quotes.`;
+		return `You are a function that generates responses from a message and prompt message is : "${message}". ${this.userPreference.AIconfiguration?.AIPromptOptions ?? []} and Use the following as a prompt : "${prompt}" and make sure you respond with just the reply without quotes.`;
 	}
 	private getGrammarFixPrompt(message: string): string {
 		return `You are a function that corrects grammar and spelling only. Fix any grammar errors, spelling mistakes, and punctuation in this message: "${message}". Return only the corrected text as a single string. Make no other changes to the content or meaning - just fix grammar and spelling issues.`;
@@ -78,20 +95,10 @@ class AIHandler {
 
 			if (!url) {
 				this.app.getLogger().log('Self Hosted Model address not set.');
-				if (
-					this.userPreference.AIusagePreference ===
-					AIusagePreferenceEnum.Personal
-				) {
-					return t(
-						'AI_Self_Hosted_Model_Not_Configured',
-						this.language,
-					);
-				} else {
-					return t(
-						'AI_Workspace_Model_Not_Configured',
-						this.language,
-					);
-				}
+				return this.getNotConfiguredError(
+					'AI_Self_Hosted_Model_Not_Configured',
+					'AI_Workspace_Model_Not_Configured',
+				);
 			}
 
 			const requestBody = {
@@ -133,7 +140,7 @@ class AIHandler {
 			this.userPreference.AIusagePreference ===
 			AIusagePreferenceEnum.Personal
 		) {
-			return this.userPreference.AIconfiguration.selfHosted.url;
+			return this.userPreference.AIconfiguration?.selfHosted?.url ?? '';
 		} else {
 			return await this.app
 				.getAccessors()
@@ -150,13 +157,9 @@ class AIHandler {
 
 			if (!openaikey || !openaimodel) {
 				this.app.getLogger().log('OpenAI settings not set properly.');
-				const errorMsg =
-					this.userPreference.AIusagePreference ===
-					AIusagePreferenceEnum.Personal
-						? t('AI_OpenAI_Model_Not_Configured', this.language)
-						: t('AI_Not_Configured_Admin', this.language);
-
-				return errorMsg;
+				return this.getNotConfiguredError(
+					'AI_OpenAI_Model_Not_Configured',
+				);
 			}
 
 			const response: IHttpResponse = await this.http.post(
@@ -200,8 +203,8 @@ class AIHandler {
 			AIusagePreferenceEnum.Personal
 		) {
 			return {
-				openaikey: this.userPreference.AIconfiguration.openAI.apiKey,
-				openaimodel: this.userPreference.AIconfiguration.openAI.model,
+				openaikey: this.userPreference.AIconfiguration?.openAI?.apiKey ?? '',
+				openaimodel: this.userPreference.AIconfiguration?.openAI?.model ?? '',
 			};
 		} else {
 			const [apikey, model] = await Promise.all([
@@ -225,14 +228,9 @@ class AIHandler {
 
 			if (!geminiAPIkey) {
 				this.app.getLogger().log('Gemini API key not set Properly');
-
-				const errorMsg =
-					this.userPreference.AIusagePreference ===
-					AIusagePreferenceEnum.Personal
-						? t('AI_Gemini_Model_Not_Configured', this.language)
-						: t('AI_Not_Configured_Admin', this.language);
-
-				return errorMsg;
+				return this.getNotConfiguredError(
+					'AI_Gemini_Model_Not_Configured',
+				);
 			}
 
 			const response: IHttpResponse = await this.http.post(
@@ -276,7 +274,7 @@ class AIHandler {
 			this.userPreference.AIusagePreference ===
 			AIusagePreferenceEnum.Personal
 		) {
-			return this.userPreference.AIconfiguration.gemini.apiKey;
+			return this.userPreference.AIconfiguration?.gemini?.apiKey ?? '';
 		} else {
 			return await this.app
 				.getAccessors()

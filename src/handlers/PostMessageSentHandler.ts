@@ -100,7 +100,12 @@ export class PostMessageSentHandler {
 
 				logger.log(`PostMessageSent: Generating suggestions for user ${recipient.username}`);
 
-				const aiHandler = new AIHandler(this.app, http, userPreference);
+				const aiHandler = new AIHandler(
+					this.app,
+					http,
+					userPreference,
+					recipient,
+				);
 
 				const suggestPrompt =
 					`Conversation:\n${contextMessages}\n\n` +
