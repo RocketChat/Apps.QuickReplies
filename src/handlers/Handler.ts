@@ -167,9 +167,9 @@ export class Handler implements IHandler {
 
 	public async CorrectGrammarUsingAI(): Promise<void> {
 		const userPreference = new UserPreferenceStorage(
-		  this.persis,
-		  this.read.getPersistenceReader(),
-		  this.sender.id,
+			this.persis,
+			this.read.getPersistenceReader(),
+			this.sender.id,
 		);
 		const value = this.params?.slice(1).join(' ') || '';
 		const existingPreference = await userPreference.getUserPreference();
@@ -180,12 +180,12 @@ export class Handler implements IHandler {
 			this.sender,
 		);
 		if (!value) {
-		  await sendMessage(this.modify, this.sender, this.room, t('Error_Grammar_Correct', this.language));
-		  return;
+			await sendMessage(this.modify, this.sender, this.room, t('Error_Grammar_Correct', this.language));
+			return;
 		}
 	
 		const response = await AiHandler.handleResponse(
-		  value, '', true
+			value, '', true
 		);
 	
 		await sendMessage(this.modify, this.sender, this.room, response);

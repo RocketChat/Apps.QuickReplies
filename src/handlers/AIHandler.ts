@@ -45,12 +45,12 @@ class AIHandler {
 	): Promise<string> {
 		let aiProvider: string;
 		if (
-		  this.userPreference.AIusagePreference ===
-		  AIusagePreferenceEnum.Personal
+			this.userPreference.AIusagePreference ===
+			AIusagePreferenceEnum.Personal
 		) {
-		  aiProvider = this.userPreference.AIconfiguration.AIProvider;
+			aiProvider = this.userPreference.AIconfiguration?.AIProvider ?? '';
 		} else {
-		  aiProvider = await this.app
+			aiProvider = await this.app
 			.getAccessors()
 			.environmentReader.getSettings()
 			.getValueById(SettingEnum.AI_PROVIDER_OPTOIN_ID);
@@ -58,16 +58,16 @@ class AIHandler {
 	
 		const content = correctGrammar ? this.getGrammarFixPrompt(message) : this.getAIResponsePrompt(message, prompt)
 		switch (aiProvider) {
-		  case AIProviderEnum.SelfHosted:
-		  case SettingEnum.SELF_HOSTED_MODEL:
+			case AIProviderEnum.SelfHosted:
+			case SettingEnum.SELF_HOSTED_MODEL:
 			return this.handleSelfHostedModel(content);
 	
-		  case AIProviderEnum.OpenAI:
-		  case SettingEnum.OPEN_AI:
+			case AIProviderEnum.OpenAI:
+			case SettingEnum.OPEN_AI:
 			return this.handleOpenAI(content);
 	
-		  case AIProviderEnum.Gemini:
-		  case SettingEnum.GEMINI:
+			case AIProviderEnum.Gemini:
+			case SettingEnum.GEMINI:
 			return this.handleGemini(content);
 	
 			default:
@@ -82,7 +82,7 @@ class AIHandler {
 	}
 
 	private getAIResponsePrompt(message: string, prompt: string): string {
-		return `You are a function that generates responses from a message and prompt message is : "${message}". ${this.userPreference.AIconfiguration.AIPromptOptions} and Use the following as a prompt : "${prompt}" and make sure you respond with just the reply without quotes.`;
+		return `You are a function that generates responses from a message and prompt message is : "${message}". ${this.userPreference.AIconfiguration?.AIPromptOptions ?? []} and Use the following as a prompt : "${prompt}" and make sure you respond with just the reply without quotes.`;
 	}
 	private getGrammarFixPrompt(message: string): string {
 		return `You are a function that corrects grammar and spelling only. Fix any grammar errors, spelling mistakes, and punctuation in this message: "${message}". Return only the corrected text as a single string. Make no other changes to the content or meaning - just fix grammar and spelling issues.`;
@@ -140,7 +140,7 @@ class AIHandler {
 			this.userPreference.AIusagePreference ===
 			AIusagePreferenceEnum.Personal
 		) {
-			return this.userPreference.AIconfiguration.selfHosted.url;
+			return this.userPreference.AIconfiguration?.selfHosted?.url ?? '';
 		} else {
 			return await this.app
 				.getAccessors()
@@ -203,8 +203,8 @@ class AIHandler {
 			AIusagePreferenceEnum.Personal
 		) {
 			return {
-				openaikey: this.userPreference.AIconfiguration.openAI.apiKey,
-				openaimodel: this.userPreference.AIconfiguration.openAI.model,
+				openaikey: this.userPreference.AIconfiguration?.openAI?.apiKey ?? '',
+				openaimodel: this.userPreference.AIconfiguration?.openAI?.model ?? '',
 			};
 		} else {
 			const [apikey, model] = await Promise.all([
@@ -274,7 +274,7 @@ class AIHandler {
 			this.userPreference.AIusagePreference ===
 			AIusagePreferenceEnum.Personal
 		) {
-			return this.userPreference.AIconfiguration.gemini.apiKey;
+			return this.userPreference.AIconfiguration?.gemini?.apiKey ?? '';
 		} else {
 			return await this.app
 				.getAccessors()
